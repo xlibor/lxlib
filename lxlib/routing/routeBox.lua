@@ -1,11 +1,11 @@
 
-local _M = { 
+local lx, _M = oo{ 
     _cls_ = '',
     _ext_ = 'box'
 }
 
-local lx = require('lxlib')
-local app = lx.app()
+local app, lf, tb, str = lx.kit()
+local fs = lx.fs
 
 function _M:reg()
 
@@ -37,6 +37,24 @@ function _M:loadRoutes()
     
     if self:__has('map') then
         self:map()
+    end
+end
+
+function _M:autoload()
+
+    local router = app.router
+
+    local routes = fs.files(lx.dir('map', 'load'), 'n', function(file)
+        local name, ext = file:sub(1, -5), file:sub(-3)
+
+        if ext == 'lua' then
+            return name
+        end
+    end)
+    if #routes > 0 then
+        for _, route in ipairs(routes) do
+            require('.map.load.' .. route)(router)
+        end
     end
 end
 
