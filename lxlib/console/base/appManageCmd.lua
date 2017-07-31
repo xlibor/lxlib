@@ -171,7 +171,7 @@ function _M:makeLib()
 
     local appName = self:arg(1)
     local parentPath = self.rootPath
-    local libPath = self.libPath .. '/lxlib/*'
+    local libPath = self.libPath .. '/*'
     local appPath = parentPath .. dp .. appName
     if not fs.exists(appPath) then
         return self:warn(appPath .. ' not exists')
