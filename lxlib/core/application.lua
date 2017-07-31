@@ -69,8 +69,8 @@ end
 function _M:setBasePath(basePath, scaffold)
 
     local sep = d.dirSep
-    self.basePath        = basePath
-    local root             = basePath .. sep
+    self.basePath = basePath
+    local root = basePath .. sep
 
     if not scaffold then return end
 
@@ -83,6 +83,7 @@ function _M:setBasePath(basePath, scaffold)
     local tmp = scaffold.tmp or 'tmp'
     local test = scaffold.test or 'test'
 
+    self.scaffold       = scaffold
     self.appDir         = root .. app
     self.appPath        = '.' .. app
     self.confDir        = root .. conf
