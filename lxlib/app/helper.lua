@@ -45,10 +45,13 @@ end
 
 _M.csrfToken = _M.csrf_token
 
-function _M.elixir(p)
-    
+function _M.mix(path)
+
     local root = app.request.root
-    return root .. '/' .. p
+    local appName = app.name
+    local pubDir = app.scaffold.pub
+
+    return root .. '/' .. appName .. '/' .. pubDir .. '/' .. path  
 end
 
 function _M.jsen(p)
