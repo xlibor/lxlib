@@ -7,7 +7,7 @@ local _M = {
 local mt = { __index = _M }
 
 local lx = require('lxlib')
-local app, lf, tb, str = lx.app()
+local app, lf, tb, str = lx.kit()
 local fs = lx.fs
 
 function _M:ctor()
@@ -22,7 +22,7 @@ function _M:update()
     local rootPath = self.rootPath
     local libPath = self.libPath
     local pubPath = self.pubPath
-    local appName = self:envGet('defaultApp', 'unknown')
+    local appNames = tb.keys(self:envGet('apps'))
     local tplOriginalPath = libPath .. '/support/ngx.conf'
     local mimeTypeOriginalPath = libPath .. '/support/mime.types'
     local tplPath = pubPath .. '/ngxTpl.conf'
@@ -42,11 +42,11 @@ function _M:update()
     local ctx = {
         port = 80,
         serverName = 'localhost',
-        appName = appName,
+        appNames = appNames,
         luaCodeCache = codeCache,
         ngxPath = ngxPath,
         lxpubPath = pubPath,
-        assetPath = appPath .. '/pub',
+        assetPath = rootPath,
         appLogPath = appLogPath,
         appPath = appPath,
         initWorkerByLua = [[require("lxlib").init()]],

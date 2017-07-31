@@ -1,7 +1,15 @@
 
 local lx, _M = oo{ 
     _cls_ = '',
-    _ext_ = 'command'
+    _ext_ = 'command',
+    sign = {
+        makeLib = {
+            appName = {short = 'n', index = 1}
+        },
+        removeLib = {
+            appName = {short = 'n', index = 1}
+        },
+    }
 }
 
 local app, lf, tb, str = lx.kit()
@@ -163,7 +171,7 @@ function _M:makeLib()
 
     local appName = self:arg(1)
     local parentPath = self.rootPath
-    local libPath = self.libPath .. '/*'
+    local libPath = self.libPath .. '/lxlib/*'
     local appPath = parentPath .. dp .. appName
     if not fs.exists(appPath) then
         return self:warn(appPath .. ' not exists')

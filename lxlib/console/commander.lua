@@ -191,7 +191,10 @@ function _M:handle(cmd, input, output)
             if action then
                 local ok, err = self:filterSign(command, method, input)
                 if not ok then
-                    if err then warn(err) end
+                    if err then
+                        warn(err)
+                        return
+                    end
                 end
                 action(command)
             else
