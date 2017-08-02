@@ -543,38 +543,30 @@ function _M:onDelete(callback)
     self._onDelete = callback
 end
 
-local function modelsToCol(models)
+local modelsMtIndex = {
+    col = function(models)
+        return app:make('modelCol', models)
+    end,
+    Col = function(models)
+        local col = app:make('modelCol', models)
+        col.autoDerive = true
 
-    return app:make('modelCol', models)
-end
-
-local function modelsToAutoDeriveCol(models)
-
-    local col = app:make('modelCol', models)
-    col.autoDerive = true
-
-    return col
-end
-
-local function modelsIndex(models, key)
-    
-    if key == 'col' then
-        return modelsToCol
-    elseif key == 'Col' then
-        return modelsToAutoDeriveCol
-    elseif key == 'count' then
-        return function()
-            return #models
-        end
+        return col
+    end,
+    count = function(models)
+        return #models
+    end,
+    packMt = function()
+        return 'ormQuerySetModelsMt'
     end
-end
+}
+
+local modelsMt = { __index = modelsMtIndex}
 
 function _M.s__.setModelsMt(models)
 
     if lf.isTbl(models) then
-        setmetatable(models, {
-            __index = modelsIndex
-        })
+        setmetatable(models, modelsMt)
     end
 end
 

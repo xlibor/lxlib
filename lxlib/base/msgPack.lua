@@ -1,10 +1,21 @@
 
 local lx, _M, mt = oo{
-    _cls_ = ''
+    _cls_ = '',
+    _static_ = {
+        packMts = {}
+    }
 }
 
 local app, lf, tb, str = lx.kit()
 local Query = lx.use('orm.query')
+local emptyTblMts = {}
+
+local static
+
+function _M._init_(this)
+
+    static = this.static
+end
 
 function _M:new()
 
@@ -24,20 +35,39 @@ end
 
 function _M:pack(data)
 
+    local emptyTbls
+
     if lf.isTbl(data) then
-        data = self:traverseForPack(data)
+        emptyTbls = {}
+        data = self:traverseForPack(data, emptyTbls)
     end
 
-    return self.resolver.pack(data)
+    local ret = self.resolver.pack(data)
+
+    if emptyTbls and #emptyTbls > 0 then
+        for _, tbl in ipairs(emptyTbls) do
+            tbl.__packMt = nil
+        end
+    end
+
+    return ret
 end
 
-function _M:traverseForPack(tbl)
+function _M:traverseForPack(tbl, emptyTbls)
 
     local ret = {}
     local newNode
+    local emptyTblMt
 
     if tbl.__cls and tbl:__is('packable') then
         tbl = self:getPackable(tbl)
+    elseif not next(tbl) then
+        emptyTblMt = getmetatable(tbl)
+        if emptyTblMt then
+            self:getLurkable(tbl)
+            tapd(emptyTbls, tbl)
+            return tbl
+        end
     end
 
     for k, v in pairs(tbl) do
@@ -47,13 +77,19 @@ function _M:traverseForPack(tbl)
                 newNode = {}
                 for kk, vv in pairs(v) do
                     if lf.isTbl(vv) then
-                        vv = self:traverseForPack(vv)
+                        vv = self:traverseForPack(vv, emptyTbls)
                     end
                     newNode[kk] = vv
                 end
                 v = newNode
             elseif #v > 0 then
-                v = self:traverseForPack(v)
+                v = self:traverseForPack(v, emptyTbls)
+            elseif not next(v) then
+                emptyTblMt = getmetatable(v)
+                if emptyTblMt then
+                    tapd(emptyTbls, v)
+                    self:getLurkable(v)
+                end
             end
         end
 
@@ -63,7 +99,7 @@ function _M:traverseForPack(tbl)
     return ret
 end
 
-function _M:getPackable(obj)
+function _M.__:getPackable(obj)
 
     local nick = obj.__nick or obj.__cls
     local args
@@ -72,6 +108,16 @@ function _M:getPackable(obj)
     rawset(obj, '__packFrom', {nick, args})
 
     return obj
+end
+
+function _M.__:getLurkable(tbl, emptyTblMt)
+
+    if tbl.packMt then
+        local packMtKey = tbl.packMt()
+        if packMtKey then
+            rawset(tbl, '__packMt', packMtKey)
+        end
+    end
 end
 
 function _M:unpack(str)
@@ -102,6 +148,10 @@ function _M:traverseForUnpack(tbl)
         tbl = self:getPackFrom(tbl)
     end
 
+    if rawget(tbl, '__packMt') then
+        self:appearFrom(tbl)
+    end
+
     if #tbl > 0 then
         if lf.isA(tbl[1], 'model') then
             Query.setModelsMt(tbl)
@@ -126,6 +176,22 @@ function _M:getPackFrom(value)
     obj:unpack(value, self)
 
     return obj
+end
+
+function _M.__:appearFrom(tbl)
+
+    local mtKey = rawget(tbl, '__packMt')
+    local mt = static.packMts[mtKey]
+    tbl.__packMt = nil
+
+    if mt then
+        mt(tbl)
+    end
+end
+
+function _M.s__.addPackMt(key, mt)
+
+    static.packMts[key] = mt
 end
 
 function _M:use(resolver)

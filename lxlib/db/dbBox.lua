@@ -57,7 +57,14 @@ function _M:boot()
     end
  
     app:make('db.entityFactory', baseDbos)
- 
+    
+    local MsgPack = lx.use('msgPack')
+    local Query = lx.use('orm.query')
+
+    MsgPack.addPackMt('ormQuerySetModelsMt', function(models)
+
+        return Query.setModelsMt(models)
+    end)
 end
 
 function _M:regBond()
