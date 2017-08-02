@@ -54,11 +54,16 @@ function _M:set()
 
     if key then
         local col = self:getEnvCol()
-        if lf.isTrueStr(value) then
-            value = true
-        else
-            value = false
+
+        if lf.isBoolStr(value) or lf.isNilStr(value) then
+            value = lf.strToBool(value)
         end
+        if lf.isStr(value) then
+            if value == '{}' then
+                value = lx.n.obj{}
+            end
+        end
+        
         col:set(key, value)
 
         local jsonStr = col:toJson(_, true)
