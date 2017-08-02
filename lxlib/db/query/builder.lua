@@ -659,7 +659,7 @@ function _M:get(...)
         else
             self.sql = sqlSelect:sql(dbType)
         end
-         
+        
         if slen(self.sql) > 0 then
             res = self.conn:select(self.sql)
         else
