@@ -802,7 +802,7 @@ function _M.__:incrementOrDecrement(column, amount, extra, method)
         return query:__do(method, column, amount, extra)
     end
     self:changeAttrValueValue(column, amount, method)
-    
+
     return query:where(self:getKeyName(), self:getKey())
         :__do(method, column, amount, extra)
 end
@@ -1059,7 +1059,7 @@ function _M:fill(attrs)
         if self:isFillable(k) then
             self:setAttr(k, v)
         elseif totallyGuarded then
-            error('MassAssignmentException')
+            error('massAssignmentException')
         end
     end
 
@@ -1487,14 +1487,45 @@ end
 
 function _M:pack()
 
-    return self
+    local packed = {
+        attrs       = self.attrs,
+        relations   = self:packRelations(self.relations)
+    }
+
+    return packed, {attrs}
+end
+
+function _M.__:packRelations()
+
+    local ret = {}
+    local name
+    for k, v in pairs(self.relations) do
+        name = v.__cls
+        if name then
+            ret[k] = {
+                name = name,
+                attrs = v.attrs,
+            }
+        end
+    end
+
+    return ret
 end
 
 function _M:unpack(data)
 
-    for k, v in pairs(data) do
-        self[k] = v
+    self:setRawAttrs(data.attrs, true)
+    self:fill(attrs)
+    self.exists = true
+    
+    local relations = {}
+    local model
+    for k, v in pairs(data.relations) do
+        model = app:make(v.name, v.attrs)
+        relations[k] = model
     end
+
+    self.relations = relations
 end
 
 local function makeScope(baseMt, scope, primary)
