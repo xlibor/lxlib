@@ -74,6 +74,7 @@ end
 function _M:addCookieToResponse(response, session)
 
     if self:usingCookieSessions() then
+
         self.manager:driver():save()
     end
  

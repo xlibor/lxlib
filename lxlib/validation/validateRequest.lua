@@ -3,8 +3,8 @@ local lx, _M = oo{
     _cls_ = ''
 }
 
-local app, lf, tb, str = lx.kit()
-local new = lx.new
+local app, lf, tb, str, new = lx.kit()
+local throw = lx.throw
 local redirect = lx.h.redirect
 
 function _M:validateWith(validator, request)
@@ -49,7 +49,7 @@ end
 
 function _M.__:throwValidationException(request, validator)
 
-    lx.throw('validationException',
+    throw('validationException',
         validator,
         self:buildFailedValidationResponse(
             request, self:formatValidationErrors(validator)

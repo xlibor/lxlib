@@ -337,7 +337,10 @@ end
 
 function _M.writeCache(file, content)
 
-    fsCache.write(file, content)
+    local err = fsCache.write(file, content)
+    if err then
+        error(err .. ':' .. file)
+    end
 end
 
 return _M

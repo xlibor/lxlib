@@ -1,10 +1,8 @@
 
-local _M = {
+local lx, _M, mt = oo{
     _cls_ = ''
 }
-local mt = { __index = _M }
 
-local lx = require('lxlib').load(_M)
 local app, lf, tb, Str = lx.kit()
 
 local ssub, sfind = string.sub, string.find
@@ -20,7 +18,7 @@ function _M:new(tpl)
         ntCount = 0,
     }
 
-    setmetatable(this, mt)
+    oo(this, mt)
 
     return this
 end

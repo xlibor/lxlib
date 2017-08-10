@@ -4,8 +4,7 @@ local lx, _M, mt = oo{
 
 }
 
-local app, lf, tb, str = lx.kit()
-local new = lx.new
+local app, lf, tb, str, new = lx.kit()
 
 local restyHttp = require('resty.http')
 

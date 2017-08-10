@@ -1,11 +1,8 @@
 
-local _M = { 
+local lx, _M, mt = oo{ 
     _cls_ = ''
 }
 
-local mt = { __index = _M }
-
-local lx = require('lxlib').load(_M)
 local app, lf, tb, str = lx.kit()
 
 local redisBase = require('lxlib.resty.redis')
@@ -21,7 +18,7 @@ function _M:new(option)
         password = option.password
     }
 
-    setmetatable(this, mt)
+    oo(this, mt)
 
     return this
 end

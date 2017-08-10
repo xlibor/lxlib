@@ -1,12 +1,9 @@
 
-local _M = {
+local lx, _M = oo{
     _cls_    = '',
     _ext_    = 'relation'
 }
 
-local mt = {__index = _M}
-
-local lx = require('lxlib').load(_M)
 local app, lf, tb, str = lx.kit()
 local Relation = lx.use('relation')
 

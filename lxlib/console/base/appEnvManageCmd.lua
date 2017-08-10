@@ -1,5 +1,5 @@
 
-local _M = { 
+local lx, _M = oo{
     _cls_ = '',
     _ext_ = 'command',
     sign = {
@@ -16,9 +16,6 @@ local _M = {
     }
 }
 
-local mt = { __index = _M }
-
-local lx = require('lxlib').load(_M)
 local app, lf, tb, str = lx.kit()
 local fs, json = lx.fs, lx.json
  

@@ -102,9 +102,9 @@ function _M:withErrors(provider, key)
     key = key or 'default'
     local value = self:parseErrors(provider)
 
-    self.session:flash('errors',
-        self.session:get('errors', new('viewErrorBag')):put(key, value)
-    )
+    local errors = self.session:get('errors', new('viewErrorBag')):put(key, value)
+
+    self.session:flash('errors', errors)
 
     return self
 end

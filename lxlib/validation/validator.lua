@@ -9,7 +9,7 @@ local lx, _M, mt = oo{
 }
 
 local app, lf, tb, str, new = lx.kit()
-
+local throw = lx.throw
 local ssub, sfind = string.sub, string.find
 
 local RuleParser = lx.use('validationRuleParser')
@@ -106,7 +106,7 @@ end
 function _M:validate()
 
     if self:fails() then
-        lx.throw('validationException', self)
+        throw('validationException', self)
     end
 end
 
@@ -474,7 +474,7 @@ end
 function _M:getVerifier()
 
     if not self.verifier then
-        lx.throw('runtimeException', 'verifier has not been set.')
+        throw('runtimeException', 'verifier has not been set.')
     end
     
     return self.verifier
@@ -532,7 +532,7 @@ function _M:_run_(method)
         end
     end
 
-    lx.throw('badMethodCallException', 'Method [' .. method .. '] does not exist.')
+    throw('badMethodCallException', 'Method [' .. method .. '] does not exist.')
 end
 
 return _M

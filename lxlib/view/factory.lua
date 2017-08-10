@@ -1,11 +1,8 @@
 
-local _M = {
+local lx, _M, mt = oo{
     _cls_    = ''
 }
 
-local mt = { __index = _M }
-
-local lx = require('lxlib').load(_M)
 local app, lf, tb, str = lx.kit()
 local try, throw = lx.try, lx.throw
 
@@ -19,7 +16,7 @@ function _M:new(engines, finder, default)
         default     = default or 'blade'
     }
 
-    setmetatable(this, mt)
+    oo(this, mt)
 
     return this
 end

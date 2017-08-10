@@ -76,10 +76,5 @@ function _M:boot()
 
 end
 
-function _M:provides()
-
-    return {'validator', 'validation.presence'}
-end
-
 return _M
 

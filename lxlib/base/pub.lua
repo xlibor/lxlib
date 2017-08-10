@@ -728,6 +728,7 @@ function _M.guid(formatType, isUcase)
 end
 
 function _M.split(s, separator, max)
+    
     return Str.split(s, separator, max)
 end
 

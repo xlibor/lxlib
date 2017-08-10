@@ -1,10 +1,9 @@
 
-local _M = {
+local lx, _M = oo{
     _cls_    = '',
     _ext_    = 'db.manager'
 }
 
-local lx = require('lxlib').load(_M)
 local app = lx.app()
 
 function _M:ctor()

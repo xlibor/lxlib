@@ -1,14 +1,10 @@
 
-local _M = { 
+local lx, _M, mt = oo{
     _cls_     = '',
     _ext_     = {
         from = 'ldoException'
     }
 }
-
-local mt = { __index = _M }
-
-local lx = require('lxlib').load(_M)
 
 function _M:new(sql, bindings, pre)
 
@@ -18,7 +14,7 @@ function _M:new(sql, bindings, pre)
         pre    = pre
     }
     
-    setmetatable(this, mt)
+    oo(this, mt)
  
     return this
 end

@@ -1,11 +1,8 @@
 
-local _M = { 
+local lx, _M, mt = oo{
     _cls_    = ''
 }
 
-local mt = { __index = _M }
-
-local lx = require('lxlib').load(_M)
 local app, lf, tb, str = lx.kit()
 
 function _M:new()
@@ -14,7 +11,7 @@ function _M:new()
         clients = {}
     }
 
-    setmetatable(this, mt)
+    oo(this, mt)
 
     return this
 end
