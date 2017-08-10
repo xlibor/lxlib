@@ -142,14 +142,13 @@ end
 
 function _M.mkdir(dir)
 
-    local pfile = popen('mkdir -p ' .. dir)
+    local pfile, err = popen('mkdir -p ' .. dir)
 
     if pfile then
         pfile:close()
-        return false
-    else
-        pfile:close()
         return true
+    else
+        return false, err
     end
 
 end
