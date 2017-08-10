@@ -35,13 +35,28 @@ end
 function _M.__:write(record)
 
     local file = self.file
+    self:createDir()
 
     fs.writeCache(file, record.formatted)
 end
 
 function _M.__:createDir()
 
-    self.dirCreated = true
+    if self.dirCreated then
+        return
+    end
+
+    local dir = fs.dirName(self.file)
+
+    local created = false
+    if not fs.exists(dir) then
+        created, err = fs.makeDir(dir)
+        if not created then error(err) end
+    end
+
+    if created then
+        self.dirCreated = true
+    end
 end
 
 return _M
