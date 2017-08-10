@@ -98,7 +98,7 @@ function _M:invalidate()
 
     self:clear()
 
-    return this:migrate(true)
+    return self:migrate(true)
 end
 
 function _M:migrate(destroy)
@@ -180,7 +180,7 @@ function _M:put(key, value)
     end
 
     for k, v in pairs(kvs) do
-        self:set(key, value)
+        self:set(k, v)
     end
 end
 
