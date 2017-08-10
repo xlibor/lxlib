@@ -28,7 +28,7 @@ end
 
 function _M.__:regUrlGenerator()
 
-    app:bind('url', function()
+    app:single('url', function()
         local routes = app:get('router'):getRoutes()
         
         app:instance('routes', routes)
@@ -51,8 +51,8 @@ end
 
 function _M.__:regRedirector()
 
-    app:single('redirect', function()
-        redirector = new('redirector', app.url)
+    app:keep('redirect', function()
+        local redirector = new('redirector', app.url)
         
         if app['session.store'] then
             redirector:setSession(app['session.store'])
