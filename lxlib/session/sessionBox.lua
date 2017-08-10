@@ -27,10 +27,9 @@ function _M:reg()
     end)
 
     app:single('lxlib.session.bar.startSession')
-
 end
 
-function _M:regDepends()
+function _M.__:regDepends()
 
     app:bind('session.commonStore',         'lxlib.session.store')
     app:bind('session.cookieHandler',       'lxlib.session.handler.cookie')
@@ -50,16 +49,6 @@ function _M:boot()
         end)
     end)
 end
-
-
-
-
-
-
-
-
-
-
 
 return _M
 
