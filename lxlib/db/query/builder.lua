@@ -1317,16 +1317,15 @@ end
 
 function _M:increment(column, amount, extra)
 
-    if extra then
-        self:where(extra)
-    end
-
     amount = amount or 1
     if not lf.isNum(amount) then
         lx.throw('invalidArgumentException', 'Non-numeric value passed to increment method.')
     end
 
     self:set(column, self.cf(column):make('%s + ' .. amount))
+    if extra then
+        self:set(extra)
+    end
 
     return self:update()
 end
@@ -1335,16 +1334,15 @@ _M.incr = _M.increment
 
 function _M:decrement(column, amount, extra)
 
-    if extra then
-        self:where(extra)
-    end
-
     amount = amount or 1
     if not lf.isNum(amount) then
         lx.throw('invalidArgumentException', 'Non-numeric value passed to decrement method.')
     end
 
     self:set(column, self.cf(column):make('%s - ' .. amount))
+    if extra then
+        self:set(extra)
+    end
 
     return self:update()
 end
