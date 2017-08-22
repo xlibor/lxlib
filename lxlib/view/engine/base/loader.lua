@@ -67,7 +67,7 @@ end
 
 function _M:findPath(view, namespace)
 
-    local finder = app:get('view').finder
+    local finder = app.view.finder
 
     return finder:find(view, namespace)
 end

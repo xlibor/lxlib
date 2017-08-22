@@ -13,7 +13,7 @@ function _M:reg()
     app:single('cache', 'lxlib.cache.cacheManager')
 
     app:single('cache.store', function()
-        local cache = app:get('cache')
+        local cache = app.cache
 
         return cache:driver()
     end)

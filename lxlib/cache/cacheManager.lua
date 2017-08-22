@@ -31,7 +31,7 @@ function _M.__:createFileDriver(config)
     local path = config.path
 
     return self:buildDoer(
-        app:make('cache.fileStore', app:get('files'), path),
+        app:make('cache.fileStore', app.files, path),
         config
     )
 end

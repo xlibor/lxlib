@@ -17,7 +17,7 @@ local router
 
 function _M._init_()
 
-    router = app:get('router')
+    router = app.router
 end
 
 function _M:new()

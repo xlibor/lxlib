@@ -39,7 +39,7 @@ function _M:regViewFinder()
     app:bind('view.finder', finder, function()
 
         return new(finder,
-            app:get('files'),
+            app.files,
             app:conf('view.paths'),
             app:conf('view.extension')
         )

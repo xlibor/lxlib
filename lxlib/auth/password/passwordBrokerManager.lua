@@ -34,33 +34,33 @@ function _M.__:resolve(name)
     end
     
     
-    return new('passwordBroker',self:createTokenRepository(config), app['auth']:createUserProvider(config['provider']))
+    return new('passwordBroker',self:createTokenRepository(config), app.auth:createUserProvider(config['provider']))
 end
 
 function _M.__:createTokenRepository(config)
 
-    local key = app['config']['app.key']
+    local key = app:conf('app.key')
     if str.startsWith(key, 'base64:') then
         key = base64_decode(str.substr(key, 7))
     end
-    local connection = config['connection'] and config['connection'] or nil
+    local connection = config.connection
     
-    return new('databaseTokenRepository',app['db']:connection(connection), app['hash'], config['table'], key, config['expire'])
+    return new('databaseTokenRepository',app:get('db'):connection(connection), app['hash'], config['table'], key, config['expire'])
 end
 
 function _M.__:getConfig(name)
 
-    return app['config']["auth.passwords.{name}"]
+    return app:conf('auth.passwords.' .. name)
 end
 
 function _M:getDefaultDriver()
 
-    return app['config']['auth.defaults.passwords']
+    return app:conf('auth.defaults.passwords')
 end
 
 function _M:setDefaultDriver(name)
 
-    app['config']['auth.defaults.passwords'] = name
+    app:conf('auth.defaults.passwords', name)
 end
 
 function _M:__call(method, parameters)

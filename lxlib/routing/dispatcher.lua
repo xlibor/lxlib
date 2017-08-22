@@ -89,7 +89,7 @@ end
 
 function _M:makeCtler(ctler, route)
  
-    local router = app:get('router')
+    local router = app.router
  
     if not app:getBind(ctler) then
         app:single(ctler)

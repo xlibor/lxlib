@@ -30,6 +30,7 @@ end
 function _M:ctor()
 
     self.resolver = require('lxlib.resty.messagePack')
+
     -- self.resolver = require('cmsgpack')
 end
 
@@ -38,6 +39,7 @@ function _M:pack(data)
     local emptyTbls
 
     if lf.isTbl(data) then
+
         emptyTbls = {}
         data = self:traverseForPack(data, emptyTbls)
     end
@@ -53,11 +55,20 @@ function _M:pack(data)
     return ret
 end
 
+function _M:isValidKey(key)
+
+    local ret = (not str.startsWith(key, '__')) or 
+        (key == '__cls' or key == '__packFrom')
+
+    return ret
+end
+
 function _M:traverseForPack(tbl, emptyTbls)
 
     local ret = {}
     local newNode
     local emptyTblMt
+    local vt, t
 
     if tbl.__cls and tbl:__is('packable') then
         tbl = self:getPackable(tbl)
@@ -71,29 +82,35 @@ function _M:traverseForPack(tbl, emptyTbls)
     end
 
     for k, v in pairs(tbl) do
-        if lf.isTbl(v) then
-            if v.__cls and v:__is('packable') then
-                v = self:getPackable(v)
-                newNode = {}
-                for kk, vv in pairs(v) do
-                    if lf.isTbl(vv) then
-                        vv = self:traverseForPack(vv, emptyTbls)
+        if self:isValidKey(k) then
+            if lf.isTbl(v) then
+                if v.__cls and v:__is('packable') then
+                    v = self:getPackable(v)
+                    newNode = {}
+                    for kk, vv in pairs(v) do
+                        if self:isValidKey(kk) and lf.isTbl(vv) then
+                            vv = self:traverseForPack(vv, emptyTbls)
+                        end
+                        newNode[kk] = vv
                     end
-                    newNode[kk] = vv
-                end
-                v = newNode
-            elseif #v > 0 then
-                v = self:traverseForPack(v, emptyTbls)
-            elseif not next(v) then
-                emptyTblMt = getmetatable(v)
-                if emptyTblMt then
-                    tapd(emptyTbls, v)
-                    self:getLurkable(v)
+                    v = newNode
+                elseif #v > 0 then
+                    v = self:traverseForPack(v, emptyTbls)
+                elseif next(v) then
+                    v = self:traverseForPack(v, emptyTbls)
+                else
+                    emptyTblMt = getmetatable(v)
+                    if emptyTblMt then
+                        tapd(emptyTbls, v)
+                        self:getLurkable(v)
+                    end
                 end
             end
-        end
 
-        ret[k] = v
+            if type(v) ~= 'function' then
+                ret[k] = v
+            end
+        end
     end
 
     return ret

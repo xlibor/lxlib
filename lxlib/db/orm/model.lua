@@ -13,9 +13,9 @@ local lx, _M, mt = oo{
         timestamps          = true,
         dateFormat          = '%Y-%m-%d %H:%M:%S',
         manyMethods         = {'belongsToMany', 'morphToMany', 'morphedByMany'},
-    },
-    createdAt     = 'created_at',
-    updatedAt     = 'updated_at',
+        createdAt           = 'created_at',
+        updatedAt           = 'updated_at',
+    }
 }
 
 local app, lf, tb, str, new = lx.kit()
@@ -559,6 +559,8 @@ function _M:hasAttrGetter(key)
     return attrGetters[key] and true or false
 end
 
+_M.hasGetMutator = _M.hasAttrGetter
+
 function _M:hasAttrSetter(key)
 
     local attrSetters = self.attrSetters
@@ -697,11 +699,11 @@ function _M:updateTimestamps()
 
     local ts = self:freshTimestamp()
 
-    if not self:isDirty(_M.createdAt) then
+    if not self:isDirty(static.createdAt) then
         self:setUpdatedAt(ts)
     end
 
-    if not (self.exists or self:isDirty(_M.createdAt)) then
+    if not (self.exists or self:isDirty(static.createdAt)) then
         self:setCreatedAt(ts)
     end
 end
@@ -730,26 +732,26 @@ end
 
 function _M:setCreatedAt(value)
 
-    self:setAttr(_M.createdAt, value)
+    self:setAttr(static.createdAt, value)
     
     return self
 end
 
 function _M:setUpdatedAt(value)
 
-    self:setAttr(_M.updatedAt, value)
+    self:setAttr(static.updatedAt, value)
 
     return self
 end
 
 function _M:getCreatedAtColumn()
 
-    return _M.createdAt
+    return static.createdAt
 end
 
 function _M:getUpdatedAtColumn()
     
-    return _M.updatedAt
+    return static.updatedAt
 end
 
 function _M:freshTimestamp()
@@ -762,6 +764,13 @@ end
 function _M:freshTimestampString()
 
     return self:fromDateTime(self:freshTimestamp())
+end
+
+function _M:getDates()
+
+    local defaults = {static.createdAt, static.updatedAt}
+
+    return self.timestamps and tb.merge(self.dates, defaults) or self.dates
 end
 
 function _M:isDirty(...)
@@ -1576,7 +1585,7 @@ function _M._load_(cls)
     end
 
     local methods = [[
-        select, sel, pick, where, orWhere, or_, get, set, find,
+        select, sel, pick, where, orWhere, or_, whereIn, get, set, find,
         first, orderBy, group, groupBy, take, insert, limit,
         from, count, withCount, withGlobalScope, withoutGlobalScope,
         withoutGlobalScopes, pure, findOrFail, firstOrFail, getSql,

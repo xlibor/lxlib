@@ -30,7 +30,7 @@ function _M.__:createFileDriver(config)
     local path = config.path
  
     return self:buildSession(
-        app:make('session.fileHandler', app:get('files'), path)
+        app:make('session.fileHandler', app.files, path)
     )
 end
 
@@ -66,7 +66,7 @@ function _M.__:createCacheHandler(driver)
     local minutes = app:conf('session.lifetime')
 
     return app:make('session.cacheHandler',
-        app:get('cache'):store(store):__clone(), minutes
+        app.cache:store(store):__clone(), minutes
     )
 end
 

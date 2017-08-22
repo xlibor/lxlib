@@ -295,19 +295,22 @@ local function extendMtTable(this, app, defer, run, get, baseMt, key)
     end
 
     if defer then
+        local cancelSave
         local deferType = type(defer)
         if deferType == 'table' then
             local deferCb = defer[key]
             if deferCb then
-                node = deferCb(this)
-                setObjItem(this, key, node)
-
+                node, cancelSave = deferCb(this)
+                if not cancelSave then
+                    setObjItem(this, key, node)
+                end
                 return node
             end
         elseif deferType == 'function' then
-            node = defer(this, key)
-            setObjItem(this, key, node)
-
+            node, cancelSave = defer(this, key)
+            if not cancelSave then
+                setObjItem(this, key, node)
+            end
             return node
         else
             error('unsupport defer type')
@@ -810,7 +813,7 @@ function _M:getClassBaseInfo(bagPath)
         if typeCheck then
             local defedMethods = docParser.getAnnotations(filePath)
             if defedMethods then
-                -- typeChecker:new(bag, defedMethods):check()
+                typeChecker:new(bag, defedMethods):check()
             end
         end
     else

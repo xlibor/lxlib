@@ -123,7 +123,8 @@ function _M:save()
 
     self:addItemDataToSession()
     self:ageFlashData()
-    self.handler:write(self.id, packer:pack(self.attrs))
+    local t = packer:pack(self.attrs)
+    self.handler:write(self.id, t)
 
     self.started = false
 end
@@ -173,7 +174,7 @@ end
 function _M:put(key, value)
 
     local kvs = {}
-    if type(key) ~= 'table' then
+    if type(key) == 'string' then
         kvs[key] = value
     else
         kvs = key

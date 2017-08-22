@@ -10,7 +10,7 @@ local router
 function _M._init_()
 
     if not app:isCmdMode() then
-        router = app:get('router')
+        router = app.router
     end
 end
 
@@ -25,7 +25,7 @@ function _M:handle(context, next)
 
     local req = context.req
     local route = req:getRoute()
-    local router = router or app:get('router')
+    local router = router or app.router
 
     router:replaceBinding(route)
 

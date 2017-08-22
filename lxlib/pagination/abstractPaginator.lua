@@ -5,7 +5,7 @@ local lx, _M, mt = oo{
         'htmlable', 'eachable', 'jsonable', 'packable'
     },
     _static_        = {
-        currentPathResolver = nil,
+        _currentPathResolver = nil,
         _currentPageResolver = nil,
         defaultView = 'pagination:default',
         defaultSimpleView = 'pagination:simple-default'
@@ -159,12 +159,12 @@ function _M:hasPages()
     return not (self:currentPage() == 1 and not self:hasMorePages())
 end
 
-function _M.resolveCurrentPath(default)
+function _M.s__.resolveCurrentPath(default)
 
     default = default or '/'
-    if static.currentPathResolver then
+    if static._currentPathResolver then
         
-        return lf.call(static.currentPathResolver)
+        return lf.call(static._currentPathResolver)
     end
     
     return default
@@ -172,7 +172,7 @@ end
 
 function _M.s__.currentPathResolver(resolver)
 
-    static.currentPathResolver = resolver
+    static._currentPathResolver = resolver
 end
 
 function _M.s__.resolveCurrentPage(pageName, default)
@@ -254,9 +254,9 @@ function _M:toHtml()
     return tostring(self:render())
 end
 
-function _M:_run(method)
+function _M:_run_(method)
 
-    return self:getCollection()
+    return 'getCollection'
 end
 
 function _M:toStr()

@@ -15,9 +15,9 @@ local router, disper
 function _M._init_()
 
     if not app:isCmdMode() then
-        router = app:get('router')
+        router = app.router
     end
-    disper = app:get('router').disper
+    disper = app.router.disper
 end
 
 function _M:new(methods, uri, action, bar)
@@ -92,7 +92,7 @@ function _M:checkAction()
             bar = {bar}
         elseif vt == 'function' then
             local barName = str.random(8)
-            local router = router or app:get('router')
+            local router = router or app.router
             router:setBar(barName, bar)
             bar = {barName}
         end
@@ -138,7 +138,7 @@ function _M:name(name)
         self.action.as = name
     end
 
-    local router = router or app:get('router')
+    local router = router or app.router
     router.routes:addToNameList(self, self.action.as)
 
     return self

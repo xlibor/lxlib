@@ -5,8 +5,9 @@ local _M = {
         path = 'lxlib.core.container',
     },
     d__ = function(self, key)
-    
-        return self:get(key)
+
+        local isShared = self:isShared(key)
+        return self:get(key), not isShared
     end
 }
 

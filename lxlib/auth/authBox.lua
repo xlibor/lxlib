@@ -123,7 +123,7 @@ function _M.__:regAuthenticator()
 
     app:single('auth.driver', function()
         
-        return app['auth']:guard()
+        return app.auth:guard()
     end)
 end
 
@@ -131,7 +131,7 @@ function _M.__:regUserResolver()
 
     app:bind('authenticatableBond', function()
 
-        return lf.call(app['auth'].userResolver)
+        return lf.call(app.auth.userResolver)
     end)
 end
 
@@ -142,7 +142,7 @@ function _M.__:regAccessGate()
         
         return new(gate, function()
             
-            return lf.call(app['auth'].userResolver)
+            return lf.call(app.auth.userResolver)
         end)
     end)
 end
@@ -153,7 +153,7 @@ function _M.__:regRequestRebindHandler()
 
         request:setUserResolver(function(guard)
             
-            return lf.call(app['auth'].userResolver, guard)
+            return lf.call(app.auth.userResolver, guard)
         end)
     end)
 end

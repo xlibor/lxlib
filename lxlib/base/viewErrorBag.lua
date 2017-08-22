@@ -41,7 +41,7 @@ end
 
 function _M:count()
 
-    return self:getBag('default'):count()
+    return self:getDefaultBag():count()
 end
 
 function _M:_get_(key)

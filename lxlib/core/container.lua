@@ -70,9 +70,9 @@ function _M:bind(nick, bagInfo, concrete, shared, sharedInCtx)
         end
     end
 
-    self.binds[nick] = { nick = nick,
-        bag = bag, concrete = concrete, shared = shared,
-        sharedInCtx = sharedInCtx
+    self.binds[nick] = {
+        nick = nick, bag = bag, concrete = concrete, 
+        shared = shared, sharedInCtx = sharedInCtx
     }
 
 end
@@ -132,6 +132,7 @@ function _M:afterMake(obj, nick, bind)
 
     if self:isShared(nick) then
         self.instances[nick] = obj
+        self[nick] = obj
     end
 
     if bind.sharedInCtx then
@@ -162,6 +163,7 @@ function _M:fireResolvingCallbacks(nick, obj)
     local callbacks = self.resolvingCallbacks[nick]
 
     if callbacks then
+
         for _, callback in ipairs(callbacks) do
             callback(obj)
         end
@@ -295,9 +297,9 @@ end
 function _M:isShared(nick)
 
     if self.instances[nick] then return true end
-
     if self.binds[nick].shared then return true end
 
+    return false
 end
 
 function _M:getBind(nick)

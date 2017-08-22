@@ -1,14 +1,10 @@
--- This file is part of Entrust,
--- a role & permission management solution for Laravel.
--- @license MIT
--- @package Zizaco\Entrust
-
 
 local lx, _M = oo{
     _cls_ = ''
 }
 
 local app, lf, tb, str = lx.kit()
+local cache = app.cache
 
 --Big block of caching functionality.
 function _M:cachedRoles()
@@ -16,7 +12,7 @@ function _M:cachedRoles()
     local userPrimaryKey = self.primaryKey
     local cacheKey = 'entrust_roles_for_user_' .. self[userPrimaryKey]
     
-    return Cache.tags(Config.get('entrust.role_user_table')):remember(cacheKey, Config.get('cache.ttl'), function()
+    return cache:tags(app:conf('entrust.role_user_table')):remember(cacheKey, app:conf('cache.ttl'), function()
         
         return self:roles():get()
     end)
@@ -26,43 +22,48 @@ function _M:save(options)
 
     options = options or {}
     --both inserts and updates
-    parent.save(options)
-    Cache.tags(Config.get('entrust.role_user_table')):flush()
+    self:__super('save', options)
+    cache:tags(app:conf('entrust.role_user_table')):flush()
 end
 
 function _M:delete(options)
 
     options = options or {}
     --soft or hard
-    parent.delete(options)
-    Cache.tags(Config.get('entrust.role_user_table')):flush()
+    self:__super('delete', options)
+    cache:tags(app:conf('entrust.role_user_table')):flush()
 end
 
 function _M:restore()
 
     --soft delete undo's
-    parent.restore()
-    Cache.tags(Config.get('entrust.role_user_table')):flush()
+    self:__super('restore')
+    cache:tags(app:conf('entrust.role_user_table')):flush()
 end
 
 -- Many-to-Many relations with Role.
--- @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+-- @return belongsToMany
 
 function _M:roles()
 
-    return self:belongsToMany(Config.get('entrust.role'), Config.get('entrust.role_user_table'), Config.get('entrust.user_foreign_key'), Config.get('entrust.role_foreign_key'))
+    return self:belongsToMany(
+        app:conf('entrust.role'),
+        app:conf('entrust.role_user_table'),
+        app:conf('entrust.user_foreign_key'),
+        app:conf('entrust.role_foreign_key')
+    )
 end
 
 -- Boot the user model
 -- Attach event listener to remove the many-to-many records when trying to delete
 -- Will NOT delete any records if the user model uses soft deletes.
--- @return void|bool
+-- @return bool
 
-function _M.s__.boot()
+function _M:boot()
 
-    parent.boot()
+    self:__super('boot')
     static.deleting(function(user)
-        if not Config.get('auth.model'):__has('bootSoftDeletes') then
+        if not app:conf('auth.model'):__has('bootSoftDeletes') then
             user:roles():sync({})
         end
         
@@ -80,13 +81,11 @@ function _M:hasRole(name, requireAll)
     requireAll = requireAll or false
     local hasRole
     if lf.isTbl(name) then
-        for _, roleName in pairs(name) do
+        for _, roleName in ipairs(name) do
             hasRole = self:hasRole(roleName)
             if hasRole and not requireAll then
-                
                 return true
             elseif not hasRole and requireAll then
-                
                 return false
             end
         end
@@ -96,9 +95,8 @@ function _M:hasRole(name, requireAll)
         
         return requireAll
     else 
-        for _, role in pairs(self:cachedRoles()) do
+        for _, role in ipairs(self:cachedRoles()) do
             if role.name == name then
-                
                 return true
             end
         end
@@ -117,7 +115,7 @@ function _M:can(permission, requireAll)
     requireAll = requireAll or false
     local hasPerm
     if lf.isTbl(permission) then
-        for _, permName in pairs(permission) do
+        for _, permName in ipairs(permission) do
             hasPerm = self:can(permName)
             if hasPerm and not requireAll then
                 
@@ -133,10 +131,10 @@ function _M:can(permission, requireAll)
         
         return requireAll
     else 
-        for _, role in pairs(self:cachedRoles()) do
+        for _, role in ipairs(self:cachedRoles()) do
             -- Validate against the Permission table
             for _, perm in pairs(role:cachedPermissions()) do
-                if str_is(permission, perm.name) then
+                if str.is(permission, perm.name) then
                     
                     return true
                 end
@@ -151,7 +149,6 @@ end
 -- @param string|array roles       Array of roles or comma separated string
 -- @param string|array permissions Array of permissions or comma separated string.
 -- @param table        options     validate_all (true|false) or return_type (boolean|array|both)
--- @throws \InvalidArgumentException
 -- @return table|bool
 
 function _M:ability(roles, permissions, options)
@@ -166,42 +163,38 @@ function _M:ability(roles, permissions, options)
         permissions = str.split(permissions, ',')
     end
     -- Set up default values and validate options.
-    if not options['validate_all'] then
-        options['validate_all'] = false
-    else 
-        if options['validate_all'] ~= true and options['validate_all'] ~= false then
-            lx.throw(InvalidArgumentException)
-        end
+    if not options.validate_all then
+        options.validate_all = false
     end
-    if not options['return_type'] then
-        options['return_type'] = 'boolean'
-    else 
-        if options['return_type'] ~= 'boolean' and options['return_type'] ~= 'array' and options['return_type'] ~= 'both' then
-            lx.throw(InvalidArgumentException)
+    if not options.return_type then
+        options.return_type = 'boolean'
+    else
+        if options.return_type ~= 'boolean' and options.return_type ~= 'array' and options.return_type ~= 'both' then
+            lx.throw('invalidArgumentException')
         end
     end
     -- Loop through roles and permissions and check each.
     local checkedRoles = {}
     local checkedPermissions = {}
-    for _, role in pairs(roles) do
+    for _, role in ipairs(roles) do
         checkedRoles[role] = self:hasRole(role)
     end
-    for _, permission in pairs(permissions) do
+    for _, permission in ipairs(permissions) do
         checkedPermissions[permission] = self:can(permission)
     end
     -- If validate all and there is a false in either
     -- Check that if validate all, then there should not be any false.
     -- Check that if not validate all, there must be at least one true.
-    if options['validate_all'] and not (tb.inList(checkedRoles, false) or tb.inList(checkedPermissions, false)) or not options['validate_all'] and (tb.inList(checkedRoles, true) or tb.inList(checkedPermissions, true)) then
+    if options.validate_all and not (tb.inList(checkedRoles, false) or tb.inList(checkedPermissions, false)) or not options.validate_all and (tb.inList(checkedRoles, true) or tb.inList(checkedPermissions, true)) then
         validateAll = true
     else 
         validateAll = false
     end
     -- Return based on option
-    if options['return_type'] == 'boolean' then
+    if options.return_type == 'boolean' then
         
         return validateAll
-    elseif options['return_type'] == 'array' then
+    elseif options.return_type == 'array' then
         
         return {roles = checkedRoles, permissions = checkedPermissions}
     else 
@@ -219,7 +212,7 @@ function _M:attachRole(role)
         role = role:getKey()
     end
     if lf.isTbl(role) then
-        role = role['id']
+        role = role.id
     end
     self:roles():attach(role)
 end
@@ -233,7 +226,7 @@ function _M:detachRole(role)
         role = role:getKey()
     end
     if lf.isTbl(role) then
-        role = role['id']
+        role = role.id
     end
     self:roles():detach(role)
 end
@@ -243,7 +236,7 @@ end
 
 function _M:attachRoles(roles)
 
-    for _, role in pairs(roles) do
+    for _, role in ipairs(roles) do
         self:attachRole(role)
     end
 end
@@ -256,7 +249,7 @@ function _M:detachRoles(roles)
     if not roles then
         roles = self:roles():get()
     end
-    for _, role in pairs(roles) do
+    for _, role in ipairs(roles) do
         self:detachRole(role)
     end
 end

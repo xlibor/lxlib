@@ -18,7 +18,7 @@ end
 
 function _M:fire()
 
-    app['auth.password']:broker(self:arg('name')):getRepository():deleteExpired()
+    app:get('auth.password'):broker(self:arg('name')):getRepository():deleteExpired()
     self:info('Expired reset tokens cleared!')
 end
 

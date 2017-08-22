@@ -21,9 +21,9 @@ function _M.__:regFactory()
     app:single('validator', factory, function()
 
         local validator = new(factory, app.translator)
-        
-        if app.db and app['validation.verifier'] then
-            validator:setVerifier(app['validation.verifier'])
+        local verifier = app:get('validation.verifier')
+        if app:get('db') and verifier then
+            validator:setVerifier(verifier)
         end
         
         return validator
@@ -34,7 +34,7 @@ function _M.__:regVerifier()
 
     app:single('validation.verifier', function()
         
-        return new('dbVerifier', app.db)
+        return new('dbVerifier', app:get('db'))
     end)
 end
 

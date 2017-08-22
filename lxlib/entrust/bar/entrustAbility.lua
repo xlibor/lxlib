@@ -1,26 +1,21 @@
--- This file is part of Entrust,
--- a role & permission management solution for Laravel.
--- @license MIT
--- @package Zizaco\Entrust
-
 
 local lx, _M, mt = oo{
     _cls_ = ''
 }
 
 local app, lf, tb, str = lx.kit()
+local abort = lx.h.abort
 
 function _M:new()
 
     local this = {
-        auth = nil
     }
     
     return oo(this, mt)
 end
 
 -- Creates a new instance of the middleware.
--- @param Guard auth
+-- @param guard auth
 
 function _M:ctor(auth)
 
@@ -28,17 +23,22 @@ function _M:ctor(auth)
 end
 
 -- Handle an incoming request.
--- @param \Illuminate\Http\Request request
+-- @param request request
 -- @param func next
 -- @param roles
 -- @param permissions
 -- @param bool validateAll
 -- @return mixed
 
-function _M:handle(request, next, roles, permissions, validateAll)
+function _M:handle(c, next, roles, permissions, validateAll)
 
+    local request = c.req
+    
     validateAll = validateAll or false
-    if self.auth:guest() or not request:user():ability(str.split(roles, '|'), str.split(permissions, '|'), {validate_all = validateAll}) then
+    if self.auth:guest() or not request:user():ability(
+        str.split(roles, '|'), str.split(permissions, '|'),
+        {validate_all = validateAll}
+    ) then
         abort(403)
     end
     

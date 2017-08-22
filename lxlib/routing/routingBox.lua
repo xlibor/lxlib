@@ -29,21 +29,11 @@ end
 function _M.__:regUrlGenerator()
 
     app:single('url', function()
-        local routes = app:get('router'):getRoutes()
+        local routes = app.router:getRoutes()
         
         app:instance('routes', routes)
         
-        local url = app:make('urlGenerator', routes,
-            app:rebinding('request', self:requestRebinder(), true)
-        )
-        url:setSessionResolver(function()
-            
-            return app:get('session')
-        end)
-        
-        app:rebinding('routes', function(routes)
-            app:get('url'):setRoutes(routes)
-        end)
+        local url = app:make('urlGenerator', routes)
 
         return url
     end)
@@ -53,27 +43,21 @@ function _M.__:regRedirector()
 
     app:keep('redirect', function()
         local redirector = new('redirector', app.url)
-        
-        if app['session.store'] then
-            redirector:setSession(app['session.store'])
+        local sessionStore = app:get('session.store')
+        if sessionStore then
+            redirector:setSession(sessionStore)
         end
         
         return redirector
     end)
 end
 
-function _M.__:requestRebinder()
-
-    return function(request)
-        app.url:setRequest(request)
-    end
-end
-
 function _M.__:regDepends()
     
     app:bindFrom('lxlib.routing', {
         'route', 'routeGroup', 'routeCol', 'controller',
-        'routeEntry', 'resourceEntry', 'redirector'
+        'routeEntry', 'resourceEntry', 'redirector',
+        'urlGenerator',
     })
      
     app:single('ctlerDispatcher',     'lxlib.routing.dispatcher')
@@ -98,7 +82,6 @@ function _M.__:regDepends()
         return matchers
     end)
 
-    app:single('urlGenerator', 'lxlib.routing.urlGenerator')
     app:bond('urlRoutable', 'lxlib.routing.bond.urlRoutable')
     app:single('lxlib.routing.bar.replaceBinding')
 end

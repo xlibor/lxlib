@@ -5,9 +5,11 @@ local lx, _M, mt = oo{
 }
 
 local app, lf, tb, str = lx.kit()
+local fs = lx.fs
 
 function _M:boot()
 
+    local currPath = lx.getPath(true)
     local confPath = fs.exists(currPath .. '/../conf')
     self:publish(
         {
@@ -25,7 +27,6 @@ end
 function _M:reg()
 
     self:regEntrust()
-    self:mergeConfig()
 end
 
 function _M.__:bladeCustom()
@@ -63,7 +64,15 @@ end
 
 function _M.__:regEntrust()
 
-    app:bind('entrust', 'lxlib.entrust.entrust')
+    app:bindFrom('lxlib.entrust.mix', {
+        'entrustUserMix', 'entrustRoleMix', 'entrustPermissionMix'
+    })
+    app:bindFrom('lxlib.entrust', {
+        'entrust', 'entrustPermission', 'entrustRole'
+    })
+    app:bondFrom('lxlib.entrust.bond', {
+        'entrustRoleBond', 'entrustUserBond', 'entrustPermissionBond'
+    })
 end
 
 return _M

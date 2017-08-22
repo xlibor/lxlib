@@ -216,8 +216,9 @@ function _M.__:getSelectColumns(columns)
     if tb.count(columns) == 0 then
         columns = {self.related:getTable()..'.*'}
     end
+    local t = self:getAliasedPivotColumns()
 
-    return tb.merge(columns, self:getAliasedPivotColumns())
+    return tb.merge(columns, t)
 end
 
 function _M.__:getAliasedPivotColumns()

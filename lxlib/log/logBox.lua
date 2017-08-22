@@ -27,7 +27,7 @@ function _M:reg()
         loggerBond              = 'loggerBond'
     })
 
-    app:single('logger',            'lxlib.log.logger')
+    app:single('logger',        'lxlib.log.logger')
     app:single('logging',       'lxlib.log.logManager')
 end
 

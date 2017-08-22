@@ -14,7 +14,7 @@ function _M:reg()
     local translator = 'lxlib.translation.translator'
     app:single('translator', translator, function()
 
-        local loader = app['translation.loader']
+        local loader = app:get('translation.loader')
         local locale = app:conf('app.locale')
         local trans = new(translator, loader, locale)
         trans:setFallback(app:conf('app.fallbackLocale'))
@@ -27,7 +27,7 @@ function _M.__:regLoader()
 
     app:single('translation.loader', function()
 
-        return new('translation.fileLoader', app['files'], app.langPath)
+        return new('translation.fileLoader', app.files, app.langPath)
     end)
 end
 
@@ -43,11 +43,6 @@ end
 
 function _M:boot()
 
-end
-
-function _M:provides()
-
-    return {'translator', 'translation.loader'}
 end
 
 return _M

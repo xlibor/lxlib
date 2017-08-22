@@ -27,10 +27,10 @@ function _M:createSessionDriver(config)
 
     local name = config.driver
     local provider = self:createUserProvider(config['provider'])
-    local guard = new('auth.sessionGuard', name, provider, app['session.store'])
+    local guard = new('auth.sessionGuard', name, provider, app:get('session.store'))
     
     if guard:__has('setCookieJar') then
-        guard:setCookieJar(app['cookie'])
+        guard:setCookieJar(app:get('cookie'))
     end
     if guard:__has('setRequest') then
         guard:setRequest(app:refresh('request', guard, 'setRequest'))
@@ -42,7 +42,7 @@ end
 function _M:createTokenDriver(config)
 
     local guard = new('auth.tokenGuard', 
-        self:createUserProvider(config['provider']), app['request']
+        self:createUserProvider(config['provider']), app:get('request')
     )
     app:refresh('request', guard, 'setRequest')
     
@@ -51,12 +51,12 @@ end
 
 function _M.__:getConfig(name)
 
-    return app['config']['auth.guards.' .. name]
+    return app:conf('auth.guards.' .. name)
 end
 
 function _M:getDefaultDriver()
 
-    return app['config']['auth.defaults.guard']
+    return app:conf('auth.defaults.guard')
 end
 
 function _M:shouldUse(name)
@@ -77,7 +77,7 @@ end
 function _M:viaRequest(driver, callback)
 
     return self:extend(driver, function()
-        guard = new('auth.requestGuard', callback, app['request'])
+        guard = new('auth.requestGuard', callback, app:get('request'))
         app:refresh('request', guard, 'setRequest')
         
         return guard

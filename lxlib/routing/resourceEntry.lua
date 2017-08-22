@@ -21,7 +21,7 @@ function _M._init_(this)
     
     if not router then
         if not app:isCmdMode() then
-            router = app:get('router')
+            router = app.router
         end
     end
 end
@@ -254,7 +254,7 @@ end
 
 function _M.__:getRouter()
 
-    return router or app:get('router')
+    return router or app.router
 end
 
 return _M

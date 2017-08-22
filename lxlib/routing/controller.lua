@@ -9,7 +9,7 @@ local router
 function _M._init_(this)
 
     if not app:isCmdMode() then
-        router = app:get('router')
+        router = app.router
     end
 end
 
@@ -32,7 +32,7 @@ function _M:setBar(name, option)
         return
     end
     
-    local router = router or app:get('router')
+    local router = router or app.router
     bar = router:getRouteBar(name)
 
     if bar then

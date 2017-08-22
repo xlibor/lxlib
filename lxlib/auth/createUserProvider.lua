@@ -35,7 +35,7 @@ end
 
 function _M:createDbProvider(config)
 
-    local conn = app.db:connection()
+    local conn = app:get('db'):connection()
     
     return new('auth.dbUserProvider', conn, app('hash'), config.table)
 end

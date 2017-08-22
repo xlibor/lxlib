@@ -12,7 +12,7 @@ local try = lx.try
 function _M:new()
 
     local this = {
-        router = app:get('router'),
+        router = app.router,
         loaders = {
             'lxlib.core.load.loadConfig',
             'lxlib.core.load.regBoxes',

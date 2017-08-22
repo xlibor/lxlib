@@ -50,8 +50,9 @@ end
 
 function _M:initCmds()
 
-    local cmdList = 'include,extends,block,parent,for,endfor,if,else,elseif,endif'..
-        ',switch,case,default,endswitch'
+    local cmdList = 'include,extends,block,parent,for,endfor,' ..
+        'if,else,elseif,endif,switch,case,default,endswitch,' ..
+        'unless,endunless'
     self.cmds = tb.flip(cmdList, true)
 
 end
@@ -216,6 +217,7 @@ function _M:initNodeTypes()
     nt.forelse, nt.empty = range(2)
     nt['while'] = range(1)
     nt['if'], nt.if_first, nt.if_elseif, nt.if_else = range(4)
+    nt.unless = range(1)
     nt.switch, nt.switch_first, nt.switch_case, nt.switch_default = range(4)
     nt['break'], nt.continue = range(2)
     nt.include = range(1)

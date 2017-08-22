@@ -14,7 +14,7 @@ local count = tb.count
 
 local passthru = tb.l2d{
     'insert', 'insertGetId', 'getBindings', 'getSql',
-    'exists', 'count', 'min', 'max', 'avg', 'sum', 'getConnection'
+    'exists', 'count', 'min', 'max', 'avg', 'sum', 'getConnection',
 }
 
 local redirects = tb.l2d{
@@ -146,6 +146,13 @@ function _M:orWhere(column, ...)
 end
 
 _M.or_ = _M.orWhere
+
+function _M:whereIn(column, values)
+
+    self.builder:whereIn(column, values)
+
+    return self
+end
 
 function _M:first(...)
 

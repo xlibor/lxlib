@@ -504,6 +504,22 @@ function _M:getStmtLeft(cmd, s)
     return t
 end
 
+function _M:parse_cmd_unless(cmd, bstack, currParent, arglist, text)
+
+    local node, node_sub
+
+    local t = self:getStmtLeft(cmd, text)
+
+    arglist[1] = t
+
+    node = self:addAstNode(nt.unless, currParent, arglist)
+    tapd(currParent.child, node)
+    currParent = node
+    tapd(bstack, node)
+
+    return currParent
+end
+
 function _M:parse_cmd_if(cmd, bstack, currParent, arglist, text)
 
     local node, node_sub
@@ -579,6 +595,18 @@ function _M:parse_cmd_endif(cmd, bstack, currParent, arglist, text)
 
         return self:setErr("endif syntax error")
     end
+
+    tremove(bstack)    
+    currParent = bstack[#bstack]
+
+    return currParent
+end
+
+function _M:parse_cmd_endunless(cmd, bstack, currParent, arglist, text)
+    
+    self:checkEndStmt(cmd, text)
+
+    local node, lastNodeType
 
     tremove(bstack)    
     currParent = bstack[#bstack]

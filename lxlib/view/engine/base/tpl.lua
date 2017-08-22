@@ -132,7 +132,6 @@ function _M:render(context, prepared, env)
     local bitCode = self.bitCode
 
     if env then
-
         env:mergeContext(context)
     else
         env = app:make('view.'..self.engine..'.env', self, context, blocks)

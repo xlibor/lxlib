@@ -12,7 +12,7 @@ function _M._init_()
 
     if not router then
         if not app:isCmdMode() then
-            router = app:get('router')
+            router = app.router
         end
     end
 end
@@ -76,7 +76,6 @@ function _M:ability(roles, permissions, options)
 end
 
 -- Get the currently authenticated user or null.
--- @return Illuminate\Auth\UserInterface|null
 
 function _M:user()
 
@@ -147,7 +146,6 @@ end
 -- @param table|string permissions The permission(s) needed
 -- @param mixed        result      i.e: Redirect::to('/')
 -- @param bool         requireAll  User must have all roles and permissions
--- @return void
 
 function _M:routeNeedsRoleOrPermission(route, roles, permissions, result, requireAll)
 

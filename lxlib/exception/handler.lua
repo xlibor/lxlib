@@ -81,7 +81,7 @@ end
 function _M:renderHttpException(e, ctx)
     
     local status = e:getStatusCode()
-    local view = app:get('view')
+    local view = app.view
 
     local errorView = 'error.' .. status .. '.html'
     if view:exists(errorView) then

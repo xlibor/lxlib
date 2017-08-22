@@ -5,17 +5,15 @@ local lx, _M, mt = oo{
 
 local app, lf, tb, str = lx.kit()
 
-function _M:new(routes, request)
+function _M:new(routes)
 
     local this = {
         routes = routes,
-        request = request,
         forcedRoot = nil,
         _forceSchema = nil,
         cachedRoot = nil,
         cachedSchema = nil,
         rootNamespace = nil,
-        sessionResolver = nil,
         dontEncode = {
             ['%2F'] = '/',
             ['%40'] = '@',
@@ -37,27 +35,27 @@ function _M:new(routes, request)
     return oo(this, mt)
 end
 
-function _M:ctor(routes, request)
+function _M:ctor(routes)
 
-    self:setRequest(request)
 end
 
 function _M:full()
 
-    return self.request.fullUrl
+    return self:getRequest().fullUrl
 end
 
 function _M:current()
 
-    return self:to(self.request.url)
+    return self:to(self:getRequest().url)
 end
 
 function _M:previous(fallback)
 
     fallback = fallback or false
-    local referrer = self.request.headers:get('referer')
+    local referrer = self:getRequest().headers:get('referer')
 
     local url = referrer and self:to(referrer) or self:getPreviousUrlFromSession()
+
     if url then
         
         return url
@@ -137,11 +135,8 @@ end
 function _M.__:getScheme(secure)
 
     if not secure then
-        if not self.cachedSchema then
-            self.cachedSchema = self._forceSchema or self.request.scheme .. '://'
-        end
-        
-        return self.cachedSchema
+
+        return self._forceSchema or self:getRequest().scheme .. '://'
     end
     
     return secure and 'https://' or 'http://'
@@ -149,7 +144,6 @@ end
 
 function _M:forceSchema(schema)
 
-    self.cachedSchema = nil
     self._forceSchema = schema .. '://'
 end
 
@@ -291,8 +285,8 @@ end
 
 function _M.__:addPortToDomain(domain)
 
-    local secure = self.request.isSecure
-    local port = tonumber(self.request.port)
+    local secure = self:getRequest().isSecure
+    local port = tonumber(self:getRequest().port)
     if secure and port == 443 or not secure and port == 80 then
         
         return domain
@@ -338,10 +332,7 @@ end
 function _M.__:getRootUrl(scheme, root)
 
     if not root then
-        if not self.cachedRoot then
-            self.cachedRoot = self.forcedRoot or self.request.root
-        end
-        root = self.cachedRoot
+        root = self.forcedRoot or self:getRequest().root
     end
     local start = str.startsWith(root, 'http://') and 'http://' or 'https://'
     
@@ -351,7 +342,6 @@ end
 function _M:forceRootUrl(root)
 
     self.forcedRoot = str.rtrim(root, '/')
-    self.cachedRoot = nil
 end
 
 function _M:isValidUrl(path)
@@ -372,14 +362,7 @@ end
 
 function _M:getRequest()
 
-    return self.request
-end
-
-function _M:setRequest(request)
-
-    self.request = request
-    self.cachedRoot = nil
-    self.cachedSchema = nil
+    return app:get('request')
 end
 
 function _M:setRoutes(routes)
@@ -398,17 +381,7 @@ end
 
 function _M.__:getSession()
 
-    if self.sessionResolver then
-        local cb = self.sessionResolver
-        return cb()
-    end
-end
-
-function _M:setSessionResolver(sessionResolver)
-
-    self.sessionResolver = sessionResolver
-    
-    return self
+    return app:get('session')
 end
 
 function _M:setRootControllerNamespace(rootNamespace)

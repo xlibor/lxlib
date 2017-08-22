@@ -410,9 +410,9 @@ function _M.unique(vs, byref, callback)
     end
 
     local ret = {}
-    local needRm
+    local needRemove
     if byref then
-        needRm = {} 
+        needRemove = {} 
     end
 
     if #vs > 0 then
@@ -427,7 +427,7 @@ function _M.unique(vs, byref, callback)
             end
             if hashs[t] then
                 if byref then
-                    tapd(needRm, i)
+                    tapd(needRemove, i)
                 end
             else
                 hashs[t] = 1
@@ -436,8 +436,8 @@ function _M.unique(vs, byref, callback)
         end
 
         if byref then
-            for i = #needRm, 1, -1 do
-                tremove(vs, needRm[i])
+            for i = #needRemove, 1, -1 do
+                tremove(vs, needRemove[i])
             end
         end
 

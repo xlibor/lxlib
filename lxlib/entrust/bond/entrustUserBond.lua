@@ -1,12 +1,9 @@
--- This file is part of Entrust,
--- a role & permission management solution for Laravel.
--- @license MIT
--- @package Zizaco\Entrust
+
 local __ = {
     _cls_ = ''
 }
 -- Many-to-Many relations with Role.
--- @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+-- @return belongsToMany
 
 function __:roles() end
 
@@ -28,7 +25,6 @@ function __:can(permission, requireAll) end
 -- @param string|array roles       Array of roles or comma separated string
 -- @param string|array permissions Array of permissions or comma separated string.
 -- @param table        options     validate_all (true|false) or return_type (boolean|array|both)
--- @throws \InvalidArgumentException
 -- @return table|bool
 
 function __:ability(roles, permissions, options) end

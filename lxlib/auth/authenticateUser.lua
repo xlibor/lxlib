@@ -18,12 +18,13 @@ function _M:login(c)
 
     local request = c.req
     self:validateLogin(request)
-    
+
     -- if self:hasTooManyLoginAttempts(request) then
     --     self:fireLockoutEvent(request)
         
     --     return self:sendLockoutResponse(request)
     -- end
+
     if self:attemptLogin(request) then
         
         return self:sendLoginResponse(request)

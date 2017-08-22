@@ -38,7 +38,7 @@ end
 
 function _M.__:loadViewsFrom(path, namespace)
 
-    local view = app:get('view')
+    local view = app.view
     local appPath = lx.dir('res', 'view/vendor/' .. namespace)
     if fs.exists(appPath) then
         view:addNamespace(namespace, path)

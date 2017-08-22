@@ -9,7 +9,7 @@ local redirect = lx.h.redirect
 
 function _M:validateWith(validator, request)
 
-    request = request or app.request
+    request = request or app:get('request')
     if lf.isTbl(validator) then
         validator = self:getValidationFactory():make(request.all, validator)
     end

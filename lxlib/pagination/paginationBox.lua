@@ -11,12 +11,12 @@ function _M:boot()
     local Paginator = lx.use('paginator')
  
     Paginator.currentPathResolver(function()
-        
-        return app.request.uri
+
+        return app:get('request').uri
     end)
 
     Paginator.currentPageResolver(function(pageName)
-        page = app.request:input(pageName)
+        page = app:get('request'):input(pageName)
         page = tonumber(page)
 
         if page and page >= 1 then

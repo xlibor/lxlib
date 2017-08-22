@@ -149,6 +149,7 @@ function _M:apd(s, isRaw, isExp, escape)
 end
 
 function _M:parseFilter(str)
+
     local str = sgsub(str, "([^%^])|([%w]+)[%(]+", '%1 * _tplMf:test(\'%2\',')
     str = sgsub(str, "([^%^])|([%w]+)[^%(]-", '%1 * _tplMf:test(\'%2\') ')
     str = sgsub(str, "%s+in%s+", ' * _tplMf:test(\'operator_in\') %^ ')    
@@ -230,6 +231,22 @@ function _M:compileSwitch(block)
     if hasDefault then 
         self:apd("end \n" )
     end
+end
+
+function _M:compileUnless(node)
+
+    local nodeType = 0
+    local onlyIfFirst = true
+    local str, afterFilter
+
+    self:apd("if not (")
+    str = concat(node.content, ' ')
+    afterFilter = self:parseFilter(str)
+    self:apd(afterFilter)
+    self:apd(") then \n" )
+    self:compileChild(node.child)
+
+    self:apd(" end\n" )
 end
 
 function _M:compileIf(block)
@@ -360,13 +377,13 @@ function _M:compileFor(block)
     local nodeIndex = block.index
     local breakFlag = 'loopNotBreak_'..nodeIndex
 
-    self:apdLineno(block)
-
     if block.nodeType == nt.forelse then
+        self:apdLineno(block)
         self:apd(' if not empty(' .. tbl_name .. ') then\n')
     end
 
     if hasContinue then
+        self:apdLineno(block)
         self:apd(' local '..breakFlag..' = true\n')
     end
      
@@ -386,7 +403,6 @@ function _M:compileFor(block)
     end
 
     for _, node in ipairs(block.child) do
-        self:apdLineno(node)
         self:compileNode(node)
     end
 

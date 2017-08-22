@@ -615,9 +615,9 @@ function _M:get(...)
             local countAnyFs = dbInit.sqlSelectFields()
             countAnyFs:add(nil, nil, 'totalNum', d.count)
             sqlSelect.fields = countAnyFs
-            -- if sqlSelect.orderByFields then
-            --     sqlSelect.orderByFields = nil
-            -- end
+            if sqlSelect.orderByFields then
+                sqlSelect.orderByFields = nil
+            end
             local tsql = sqlSelect:sql(dbType)
  
             local trs = self.conn:exec(tsql)
@@ -1024,7 +1024,7 @@ function _M.__:castValue(fName, fValue)
             if fDef then
                 fDataType = fDef.dt
                 if fDataType > 0 then
-                    fValue = pub.sqlCastValue(fValue,fDataType,self.dbType)
+                    fValue = pub.sqlCastValue(fValue, fDataType, self.dbType)
                 end
             end
         end
@@ -1403,7 +1403,6 @@ function _M:getCountForPagination(columns)
     local tables = self:initSelectTables()
 
     sqlSelect.tables = tables
-    sqlSelect.orderByFields = self._orderByFields
     sqlSelect.groupByFields = self._groupByFields
     sqlSelect.conditions = self._conditions
     if self._tableJoins then
@@ -1444,6 +1443,24 @@ function _M:notNull(column)
     self:where(column, '<>', ngx.null)
 
     return self
+end
+
+function _M:exists()
+
+    local selectSql = self:toSql()
+    local sql = 'select exists(' .. selectSql .. ') as ' .. 
+        pub.sqlWrapName('exists', self.dbType)
+
+    self:_initConn()
+    local res = self.conn:exec(sql)
+
+    if res and res[1] then
+        local results = res[1]
+        
+        return tonumber(results['exists']) == 1
+    end
+    
+    return false
 end
 
 function _M:_clone_(newObj)

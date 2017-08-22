@@ -11,7 +11,7 @@ function _M:new(doer)
 
     local this = {
         doer = doer,
-        db = app.db,
+        db = app:get('db'),
         notes = {},
         paths = {}
     }

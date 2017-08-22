@@ -47,7 +47,7 @@ _M.csrfToken = _M.csrf_token
 
 function _M.mix(path)
 
-    local root = app.request.root
+    local root = app:get('request').root
     local appName = app.name
     local pubDir = app.scaffold.pub
 
@@ -69,15 +69,15 @@ function _M.route(name, parameters, absolute)
     parameters = parameters or {}
     absolute = lf.needTrue(absolute)
     
-    return app:get('url'):route(name, parameters, absolute)
+    return app.url:route(name, parameters, absolute)
 end
 
 function _M.url(path, parameters, secure)
 
     if not path then
-        return app:get('url')
+        return app.url
     else
-        return app('url'):to(path, parameters, secure)
+        return app.url:to(path, parameters, secure)
     end
 end
 
@@ -88,16 +88,16 @@ end
 
 function _M.cache(key)
 
+    local cache = app.cache
     if not key then
-        return app.cache
+        return cache
     end
 
     local vt = type(key)
 
     if vt == 'string' then
-        return app.cache:get(key)
+        return cache:get(key)
     end
-
 end
 
 function _M.session(key, default)
@@ -128,14 +128,14 @@ end
 
 function _M.old(key, default)
 
-    local req = app.request
+    local req = app:get('request')
 
     return req:old(key, default)
 end
 
 function _M.request(key, default)
 
-    local req = app.request
+    local req = app:get('request')
 
     if not key then
         return req

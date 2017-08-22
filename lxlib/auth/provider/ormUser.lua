@@ -48,7 +48,7 @@ function _M:retrieveByCredentials(credentials)
         
         return
     end
-    
+
     local query = self:createModel():newQuery()
     for key, value in pairs(credentials) do
         if not str.contains(key, 'password') then
