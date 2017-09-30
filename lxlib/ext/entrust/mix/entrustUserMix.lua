@@ -145,6 +145,8 @@ function _M:can(permission, requireAll)
     return false
 end
 
+_M.may = _M.can
+
 -- Checks role(s) and permission(s).
 -- @param string|array roles       Array of roles or comma separated string
 -- @param string|array permissions Array of permissions or comma separated string.

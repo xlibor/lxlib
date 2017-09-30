@@ -1,5 +1,5 @@
 
-local lx, _M, mt = oo{
+local lx, _M = oo{
     _cls_ = '',
     _ext_ = 'box'
 }
@@ -10,11 +10,12 @@ local fs = lx.fs
 function _M:boot()
 
     local currPath = lx.getPath(true)
-    local confPath = fs.exists(currPath .. '/../conf')
+    local confPath = fs.exists(currPath .. '/conf')
+
     self:publish(
         {
             [confPath .. '/*'] = lx.dir('conf')
-        }, 'config'
+        }, 'lxlib-entrust'
     )
 
     self:command('entrust.cmd', {
@@ -26,7 +27,20 @@ end
 
 function _M:reg()
 
-    self:regEntrust()
+    self:regDepends()
+end
+
+function _M.__:regDepends()
+
+    app:bindFrom('lxlib.ext.entrust.mix', {
+        'entrustUserMix', 'entrustRoleMix', 'entrustPermissionMix'
+    })
+    app:bindFrom('lxlib.ext.entrust', {
+        'entrust', 'entrustPermission', 'entrustRole'
+    })
+    app:bondFrom('lxlib.ext.entrust.bond', {
+        'entrustRoleBond', 'entrustUserBond', 'entrustPermissionBond'
+    })
 end
 
 function _M.__:bladeCustom()
@@ -60,19 +74,6 @@ function _M.__:bladeCustom()
         
         return 'end'
     end)
-end
-
-function _M.__:regEntrust()
-
-    app:bindFrom('lxlib.entrust.mix', {
-        'entrustUserMix', 'entrustRoleMix', 'entrustPermissionMix'
-    })
-    app:bindFrom('lxlib.entrust', {
-        'entrust', 'entrustPermission', 'entrustRole'
-    })
-    app:bondFrom('lxlib.entrust.bond', {
-        'entrustRoleBond', 'entrustUserBond', 'entrustPermissionBond'
-    })
 end
 
 return _M
