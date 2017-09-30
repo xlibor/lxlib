@@ -38,7 +38,7 @@ function _M:dispatchToRoute(req)
 
     local route = self:findRoute(req)
 
-    req.route = route
+    req:setRoute(route)
 
     self:runRoute(route, req)
 end

@@ -35,29 +35,28 @@ local function db_execute(config, db, sql, rowAsList, inTrans)
     return res
 end
 
-local function mysql_connect(config)
+local function mysqlConnect(config)
  
     local db, err = mysql:new()
     if not db then error("failed to instantiate mysql: " .. err) end
 
     db:set_timeout(timeout_subsequent_ops)
  
-    local db_config = {
-        host = config.host,
-        port = config.port,
-        database = config.database,
-        user = config.user,
-        password = config.password,
-        max_packet_size = max_packet_size
-    }
-    local ok, err, errno, sqlstate = db:connect(db_config)
+    local ok, err, errno, sqlstate = db:connect(config)
     if not ok then
         errno = errno or ''
         sqlstate = sqlstate or ''
         error("failed to connect to mysql;" .. err .. "," .. errno .. " " .. sqlstate)
     end
 
-    db_execute(db_config, db, 'set names utf8;')
+    if config.modes then
+        local modes = str.join(config.modes, ',')
+        db:query("set session sql_mode='" .. modes .. "'")
+    elseif config.strict then
+        db:query("set session sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'")
+    elseif lf.isFalse(config.strict) then
+        db:query("set session sql_mode='NO_ENGINE_SUBSTITUTION'")
+    end
 
     return db
 end
@@ -74,7 +73,7 @@ function _M:ctor(config)
         self:over()
     end)
 
-    local db = mysql_connect(config)
+    local db = mysqlConnect(config)
     if not db then
 
         error('connect db failed')
@@ -101,11 +100,11 @@ function _M.__:checkDb()
     local config = self.config
     if db then
         if db.state ~= STATE_CONNECTED then
-            db = mysql_connect(config)
+            db = mysqlConnect(config)
             self.db = db
         end
     else
-        db = mysql_connect(config)
+        db = mysqlConnect(config)
         self.db = db
     end
 end

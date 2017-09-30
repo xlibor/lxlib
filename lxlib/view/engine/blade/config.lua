@@ -44,13 +44,13 @@ function _M:appendPats()
 
     pats.pat_any_syntax_begin =
 
-        tags.q_tag_sign_begin..
-        '['..
-        tags.q_tag_var_begin..
-        tags.q_tag_raw_begin..
-        tags.q_tag_lua_begin..
-        tags.q_tag_nev_begin..
-        tags.q_tag_comment_begin..
+        tags.q_tag_sign_begin ..
+        '[' ..
+        tags.q_tag_var_begin ..
+        tags.q_tag_raw_begin ..
+        tags.q_tag_lua_begin ..
+        tags.q_tag_nev_begin ..
+        tags.q_tag_comment_begin ..
         ']+'
 
     pats.q_verbatim_end = '@endverbatim'

@@ -6,7 +6,7 @@ local mt = { __index = _M }
 
 local lx = require('lxlib')
 local lf, tb, str = lx.f, lx.tb, lx.str
-
+local ssub = string.sub
 local objectBase = require('lxlib.core.object')
 local bondBase = require('lxlib.core.bond')
 
@@ -79,7 +79,7 @@ end
 
 function _M:bound(nick)
 
-    local obj = self.binds[nick] or self.instances[nick]
+    local obj = self:getBind(nick) or self.instances[nick]
 
     return obj and true or false
 end
@@ -149,7 +149,7 @@ function _M:cancelShare(...)
     local nicks = lf.needArgs(...)
 
     for i, nick in ipairs(nicks) do
-        local bind = self.binds[nick]
+        local bind = self:getBind(nick)
         bind.shared = false
         bind.sharedInCtx = false
 
@@ -287,7 +287,7 @@ end
 
 function _M:getBag(nick)
 
-    local bind = self.binds[nick]
+    local bind = self:getBind(nick)
 
     if bind then
         return bind.bag
@@ -297,20 +297,28 @@ end
 function _M:isShared(nick)
 
     if self.instances[nick] then return true end
-    if self.binds[nick].shared then return true end
+    if self:getBind(nick).shared then return true end
 
     return false
 end
 
 function _M:getBind(nick)
 
-    return self.binds[nick]
+    local t = self.binds[nick]
+    if not t then
+        if ssub(nick, 1, 4) == '.app' then
+            self:bind(nick)
+            t = self:getBind(nick)
+        end
+    end
+
+    return t
 end
 
 function _M:getConcrete(nick)
 
     local concrete
-    local bind = self.binds[nick]
+    local bind = self:getBind(nick)
     if bind then
         concrete = bind.concrete
     else
@@ -412,9 +420,8 @@ end
 function _M:use(cls)
 
     local bagPath, isNick = self:getBagPath(cls)
-    local oc = self.objCtor
 
-    return oc:getStaticObj(bagPath, isNick and cls or false)
+    return self.objCtor:getStaticObj(bagPath, isNick and cls or false)
 end
 
 function _M:getBagPath(nick)
@@ -450,7 +457,7 @@ end
 
 function _M:isSubClsOf(cls, parent)
 
-    local bindInfo = self.binds[parent]
+    local bindInfo = self:getBind(parent)
     if bindInfo then
         parent = bindInfo.bag
     end

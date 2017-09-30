@@ -61,10 +61,10 @@ function _M:sql(dbType)
         elseif co == '<>' then
             t = 'is not ' .. pub.sqlConvertValue(value, dbType)
             tapd(sql, t)
-        elseif co =='is' then
+        elseif co == 'is' then
             t = 'is null'
             tapd(sql, t)
-        elseif co =='is not' then
+        elseif co == 'is not' then
             t = 'is not null'
             tapd(sql, t)
         else
@@ -76,9 +76,12 @@ function _M:sql(dbType)
         end
     else
         if co == 'in' or co == 'not in' then
-            t = pub.sqlConvertWhereIn(value, co, dbType)
-            
-            tapd(sql, t)
+            if #value == 0 then
+                sql[#sql] = ' 0 = 1 '
+            else
+                t = pub.sqlConvertWhereIn(value, co, dbType)
+                tapd(sql, t)
+            end
         elseif co == 'between' then
             t = pub.sqlConvertWhereBetween(value, dbType)
             tapd(sql, t)

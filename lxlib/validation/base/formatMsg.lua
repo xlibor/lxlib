@@ -1,7 +1,7 @@
 
 local lx, _M = oo{
     _cls_ = '',
-    _mix_ = 'validation.relaceAttr'
+    _mix_ = 'validation.replaceAttr'
 }
 
 local app, lf, tb, str = lx.kit()

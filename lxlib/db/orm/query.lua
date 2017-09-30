@@ -11,10 +11,12 @@ local use, try, throw = lx.kit2()
 local split, join = str.split, str.join
 local sfind, slen = string.find, string.len
 local count = tb.count
+local type = type
 
 local passthru = tb.l2d{
-    'insert', 'insertGetId', 'getBindings', 'getSql',
-    'exists', 'count', 'min', 'max', 'avg', 'sum', 'getConnection',
+    'insert', 'insertGetId', 'getBindings', 'getSql', 'toSql',
+    'exists', 'count', 'min', 'max', 'avg', 'sum', 'getConnection', 'getConn',
+    'inserts', 'baseTable',
 }
 
 local redirects = tb.l2d{
@@ -133,7 +135,12 @@ end
 
 function _M:where(column, ...)
 
-    self.builder:where(column, ...)
+    if type(column) == 'function' then
+        local query = self.model:newQueryWithoutScopes()
+        column(query)
+    else
+        self.builder:where(column, ...)
+    end
 
     return self
 end
@@ -150,6 +157,13 @@ _M.or_ = _M.orWhere
 function _M:whereIn(column, values)
 
     self.builder:whereIn(column, values)
+
+    return self
+end
+
+function _M:whereBetween(column, values)
+
+    self.builder:whereBetween(column, values)
 
     return self
 end
@@ -229,6 +243,108 @@ function _M:pluck(column, key)
 
         return self.model:newFromBuilder({[column] = value}).column
     end)
+end
+
+function _M:has(relation, operator, count, boolean, callback)
+
+    boolean = boolean or 'and'
+    count = count or 1
+    operator = operator or '>='
+    if sfind(relation, '%.') then
+        
+        return self:hasNested(relation, operator, count, boolean, callback)
+    end
+    relation = self:getHasRelationQuery(relation)
+    
+    local queryType = self:shouldRunExistsQuery(operator, count) and 'getRelationQuery' or 'getRelationCountQuery'
+    local query = relation[queryType](relation, relation:getRelated():newQuery(), self)
+    if callback then
+
+        query:callScope(callback)
+    end
+    
+    return self:addHasWhere(query, relation, operator, count, boolean)
+end
+
+function _M.__:hasNested(relations, operator, count, boolean, callback)
+
+    boolean = boolean or 'and'
+    count = count or 1
+    operator = operator or '>='
+    relations = str.split(relations, '%.')
+    
+    local closure = function(q)
+        if #relations > 1 then
+            q:whereHas(tb.shift(relations), closure)
+        else
+            q:has(tb.shift(relations), operator, count, 'and', callback)
+        end
+    end
+    
+    return self:has(tb.shift(relations), '>=', 1, boolean, closure)
+end
+
+function _M:doesntHave(relation, boolean, callback)
+
+    boolean = boolean or 'and'
+    
+    return self:has(relation, '<', 1, boolean, callback)
+end
+
+function _M:whereHas(relation, callback, operator, count)
+
+    count = count or 1
+    operator = operator or '>='
+    
+    return self:has(relation, operator, count, 'and', callback)
+end
+
+function _M:whereDoesntHave(relation, callback)
+
+    return self:doesntHave(relation, 'and', callback)
+end
+
+function _M:orHas(relation, operator, count)
+
+    count = count or 1
+    operator = operator or '>='
+    
+    return self:has(relation, operator, count, 'or')
+end
+
+function _M:orWhereHas(relation, callback, operator, count)
+
+    count = count or 1
+    operator = operator or '>='
+    
+    return self:has(relation, operator, count, 'or', callback)
+end
+
+function _M.__:addHasWhere(hasQuery, relation, operator, count, boolean)
+
+    local ifNot = false
+    hasQuery:mergeModelDefinedRelationConstraints(relation:getQuery())
+    if self:shouldRunExistsQuery(operator, count) then
+        ifNot = operator == '<' and count == 1
+
+        return self:addWhereExistsQuery(hasQuery:toBase(), boolean, ifNot)
+    end
+    
+    return self:whereCountQuery(hasQuery:toBase(), operator, count, boolean)
+end
+
+function _M.__:shouldRunExistsQuery(operator, count)
+
+    return (operator == '>=' or operator == '<') and count == 1
+end
+
+function _M.__:whereCountQuery(query, operator, count, boolean)
+
+    boolean = boolean or 'and'
+    count = count or 1
+    operator = operator or '>='
+
+    return self:where(self.builder:exp('(' .. query:toSql() .. ') '), operator, count)
 end
 
 function _M:with(...)
@@ -432,13 +548,15 @@ function _M.__:callScope(scope, ...)
     local model = self.model
     local func
 
+    local ret
+    
     if lf.isFun(scope) then
         func = scope
+        ret = func(self, ...) or self
     else
         func = model[scope]
+        ret = func(model, self, ...) or self
     end
-
-    local ret = func(model, self, ...) or self
 
     return ret
 end
@@ -628,6 +746,7 @@ function _M:_run_(method)
     else
         error('no mehtod:' .. method)
     end
+
 end
 
 return _M

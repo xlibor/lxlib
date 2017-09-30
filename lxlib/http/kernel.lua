@@ -35,7 +35,9 @@ function _M:handle()
         ctx = app:prepare()
         self:load()
         ctx = ctx or app:ctx()
+
         self:bindContext(ctx)
+
         self:sendRequestThroughRouter(ctx.req, ctx)
 
         response = ctx.resp
@@ -131,6 +133,7 @@ end
 function _M:bindContext(ctx)
 
     local req, resp = new 'request', new 'response'
+
     ctx.req = req; ctx.resp = resp
     ctx.bars = {}
 end

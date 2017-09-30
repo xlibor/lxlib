@@ -38,6 +38,7 @@ function _M:setBar(name, option)
     if bar then
         local barType = type(bar)
         if barType == 'string' then
+
             self.bars:set(bar, bar)
             name = bar
         elseif barType == 'table' then

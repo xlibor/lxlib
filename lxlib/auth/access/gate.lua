@@ -17,6 +17,8 @@ function _M:new(userResolver, abilities, policies, beforeCallbacks, afterCallbac
         beforeCallbacks = beforeCallbacks or {},
         afterCallbacks = afterCallbacks or {}
     }
+
+    return oo(this, mt)
 end
 
 function _M:has(ability)
@@ -26,12 +28,16 @@ end
 
 function _M:define(ability, callback)
 
-    if lf.isFunc(callback) then
+    if lf.isStr(callback) then
+        if str.contains(callback, '@') then
+            self.abilities[ability] = self:buildAbilityCallback(callback)
+        else
+            self.abilities[ability] = callback
+        end
+    elseif lf.isFunc(callback) then
         self.abilities[ability] = callback
-    elseif lf.isStr(callback) and str.contains(callback, '@') then
-        self.abilities[ability] = self:buildAbilityCallback(callback)
-    else 
-        lx.throw('invalidArgumentException', "Callback must be a callable or a 'Class@method' string.")
+    else
+        lx.throw('invalidArgumentException', "Callback must be a callable or a 'class@method' string.")
     end
     
     return self
@@ -97,14 +103,14 @@ function _M:check(ability, arguments)
     :run()
 
     if ok then return ret end
-
 end
 
 function _M:authorize(ability, arguments)
 
     arguments = arguments or {}
     local result = self:raw(ability, arguments)
-    if result:__is('authAccessResponse') then
+
+    if lf.isA(result, 'response') then
         
         return result
     end
@@ -117,25 +123,25 @@ function _M.__:raw(ability, arguments)
     arguments = arguments or {}
     local user = self:resolveUser()
     if not user then
-        
+
         return false
     end
-    arguments = tb.wrap(arguments)
-    
+    arguments = lf.needList(arguments)
+
     local result = self:callBeforeCallbacks(user, ability, arguments)
     if not result then
         result = self:callAuthCallback(user, ability, arguments)
     end
-    
+
     self:callAfterCallbacks(user, ability, arguments, result)
-    
+
     return result
 end
 
 function _M.__:callAuthCallback(user, ability, arguments)
 
     local callback = self:resolveAuthCallback(user, ability, arguments)
-    
+
     return callback(user, unpack(arguments))
 end
 
@@ -165,12 +171,14 @@ function _M.__:resolveAuthCallback(user, ability, arguments)
 
     local policy
     if arguments[1] then
+
         policy = self:getPolicyFor(arguments[1])
         if policy then
-            
+
             return self:resolvePolicyCallback(user, ability, arguments, policy)
         end
     end
+
     if self.abilities[ability] then
         
         return self.abilities[ability]
@@ -202,27 +210,28 @@ end
 
 function _M:resolvePolicy(class)
 
-    return self.container:make(class)
+    return app:make(class)
 end
 
 function _M.__:resolvePolicyCallback(user, ability, arguments, policy)
 
     return function()
-        
-        result = self:callPolicyBefore(policy, user, ability, arguments)
-        
+
+        local result = self:callPolicyBefore(policy, user, ability, arguments)
+
         if result then
             
             return result
         end
         ability = self:formatAbilityToMethod(ability)
-        
+
         if arguments[1] and lf.isStr(arguments[1]) then
             tb.shift(arguments)
         end
-        
+
         local fn = policy[ability]
         if lf.isFun(fn) then
+
             return fn(policy, user, unpack(arguments))
         end
 
@@ -233,7 +242,7 @@ end
 function _M.__:callPolicyBefore(policy, user, ability, arguments)
 
     if policy:__has('before') then
-        
+
         return policy:before(user, ability, arguments)
     end
 end
@@ -250,7 +259,7 @@ function _M:forUser(user)
         return user
     end
     
-    return self:__new(self.container, callback, self.abilities, self.policies, self.beforeCallbacks, self.afterCallbacks)
+    return self:__new(callback, self.abilities, self.policies, self.beforeCallbacks, self.afterCallbacks)
 end
 
 function _M.__:resolveUser()

@@ -86,7 +86,7 @@ end
 
 function _M:begin()
 
-    local conn = self:_initConn()
+    local conn = self:getConn()
     if conn then
         conn:begin()
     end
@@ -94,7 +94,7 @@ end
 
 function _M:commit()
 
-    local conn = self:_initConn()
+    local conn = self:getConn()
     if conn then
         conn:commit()
     end
@@ -102,13 +102,13 @@ end
 
 function _M:rollback()
 
-    local conn = self:_initConn()
+    local conn = self:getConn()
     if conn then
         conn:rollback()
     end
 end
 
-function _M:_initConn()
+function _M:getConn()
 
     local conn = self.conn
     if conn then
@@ -117,6 +117,8 @@ function _M:_initConn()
         error('no conn')
     end
 end
+
+_M.getConnection = _M.getConn
 
 function _M.cf(fieldName,...)
 
@@ -178,6 +180,14 @@ function _M:from(dbo, ...)
             tables:add(v._tblName)
         end
     end
+
+    return self
+end
+
+function _M:fromRaw(raw)
+
+    local expression = self:exp(raw)
+    self._fromRaw = expression
 
     return self
 end
@@ -269,7 +279,7 @@ function _M:_dboJoin(joinType, dboFactor, joinCdtFields)
 
     local tableJoin = self:_getTableJoin(dboFactor._tblName)
     tableJoin.joinType = joinType
-    self._tableJoins:addJoin(tableJoin)
+    self._joins:addJoin(tableJoin)
     
     local dboJoin = dbInit.sqlJoin()
     dboJoin.tableJoin = tableJoin
@@ -383,7 +393,7 @@ function _M:insert(...)
     self.sql = sqlInsert:sql(dbType)
  
     if not self.testMode then
-        self:_initConn()
+        self:getConn()
         local res = self.conn:exec(self.sql)
         if res then
             local insertId = res.insert_id
@@ -448,7 +458,7 @@ function _M:update(...)
 
     fieldValues = self._fieldValues
     sqlUpdate.fields = fieldValues
-    sqlUpdate.conditions = self._conditions
+    sqlUpdate.conditions = self._wheres
  
     if self:fireEvent('aroundSave', sqlUpdate) then return end
  
@@ -457,7 +467,7 @@ function _M:update(...)
     self.sql = sqlUpdate:sql(dbType)
     
     if not self.testMode then
-        self:_initConn()
+        self:getConn()
         local res = self.conn:exec(self.sql)
  
         self:fireEvent('afterUpdate')
@@ -478,13 +488,13 @@ function _M:delete()
     local tableName = self._dbo._tblName
     local sqlDelete = dbInit.sqlDelete(tableName)
 
-    sqlDelete.conditions = self._conditions
+    sqlDelete.conditions = self._wheres
     self.sql = sqlDelete:sql(dbType)
  
     if self:fireEvent('aroundDelete', sqlDelete) then return end
  
     if not self.testMode then
-        self:_initConn()
+        self:getConn()
         local res = self.conn:exec(self.sql)
  
         self:fireEvent('afterDelete')
@@ -500,9 +510,9 @@ function _M:truncate()
     local dbType = self.dbType
 
     if not self.testMode then
-        local conn = self:_initConn()
+        local conn = self:getConn()
         local res = conn:exec(
-            'truncate table ' .. pub.sqlWrapName(tableName, dbType))
+            'truncate table ' .. self:wrap(tableName))
 
         return res
     else
@@ -596,19 +606,22 @@ function _M:get(...)
 
     sqlSelect.tables = tables
     sqlSelect.fields = selectFields
-    sqlSelect.orderByFields = self._orderByFields
-    sqlSelect.groupByFields = self._groupByFields
+    sqlSelect.orderByFields = self._orders
+    sqlSelect.groupByFields = self._groups
     self:initSelectLimit()
     sqlSelect.limitField = self._limitField
-    sqlSelect.conditions = self._conditions
-    if self._tableJoins then
-        sqlSelect.tables.tableJoins = self._tableJoins
+    sqlSelect.conditions = self._wheres
+    sqlSelect.havings = self._havings
+    sqlSelect.fromRaw = self._fromRaw
+
+    if self._joins then
+        sqlSelect.tables.tableJoins = self._joins
     end
  
     if self:fireEvent('aroundSelect', sqlSelect) then return end
  
     if not self.testMode then 
-        self:_initConn()
+        self:getConn()
         
         local currPage, pageSize = self._currPage, self._perPage
         if currPage then
@@ -644,8 +657,8 @@ function _M:get(...)
  
                     sqlSelect.limitField = tLimit
                     sqlSelect.fields = selectFields
-                    if self._orderByFields then
-                        sqlSelect.orderByFields = self._orderByFields
+                    if self._orders then
+                        sqlSelect.orderByFields = self._orders
                     end
                     self.sql = sqlSelect:sql(dbType)
                 else
@@ -670,7 +683,7 @@ function _M:get(...)
     else
         self.sql = sqlSelect:sql(dbType)
     end
-     
+    
     self.rs = res
 
     self:fireEvent('afterSelect')
@@ -680,11 +693,11 @@ end
 
 function _M.__:initSelectFields()
 
-    if not self._selectFields then
-        self._selectFields = dbInit.sqlSelectFields()
+    if not self._selects then
+        self._selects = dbInit.sqlSelectFields()
     end
 
-    return self._selectFields
+    return self._selects
 end
 
 function _M:selectedCount()
@@ -703,11 +716,11 @@ end
 
 function _M.__:initTableJoins()
 
-    if not self._tableJoins then
-        self._tableJoins = dbInit.sqlSelectTableJoins()
+    if not self._joins then
+        self._joins = dbInit.sqlSelectTableJoins()
     end
 
-    return self._tableJoins
+    return self._joins
 end
 
 function _M.__:initSelectTables(dbo)
@@ -828,7 +841,7 @@ _M.pick = _M.addSelect
 
 function _M:and_(...)
 
-    local wheres = self:initWheres()
+    local wheres = self:getWheres()
     wheres:addLO('and')
     self:where(...)
     
@@ -837,7 +850,7 @@ end
 
 function _M:orWhere(...)
 
-    local wheres = self:initWheres()
+    local wheres = self:getWheres()
     wheres:addLO('or')
     self:where(...)
     
@@ -846,21 +859,54 @@ end
 
 _M.or_ = _M.orWhere
 
-function _M:getWheres()
+function _M:_or_()
 
-    return self:initWheres()
+    local wheres = self:getWheres()
+    wheres:addLO('or')
+
+    return self
 end
 
-function _M.__:initWheres()
+function _M:getWheres()
 
-    if not self._conditions then
-        self._conditions = dbInit.sqlConditions()
+    if not self._wheres then
+        self._wheres = dbInit.sqlConditions()
     end
 
-    return self._conditions
+    return self._wheres
+end
+
+function _M:getHavings()
+
+    if not self._havings then
+        self._havings = dbInit.sqlConditions(true)
+    end
+
+    return self._havings
+end
+
+function _M:having(...)
+
+    local havings = self:getHavings()
+
+    return self:addCondition(havings, ...)
+end
+
+function _M:havingRaw(raw)
+
+    local expression = self:exp(raw)
+    
+    return self:having(expression)
 end
 
 function _M:where(...)
+
+    local wheres = self:getWheres()
+
+    return self:addCondition(wheres, ...)
+end
+
+function _M:addCondition(conditions, ...)
 
     local args, argsLen = lf.getArgs(...)
     
@@ -879,12 +925,10 @@ function _M:where(...)
     local p1Type = type(p1)
     local newTopCdts
     
-    local wheres = self:getWheres()
-    
     if p1Type == 'string' then
         p3 = self:castValue(p1, p3)
-          wheres:add(p1, p2, p3)
-      elseif p1Type == 'table' then
+        conditions:add(p1, p2, p3)
+    elseif p1Type == 'table' then
         local clsName = p1.__cls
         if clsName == 'sqlConditions' then
             p1 = pub.checkNestCdts(p1) 
@@ -892,23 +936,23 @@ function _M:where(...)
                 newTopCdts = dbInit.sqlConditions()
                 newTopCdts:addLO('not')
                 newTopCdts:addConditions(p1)
-                wheres:addConditions(newTopCdts)
+                conditions:addConditions(newTopCdts)
             else
-                wheres:addConditions(p1)
+                conditions:addConditions(p1)
             end
         elseif clsName == 'sqlCondition' then
             if p1._needNot then 
-                wheres:addLO('not')
+                conditions:addLO('not')
             end
 
-            wheres:addCondition(p1)
+            conditions:addCondition(p1)
         elseif clsName == 'sqlConvertField' then
-            wheres:add(p1, p2, p3)
+            conditions:add(p1, p2, p3)
         elseif clsName == nil then
             if #p1 > 0 then
                 p2 = p1[2]
                 p1 = p1[1]
-                wheres:add(p1, '=', p2)
+                conditions:add(p1, '=', p2)
             elseif next(p1) then
                 newTopCdts = dbInit.sqlConditions()
                 for k,v in pairs(p1) do
@@ -916,21 +960,74 @@ function _M:where(...)
                     newTopCdts:add(k, d.eq,v)
                 end
 
-                wheres:addConditions(newTopCdts)
+                conditions:addConditions(newTopCdts)
             else
                 -- error('condition param is empty table')
             end
         end
-      end
+    end
     
     return self
 end
 
 _M.wh = _M.where
 
+function _M:whereExists(callback, boolean, ifNot)
+
+    ifNot = ifNot or false
+    boolean = boolean or 'and'
+    local query = self:newQuery()
+    
+    lf.call(callback, query)
+    
+    return self:addWhereExistsQuery(query, boolean, ifNot)
+end
+
+function _M:orWhereExists(callback, ifNot)
+
+    ifNot = ifNot or false
+    
+    return self:whereExists(callback, 'or', ifNot)
+end
+
+function _M:whereNotExists(callback, boolean)
+
+    boolean = boolean or 'and'
+    
+    return self:whereExists(callback, boolean, true)
+end
+
+function _M:orWhereNotExists(callback)
+
+    return self:orWhereExists(callback, true)
+end
+
+function _M:addWhereExistsQuery(query, boolean, ifNot)
+
+    ifNot = ifNot or false
+    local existsType = ifNot and 'not exists ' or 'exists '
+    self:addWhereLO(boolean)
+
+    self:whereRaw(existsType .. '(' .. query:toSql() .. ')')
+
+    return self
+end
+
+function _M:addWhereLO(boolean)
+
+    boolean = boolean or 'and'
+    local wheres = self:getWheres()
+    wheres:addLO(boolean)
+end
+
 function _M:whereIn(column, values)
 
     return self:where(column, 'in', values)
+end
+
+function _M:whereBetween(column, values)
+
+    return self:where(column, 'between', values)
 end
 
 function _M:mergeWheres(cdts)
@@ -938,6 +1035,16 @@ function _M:mergeWheres(cdts)
     if cdts:count() > 0 then
         self:where(cdts)
     end
+end
+
+function _M:setWheres(wheres)
+
+    self._wheres = wheres
+end
+
+function _M:resetWheres()
+
+    self._wheres = nil
 end
 
 function _M:columns(tblName)
@@ -968,7 +1075,7 @@ function _M:w(...)
     
     local where
 
-    self:initWheres()
+    self:getWheres()
     
     local args = {...}
     if #args == 0 then
@@ -1040,7 +1147,7 @@ function _M:groupBy(...)
     for _,v in pairs(args) do 
         groupBy:add(v)
     end
-    self._groupByFields = groupBy 
+    self._groups = groupBy 
 
     return self
 end
@@ -1064,7 +1171,7 @@ function _M:orderBy(...)
             p2 = slower(p2)
             if p2 == 'asc' or p2 == 'desc' then
                 orderBy:add(p1, nil, p2)
-                self._orderByFields = orderBy 
+                self._orders = orderBy 
 
                 return self
             end
@@ -1085,12 +1192,26 @@ function _M:orderBy(...)
         end 
     end
 
-    self._orderByFields = orderBy 
+    self._orders = orderBy 
 
     return self
 end
 
 _M.order = _M.orderBy
+
+function _M:latest(column)
+
+    column = column or 'created_at'
+    
+    return self:orderBy(column, 'desc')
+end
+
+function _M:oldest(column)
+
+    column = column or 'created_at'
+    
+    return self:orderBy(column, 'asc')
+end
 
 function _M:take(value)
 
@@ -1136,16 +1257,18 @@ function _M:reset(returnBaseColumns)
     self.sql = ''
     self.style = nil
     self.rowAsList = false
-    self._conditions = nil
+    self._wheres = nil
+    self._havings = nil
     self._fieldValues = nil
-    self._groupByFields = nil
-    self._orderByFields = nil
+    self._groups = nil
+    self._orders = nil
     self._limitField = nil
-    self._selectFields = nil
+    self._selects = nil
     self._selectTables = nil
     self.res = {}
 
     self._limit = nil
+    self._fromRaw = nil
     self._offset = nil
     self._perPage = nil
     self._currPage = nil
@@ -1171,13 +1294,60 @@ end
 function _M:execute(sql)
 
     self.sql = sql
-    self:_initConn()
+    self:getConn()
     local res = self.conn:exec(self.sql, self.rowAsList)
 
     return res
 end
 
 _M.exec = _M.execute
+
+function _M:getBindings(bindType)
+
+    local bindType = '_' .. bindType .. 's'
+    local t = self[bindType]
+
+    if t then
+        return t
+    end
+end
+
+function _M:setBindings(bindType, bindings)
+
+    local bindType = '_' .. bindType .. 's'
+
+    self[bindType] = bindings
+end
+
+function _M:addBinding(bindType, ...)
+
+    local method = self[bindType]
+
+    method(self, ...)
+
+    return self
+end
+
+function _M:getAllBindings(types)
+
+    if not types then
+        return {
+            where    = self._wheres,
+            select   = self._selects,
+            order    = self._orders,
+            group    = self._groups,
+            join     = self._joins,
+            having   = self._havings
+        }
+    else
+        local ret = {}
+        for _, bindType in ipairs(types) do
+            ret[bindType] = self:getBindings(bindType)
+        end
+
+        return ret
+    end
+end
 
 function _M:test(value)
 
@@ -1220,7 +1390,7 @@ end
 
 function _M:aggregate(funcType, column)
 
-    self._selectFields = nil
+    self._selects = nil
     self:select({column, 'aggregate', funcType})
 
     local ret
@@ -1403,16 +1573,17 @@ function _M:getCountForPagination(columns)
     local tables = self:initSelectTables()
 
     sqlSelect.tables = tables
-    sqlSelect.groupByFields = self._groupByFields
-    sqlSelect.conditions = self._conditions
-    if self._tableJoins then
-        sqlSelect.tables.tableJoins = self._tableJoins
+    sqlSelect.groupByFields = self._groups
+    sqlSelect.conditions = self._wheres
+    sqlSelect.fromRaw = self._fromRaw
+    if self._joins then
+        sqlSelect.tables.tableJoins = self._joins
     end
     local countAnyFs = dbInit.sqlSelectFields()
     countAnyFs:add(nil, nil, 'totalNum', d.count)
     sqlSelect.fields = countAnyFs
 
-    local conn = self:_initConn()
+    local conn = self:getConn()
 
     local tsql = sqlSelect:sql(dbType)
     local totalNum = 0
@@ -1438,6 +1609,8 @@ function _M:isNull(column)
     return self
 end
 
+_M.whereNull = _M.isNull
+
 function _M:notNull(column)
 
     self:where(column, '<>', ngx.null)
@@ -1445,13 +1618,15 @@ function _M:notNull(column)
     return self
 end
 
+_M.whereNotNull = _M.notNull
+
 function _M:exists()
 
     local selectSql = self:toSql()
     local sql = 'select exists(' .. selectSql .. ') as ' .. 
-        pub.sqlWrapName('exists', self.dbType)
+        self:wrap('exists', self.dbType)
 
-    self:_initConn()
+    self:getConn()
     local res = self.conn:exec(sql)
 
     if res and res[1] then
@@ -1461,6 +1636,11 @@ function _M:exists()
     end
     
     return false
+end
+
+function _M:wrap(name)
+
+    return pub.sqlWrapName(name, self.dbType)
 end
 
 function _M:_clone_(newObj)

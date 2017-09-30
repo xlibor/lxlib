@@ -29,6 +29,7 @@ function _M:boot()
 
     local dir = lx.getPath(true)
     self:loadViewsFrom(dir .. '/res/view', 'pagination')
+    
     if app:runningInConsole() then
         self:publish(
             {[dir .. '/res/view/*'] = lx.dir('res', 'view/vendor/pagination')},

@@ -57,14 +57,14 @@ function _M.__:regDepends()
     app:bindFrom('lxlib.routing', {
         'route', 'routeGroup', 'routeCol', 'controller',
         'routeEntry', 'resourceEntry', 'redirector',
-        'urlGenerator',
+        'urlGenerator', 'pipeline',
     })
-     
-    app:single('ctlerDispatcher',     'lxlib.routing.dispatcher')
 
-    app:bind('routeBase',             'lxlib.routing.base.route')
-    app:single('routeCompiler',     'lxlib.routing.base.routeCompiler')
-    app:bind('compiledRoute',         'lxlib.routing.base.compiledRoute')
+    app:single('ctlerDispatcher',       'lxlib.routing.dispatcher')
+
+    app:bind('routeBase',               'lxlib.routing.base.route')
+    app:single('routeCompiler',         'lxlib.routing.base.routeCompiler')
+    app:bind('compiledRoute',           'lxlib.routing.base.compiledRoute')
 
     app:bindFrom('lxlib.routing.matching', {
         'hostMatcher', 'methodMatcher',

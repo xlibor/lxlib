@@ -12,12 +12,9 @@ end
 
 function _M:reg()
 
-    local prefix = 'net.http.'
     app:bindFrom('lxlib.net.http', {
-        [prefix .. 'client']    = 'client',
-        [prefix .. 'request']    = 'request',
-        [prefix .. 'response']    = 'response'
-    })
+        'client', 'request', 'response'
+    }, {prefix = 'net.http.'})
 
 end
 

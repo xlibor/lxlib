@@ -1,12 +1,9 @@
 
-local _M = { 
+local lx, _M = oo{ 
     _cls_ = '',
     _ext_ = 'command'
 }
 
-local mt = { __index = _M }
-
-local lx = require('lxlib')
 local app, lf, tb, str = lx.kit()
 local fs = lx.fs
 

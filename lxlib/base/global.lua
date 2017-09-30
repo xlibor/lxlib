@@ -22,6 +22,7 @@ local lf, Str, tb = lx.f, lx.str, lx.tb
 local loadedMods = {}
 
 local need = require
+
 local libNeeds = {
     ['lxlib.base.global'] = 1,
     ['lxlib.filesystem.fs'] = 1
@@ -178,6 +179,8 @@ _G.dd = function(...)
 
         echo('type:', vt, ',info:', content, '     ')
     end
+
+    ngx.eof()
 end
 
 local loadMod = function(namespace)
@@ -207,7 +210,6 @@ local loadMod = function(namespace)
     local appName = lxAppName
 
     if first == 46 then
-        -- echo(namespace)
         namespace = appName .. namespace
     elseif prefix == 'lxlib' and libNeeds[namespace] then
         return need(namespace)
@@ -237,7 +239,6 @@ local loadMod = function(namespace)
         end
     end
 
-    -- echo(namespace)
     mod = loadedMods[namespace]
 
     if mod then
@@ -376,6 +377,7 @@ function _M.init(appName)
                 local t
                 local lx = require('lxlib')
                 local app = lx.app()
+
                 if app.faces[key] then
                     t = app.faces[key]
                 end

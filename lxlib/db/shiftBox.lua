@@ -31,7 +31,6 @@ function _M:boot()
             cmder:add('{shift}/{install}', '$1ManageCmd@$2')
 
             cmder:add('make/{shift}', '$1MakeCmd@make')
-            cmder:add('session/table', 'sessionTableCmd@make')
         end)
     end)
 

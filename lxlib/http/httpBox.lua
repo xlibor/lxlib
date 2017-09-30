@@ -19,16 +19,17 @@ function _M.__:regDepends()
     app:keep('request',             'lxlib.http.request')
     app:keep('response',            'lxlib.http.response')
     app:bind('context',             'lxlib.http.context')
-    app:bind('pipeline',            'lxlib.routing.pipeline')
+
+    app:bind('formRequest',         'lxlib.http.formRequest')
 
     app:bindFrom('lxlib.http.base', {
         baseRequest         = 'request',
         baseResponse        = 'response',
-        requestHeader       = 'requestHeader',
-        responseHeader      = 'responseHeader',
-        responseMix         = 'responseMix',
-        formHandler         = 'formHandler',
-        uploadedFile        = 'uploadedFile',
+    })
+
+    app:bindFrom('lxlib.http.base', {
+        'requestHeader', 'responseHeader', 'responseMix',
+        'formHandler', 'uploadedFile', 'extensionGuessor',
     })
  
     app:bindFrom('lxlib.http', {

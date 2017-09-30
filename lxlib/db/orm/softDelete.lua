@@ -25,6 +25,7 @@ function _M._fix_(this)
         if lf.isFunc(v) and not _M[k] then
             this[k] = function(model, ...)
                 local query = model:newQuery()
+
                 local func = query[k]
 
                 return func(query, ...)

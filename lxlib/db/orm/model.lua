@@ -15,13 +15,22 @@ local lx, _M, mt = oo{
         manyMethods         = {'belongsToMany', 'morphToMany', 'morphedByMany'},
         createdAt           = 'created_at',
         updatedAt           = 'updated_at',
+        queryMethods        = {'select', 'sel', 'pick', 'where', 'orWhere', 'or_', 'whereIn',
+            'whereBetween', 'between', 'get', 'set', 'find', 'first', 
+            'orderBy', 'group', 'groupBy', 'take', 'insert', 'inserts',
+            'limit', 'from', 'count', 'withCount', 'withGlobalScope',
+            'withoutGlobalScope', 'withoutGlobalScopes', 'pure', 'findOrFail',
+            'firstOrFail', 'getSql', 'paginate', 'paging', 'simplePaginate',
+            'truncate', 'has', 'doesntHave', 'whereHas', 'whereDoesntHave',
+            'getConnection', 'getConn'
+        }
     }
 }
 
 local app, lf, tb, str, new = lx.kit()
 local use, try, throw = lx.kit2()
 
-local sgsub = string.gsub
+local ssub, smatch, sgsub = string.sub, string.match, string.gsub
 
 local Relation = use 'relation'
 local static
@@ -165,7 +174,12 @@ function _M:newQueryWithoutScopes()
     return query:setModel(self):with(self._with) 
 end
 
--- * get a new query for the model's table.
+function _M.t__.query(this)
+
+    return new(this):newQuery()
+end
+
+-- get a new query for the model's table.
 -- @return orm.query
 
 function _M:newQuery()
@@ -622,6 +636,7 @@ function _M:getAttrValue(key)
     local value = self.attrs[key]
 
     if self:hasAttrGetter(key) then
+
         return self:useAttrGetter(key, value)
     end
  
@@ -1173,8 +1188,8 @@ function _M:morphMany(related, name, morphType, id, localKey)
     localKey = localKey or self:getKeyName()
 
     return new('morphMany',
-        instance:newQuery(), self, table..'.'..morphType,
-        table..'.'..id, localKey
+        instance:newQuery(), self, table .. '.' .. morphType,
+        table .. '.' .. id, localKey
     )
 end
 
@@ -1402,6 +1417,8 @@ end
 function _M:toArr()
 
     local attrs = self:attrsToArr()
+    local relations = self:relationsToArr()
+    attrs = tb.merge(attrs, relations)
 
     return attrs
 end
@@ -1438,6 +1455,39 @@ function _M:useAttrGetterForTbl(key, value)
     local value = self:useAttrGetter(key, value)
 
     return value
+end
+
+function _M:relationsToArr()
+
+    local key
+    local relation
+    local attrs = {}
+
+    for key, value in pairs(self:getArrableRelations()) do
+        
+        if lf.isA(value, 'arrable') then
+            relation = value:toArr()
+        elseif not value then
+            relation = value
+        end
+        
+        if static.snakeAttrs then
+            key = str.snake(key)
+        end
+        
+        if relation or not value then
+            attrs[key] = relation
+        end
+
+        relation = nil
+    end
+    
+    return attrs
+end
+
+function _M.__:getArrableRelations()
+
+    return self:getArrableItems(self.relations)
 end
 
 function _M:getArrableAttrs()
@@ -1552,6 +1602,7 @@ end
 function _M._load_(cls)
 
     local bag = cls.bag
+
     local baseMt = cls.baseMt
 
     local scope, field
@@ -1560,22 +1611,22 @@ function _M._load_(cls)
     baseMt.attrGetters = {}
     baseMt.attrSetters = {}
 
-    for k, v in pairs(bag) do
+    local needScopes = {}
+
+    for k, v in pairs(baseMt) do
         if type(v) == 'function' then
             if str.startWith(k, 'scope') then
-                scope = string.sub(k, 6)
+                scope = ssub(k, 6)
                 scope = str.lcfirst(scope)
-
-                makeScope(baseMt, scope, k)
+                needScopes[scope] = k
             elseif str.endWith(k, 'Attr') then
-
-                field = string.match(k, 'get(%w+)Attr')
+                field = smatch(k, 'get(%w+)Attr')
                 if field then
                     field = str.lcfirst(field)
                     baseMt.attrGetters[field] = k
                 end
 
-                field = string.match(k, 'set(%w+)Attr')
+                field = smatch(k, 'set(%w+)Attr')
                 if field then
                     field = str.lcfirst(field)
                     baseMt.attrSetters[field] = k
@@ -1584,17 +1635,11 @@ function _M._load_(cls)
         end
     end
 
-    local methods = [[
-        select, sel, pick, where, orWhere, or_, whereIn, get, set, find,
-        first, orderBy, group, groupBy, take, insert, limit,
-        from, count, withCount, withGlobalScope, withoutGlobalScope,
-        withoutGlobalScopes, pure, findOrFail, firstOrFail, getSql,
-        paginate, paging, simplePaginate, truncate
-     ]]
+    for scope, k in pairs(needScopes) do
+        makeScope(baseMt, scope, k)
+    end
 
-    methods = sgsub(methods, '%s', '')
-    methods = sgsub(methods, '%c', '')
-    local queryMethods = str.split(methods)
+    local queryMethods = static.queryMethods
 
     for _, method in ipairs(queryMethods) do
         if not baseMt[method] then

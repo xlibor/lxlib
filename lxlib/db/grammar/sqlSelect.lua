@@ -5,6 +5,7 @@ local _M = {
 local mt = { __index = _M }
 
 function _M:new()
+
     local this = {
         dbType = 'mysql',
 --        fields = nil,
@@ -12,6 +13,7 @@ function _M:new()
 --        conditions = nil,
 --        orderByFields = nil,
 --        groupByFields = nil,
+--        havings = nil,
         distinct = false,
         top = 0
     }
@@ -30,6 +32,7 @@ function _M:sql(dbType)
     local groupBy = self.groupByFields
     local orderBy = self.orderByFields
     local limit = self.limitField
+    local havings = self.havings
 
     if not dbType then 
         dbType = self.dbType
@@ -52,8 +55,13 @@ function _M:sql(dbType)
 
     tapd(sql, ' from ')
 
-    if tables then
-        tapd(sql, tables:sql(dbType))
+    local fromRaw = self.fromRaw
+    if fromRaw then
+        tapd(sql, fromRaw:sql(dbType))
+    else
+        if tables then
+            tapd(sql, tables:sql(dbType))
+        end
     end
 
     if cdts then
@@ -67,6 +75,13 @@ function _M:sql(dbType)
         local strGroupBy = groupBy:sql(dbType)
         if strGroupBy then
             tapd(sql, ' group by ' .. strGroupBy)
+        end
+    end
+
+    if havings then
+        local strHaving = havings:sql(dbType)
+        if strHaving then
+            tapd(sql, ' having ' .. strHaving)
         end
     end
 

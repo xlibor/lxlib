@@ -1,11 +1,11 @@
 
-local _M = { 
+local lx, _M, mt = oo{ 
     _cls_       = '',
     _ext_       = 'runtimeException',
     _bond_      = 'httpExceptionBond'
 }
 
-local mt = { __index = _M }
+local app, lf, tb, str, new = lx.kit()
 
 function _M:new(statusCode, msg, headers, code, prev)
 
@@ -17,13 +17,9 @@ function _M:new(statusCode, msg, headers, code, prev)
         prev = prev
     }
     
-    setmetatable(this, mt)
+    oo(this, mt)
  
     return this
-end
-
-function _M:ctor()
-
 end
 
 function _M:getStatusCode()

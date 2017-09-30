@@ -117,6 +117,10 @@ function _M:rename(tableFrom, tableTo)
     return conn:exec(sql)
 end
 
+function _M:enableForeignKeyConstraints()
+
+end
+
 function _M.__:build(sqlable)
 
     local conn, dbType = self:getConn()

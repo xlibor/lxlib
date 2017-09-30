@@ -48,9 +48,11 @@ function _M.__:requestAsync(method, uri, options)
     uri = uri or ''
     options = self:prepareDefaults(options)
 
-    local headers = options['headers'] or {}
-    local body = options['body']
-    local version = options['version'] or '1.1'
+    options = self:applyOptions(options)
+
+    local headers = options.headers or {}
+    local body = options.body
+    local version = options.version or '1.1'
 
     uri = self:buildUri(uri, options)
 
@@ -59,7 +61,6 @@ function _M.__:requestAsync(method, uri, options)
     options.headers = nil; options.body = nil; options.version = nil
 
     return self:transfer(request, options)
-
 end
 
 function _M.__:transfer(request, options)
@@ -68,7 +69,7 @@ function _M.__:transfer(request, options)
     local res, err = httpc:request_uri(request.uri, {
         method = request.method,
         body = request.body,
-        headers = {
+        headers = request.headers or {
             ["Content-Type"] = "application/x-www-form-urlencoded",
         },
         ssl_verify = false,
@@ -82,6 +83,18 @@ function _M.__:transfer(request, options)
     local response = new('net.http.response', res.status, res.headers, res.body, res.version, res.reason)
 
     return response
+end
+
+function _M.__:applyOptions(options)
+
+    local body = options.body
+    local vt = type(body)
+    if vt == 'table' then
+        body = lf.httpBuildQuery(body)
+        options.body = body
+    end
+
+    return options
 end
 
 function _M.__:buildUri(uri, options)

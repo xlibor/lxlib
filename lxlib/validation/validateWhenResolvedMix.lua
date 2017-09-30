@@ -12,6 +12,7 @@ function _M:validate()
     if not self:passesAuthorization() then
         self:failedAuthorization()
     elseif not instance:passes() then
+
         self:failedValidation(instance)
     end
 end

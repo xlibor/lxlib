@@ -4,9 +4,5 @@ local _M = {
     _ext_    = 'exception'
 }
 
-function _M:ctor()
-
-end
-
 return _M
 

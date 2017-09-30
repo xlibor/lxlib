@@ -42,7 +42,7 @@ function _M:contains(key, value)
 
     return self:__super('contains', function(model)
 
-        return model:getKey() == key
+        return lf.eq(model:getKey(), key)
     end)
 end
 

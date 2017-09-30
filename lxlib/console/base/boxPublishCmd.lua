@@ -90,7 +90,7 @@ end
 
 function _M.__:status(pathFrom, pathTo, pathType)
 
-    self:line(str.fmt('<info>copied %s</info> <comment>%s</comment> <info> To </info> <comment>[%s]</comment>', pathType, pathFrom, pathTo))
+    self:line(str.fmt('<info>copied %s</info> <comment> [%s]</comment> <info> To </info> <comment>[%s]</comment>', pathType, pathFrom, pathTo))
 end
 
 return _M

@@ -7,7 +7,7 @@ local mt = { __index = _M }
 local lx = require('lxlib')
 local lf, tb, str = lx.f, lx.tb, lx.str
 local fs = lx.fs
-local sfind, slen = string.find, string.len
+local sfind, slen, ssub = string.find, string.len, string.sub
 
 local scopeCheck = false
 local bondCheck = false
@@ -176,7 +176,8 @@ local function _isInstanceOf(obj, cls)
         end
 
         bondList = obj.__bonds
-        if next(bondList) then
+
+        if bondList and next(bondList) then
             if bondList[clsName] then
                 return true
             end
@@ -203,7 +204,7 @@ local function isInstanceOf(obj, clsList)
     end
 
     if argType == 'string' then
-        local bindInfo = app.binds[clsList]
+        local bindInfo = app:getBind(clsList)
         if bindInfo then
             clsList = bindInfo.bag
         end
@@ -417,9 +418,12 @@ local function methodExists(obj, method)
     local baseMt  = obj.__baseMt
 
     if baseMt[method] then
+        if ssub(method, 1, 2) == '__' then
+            return false
+        end
         return true
     end
- 
+
     return false
 end
 
@@ -708,7 +712,7 @@ function _M:mergeMixin(bag, mixins, mixinCtors)
 
     for _, mix in ipairs(currMixinList) do
 
-        local bindInfo = app.binds[mix]
+        local bindInfo = app:getBind(mix)
         if bindInfo then
             mixBag = lf.import(bindInfo.bag)
         else
@@ -867,7 +871,7 @@ function _M:getClassBaseInfo(bagPath)
 
     if stackInfo then
         for k, v in pairs(stackInfo) do
-            stackInfo[k] = v
+            staticInfo[k] = v
             if type(v) == 'function' then
                 bag[k] = v
             end
@@ -922,6 +926,7 @@ function _M:getClassBaseInfo(bagPath)
             end
         end
         staticInfo = superStatic
+
     end
 
     local isAbstractCls = false
@@ -1050,7 +1055,7 @@ function _M:getClassInfo(bagPath)
     local mtList = {bag}
 
     local superDefer, superMixins, superMixinCtors,superCache,
-        superRun, superGet, superSet, superStack
+        superRun, superGet, superSet, superStack, superClone
 
     local superNew, superCtor
     local superBonds, superPrivates
@@ -1138,9 +1143,15 @@ function _M:getClassInfo(bagPath)
             mtNeedNew = super
         end
         
+        if superClone then
+            if not cloneInfo then
+                cloneInfo = superClone
+            end
+        end
         if superStack then
-            if not stackInfo then
-                stackInfo = superStack
+            stackInfo = stackInfo or {}
+            for k, v in pairs(superStack) do
+                stackInfo[k] = v
             end
         end
 
@@ -1217,6 +1228,7 @@ function _M:getClassInfo(bagPath)
  
     local onClsLoad = baseMt._load_
     if onClsLoad then
+
         onClsLoad(classInfo)
 
         mtList = classInfo.mtList
@@ -1249,7 +1261,7 @@ function _M:getClassInfo(bagPath)
     baseMt.__has            = methodExists
     baseMt.__new            = makeNewSelf
     baseMt.__staticBak      = baseInfo.static
-    baseMt.__stackBak       = baseInfo.stack
+    baseMt.__stackBak       = stackInfo
     baseMt.__static         = useObjStatic
     baseMt.__clone          = makeClone
     baseMt.__mtList         = mtList

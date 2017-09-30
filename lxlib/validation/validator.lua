@@ -52,14 +52,11 @@ function _M:parseData(data)
     local newData = {}
     for key, value in pairs(data) do
         if lf.isTbl(value) then
-            value = self:parseData(value)
+            if not value.__cls then
+                value = self:parseData(value)
+            end
         end
-        
-        if sfind(key, '%.') then
-            newData[str.replace(key, '.', '->')] = value
-        else 
-            newData[key] = value
-        end
+        newData[key] = value
     end
     
     return newData
@@ -79,9 +76,8 @@ function _M:passes()
 
     local attr
     self._msgs = new('msgBag')
-    
+
     for attr, rules in pairs(self.rules) do
-        attr = str.replace(attr, '%.', '->')
 
         for _, rule in pairs(rules) do
             self:validateAttr(attr, rule)

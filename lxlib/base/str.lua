@@ -12,7 +12,9 @@ local sfind, ssub, supper, slower, smatch, sgmatch, sgsub =
     string.find, string.sub, string.upper, string.lower, string.match, string.gmatch, string.gsub
 
 local sfmt, slen, schar, sbyte = string.format, string.len, string.char, string.byte
-local sreverse = string.reverse
+local sreverse, srep = string.reverse, string.rep
+
+local mabs, mfloor, mceil = math.abs, math.floor, math.ceil
 
 local tinsert, tconcat, tremove = table.insert, table.concat, table.remove
 local rematch, resub, regsub, refind, resplit, regmatch =
@@ -72,7 +74,7 @@ local function _split(s, delim, max, notplain)
     local t = {}
     local count = 0
     while true do
-        local pos = sfind(s, delim, start, plain) -- plain find
+        local pos,  pos_end = sfind(s, delim, start, plain) -- plain find
         if not pos then
             break
         end
@@ -82,9 +84,9 @@ local function _split(s, delim, max, notplain)
             return t
         end
         tinsert(t, ssub(s, start, pos - 1))
-        start = pos + slen(delim)
-
+        start = pos_end + 1
     end
+
     tinsert(t, ssub(s, start))
 
     if max and max < 0 then
@@ -523,7 +525,6 @@ function _M.is(s, pattern)
     end
 
     pattern = _M.lregQuote(pattern)
-
     pattern = sgsub(pattern, '%%%*', '.*')
 
     local i, j = sfind(s, pattern)
@@ -535,20 +536,20 @@ function _M.is(s, pattern)
     return false
 end
 
-function _M.last(s, delim)
+function _M.last(s, delim, notplain)
     
     if not s then return end
     if not sfind(s, delim) then return s end
-    local segment = _M.split(s, delim)
+    local segment = _M.split(s, delim, nil, notplain)
 
     return segment[#segment]
 end
 
-function _M.first(s, delim)
+function _M.first(s, delim, notplain)
     
     if not s then return end
     if not sfind(s, delim) then return s end
-    local segment = _M.split(s, delim)
+    local segment = _M.split(s, delim, nil, notplain)
 
     return segment[1]
 end
@@ -858,6 +859,30 @@ function _M.resplit(subject, regex, options)
     return resplit(subject, regex, options)
 end
 
+function _M.rematchAll(subject, regex, options)
+
+    if not options then
+        options = 'jo'
+    end
+
+    local it, err = regmatch(subject, regex, options)
+
+    if not it then
+        return 
+    end
+ 
+    local ret = {}
+
+    while true do
+        local m, err = it()
+        if err then break end
+        if not m then break end
+        tapd(ret, m)
+    end
+
+    return ret
+end
+
 _M.pos = string.find
 _M.strpos = _M.pos
 
@@ -981,6 +1006,100 @@ function _M.strrpos(s, f)
         return nil
     end   
 end  
+
+function _M.stripTags(s)
+
+    return _M.rereplace(s, [[<[^>]*>]], '')
+end
+
+-- rounds a number to the nearest decimal places
+local function roundNum(val, decimal)
+
+    if decimal then
+        return mfloor((val * 10 ^ decimal) + 0.5) / (10 ^ decimal)
+    else
+        return mfloor(val + 0.5)
+    end
+end
+
+function _M.formatNumber(s, decimals, dec_point, thousands_sep)
+
+    local amount = s
+    decimals = decimals or 0
+    dec_point = dec_point or '.'
+    thousands_sep = thousands_sep or ','
+
+    local str_amount, formatted, famount, remain
+
+    famount = mabs(roundNum(amount, decimals))
+    famount = mfloor(famount)
+
+    remain = roundNum(mabs(amount) - famount, decimals)
+
+    -- comma to separate the thousands
+    formatted = famount
+    local sepPat = '%1' .. thousands_sep .. '%2'
+    local k
+    while true do
+        formatted, k = sgsub(formatted, "^(-?%d+)(%d%d%d)", sepPat)
+        if k == 0 then
+            break
+        end
+    end
+
+    -- attach the decimal portion
+    if decimals > 0 then
+        remain = ssub(tostring(remain), 3)
+        formatted = formatted .. dec_point .. remain ..
+            srep("0", decimals - slen(remain))
+    end
+
+    return formatted
+end
+
+function _M.pad(s, length, padStr, padStyle)
+
+    length = length or 0
+    padStr = padStr or ' '
+    padStyle = padStyle or 0
+    local scount = slen(s)
+    local padCount = length - scount
+    if padCount <= 0 then
+        return s
+    end
+
+    local padStrLen = slen(padStr)
+
+    local padStrs
+
+    if padStyle == 0 or padStyle == 1 then
+        if padStrLen == 1 then
+            padStrs = srep(padStr, padCount)
+        else
+            padStrs = srep(padStr, padCount / padStrLen) .. ssub(padStr, 1, padCount % padStrLen)
+        end
+        if padStyle == 0 then
+            s = s .. padStrs
+        else
+            s = padStrs .. s
+        end
+    elseif padStyle == 2 then
+        local padRightCount = mceil(padCount / 2)
+        local padLeftCount = padCount - padRightCount
+
+        if padStrLen == 1 then
+            s = srep(padStr, padLeftCount) .. s .. srep(padStr, padRightCount)
+        else
+            local padRight = srep(padStr, padRightCount / padStrLen) .. ssub(padStr, 1, padRightCount % padStrLen)
+            local padLeft = srep(padStr, padLeftCount / padStrLen) .. ssub(padStr, 1, padLeftCount % padStrLen)
+            s = padLeft .. s .. padRight
+        end
+    else
+        error('invalid pad style')
+    end
+
+    return s
+end
 
 return _M
 

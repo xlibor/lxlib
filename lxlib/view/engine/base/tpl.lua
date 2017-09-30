@@ -1,11 +1,8 @@
 
-local _M = {
+local lx, _M, mt = oo{
     _cls_ = ''
 }
 
-local mt = { __index = _M }
-
-local lx = require('lxlib')
 local app, lf, tb, Str, new = lx.kit()
 local use, try, throw = lx.kit2()
 
@@ -36,11 +33,11 @@ function _M:new(engine, view, namespace, blocks)
         }
     }
      
-    setmetatable(this, mt)
+    oo(this, mt)
 
     this.custom = app:make('view.'..engine..'.custom', this)
     this.config = app:make('view.'..engine..'.config', this)
-    this.parser    = app:make('view.'..engine..'.parser', this)
+    this.parser = app:make('view.'..engine..'.parser', this)
     this.compiler = app:make('view.'..engine..'.compiler', this)
     this.loader = app:make('view.'..engine..'.loader', this)
 
@@ -85,7 +82,7 @@ function _M:compile()
  
     local strCode = tconcat(self.compiler.output, '')
     self.strCode = strCode
-
+    -- echo(strCode)
 end
 
 function _M:preload()

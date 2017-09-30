@@ -1,11 +1,8 @@
 
-local _M = {
+local lx, _M, mt = oo{
     _cls_    = ''    
 }
 
-local mt = { __index = _M }
-
-local lx = require('lxlib')
 local app, lf, tb, str = lx.kit()
 
 function _M:new(fs, paths, extension)
@@ -18,7 +15,7 @@ function _M:new(fs, paths, extension)
         extension = extension
     }
 
-    setmetatable(this, mt)
+    oo(this, mt)
 
     return this
 end
@@ -53,6 +50,7 @@ function _M:findInPaths(view)
     
     for _, path in ipairs(paths) do 
         t = path .. '/' .. view .. '.' .. extension
+
         if fs.exists(t) then
             return t
         end
@@ -96,6 +94,27 @@ function _M:getEngineFromNamespace(namespace)
         namespace = namespace or 'unkonwn'
         error('no namespace:'..namespace)
     end
+end
+
+function _M:getInfoFromPath(path)
+
+    local engine, namespace
+
+    local i, j = str.find(path, '%s')
+
+    if i then
+        return path
+    end
+
+    if str.find(path, '@') then
+        engine, path = str.div(path, '@')
+    end
+
+    if str.find(path, ':') then
+        namespace, path = str.div(path, ':')
+    end
+
+    return path, engine, namespace
 end
 
 return _M

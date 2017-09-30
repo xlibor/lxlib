@@ -1,7 +1,7 @@
 
 local lx, _M, mt = oo{
-    _cls_    = '',
-    _bond_    = 'exceptionHandlerBond'
+    _cls_       = '',
+    _bond_      = 'exceptionHandlerBond'
 }
 
 local app, lf, tb, str, new = lx.kit()
@@ -67,7 +67,8 @@ function _M:prepareException(e)
     if e:__is('modelNotFoundException') then
         e = new('notFoundHttpException', e:getMsg(), 0, e)
     elseif e:__is('authorizationException') then
-        e = new('httpException', 403, e:getMsg())
+
+        e = new('httpException', 403, e:getMsg(), nil, nil, e)
     end
     
     return e

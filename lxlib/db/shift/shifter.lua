@@ -223,7 +223,7 @@ function _M:prependToRun(shift, method)
     local name = shift.__cls
 
     for _, query in ipairs(queries) do
-        self:note('name:'..name..',query:'..query.query)
+        self:note('name:'..name..', query:'..query.query)
     end
 end
 

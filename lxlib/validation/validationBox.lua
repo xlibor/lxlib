@@ -46,30 +46,26 @@ function _M.__:regDepends()
         validationRule              = 'validationRule',
         validateRequest             = 'validateRequest',
         dbVerifier                  = 'dbVerifier',
-        ['validation.validator']    = 'validator'  
+        ['validation.validator']    = 'validator',
+        validateWhenResolvedMix     = 'validateWhenResolvedMix',
     })
 
     app:bindFrom('lxlib.validation.base', {
-        ['validation.formatMsg']        = 'formatMsg',
-        ['validation.validateAttr']     = 'validateAttr',
-        ['validation.relaceAttr']       = 'replaceAttr',
-    })
+        'formatMsg', 'validateAttr', 'replaceAttr',
+    }, {prefix = 'validation.'})
 
     app:bindFrom('lxlib.validation.rules', {
-        ['validation.rules.dimensions']     = 'dimensions',
-        ['validation.rules.exists']         = 'exists',
-        ['validation.rules.in']             = 'in',
-        ['validation.rules.notin']          = 'notin',
-        ['validation.rules.unique']         = 'unique',
-    })
+        'dimensions', 'exists', 'in', 'notin', 'unique',
+    }, {prefix = 'validation.rules.'})
 
     app:bindFrom('lxlib.validation.excp', {
         validationException     = 'validationException',
         unauthorizedException   = 'unauthorizedException'
     })
 
-    app:bond('verifierBond', 'lxlib.validation.bond.verifier')
-    app:bond('validatorBond', 'lxlib.validation.bond.validator')
+    app:bond('verifierBond',                'lxlib.validation.bond.verifier')
+    app:bond('validatorBond',               'lxlib.validation.bond.validator')
+    app:bond('validateWhenResolvedBond',    'lxlib.validation.bond.validateWhenResolved')
 end
 
 function _M:boot()

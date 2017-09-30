@@ -48,7 +48,7 @@ function _M.__:resolve(data, rules, msgs, customAttrs)
 
     if not self.resolver then
 
-        return new('validation.validator',self.translator, data, rules, msgs, customAttrs)
+        return new('validation.validator', self.translator, data, rules, msgs, customAttrs)
     end
 
     return lf.call(self.resolver, self.translator, data, rules, msgs, customAttrs)

@@ -194,7 +194,6 @@ end
 function _M.__:replaceRouteParameters(path, parameters)
 
     path = self:replaceNamedParameters(path, parameters)
-
     path = str.rereplace(path, [[\{.*?\}]], function(match)
 
         return lf.isEmpty(parameters) and not str.endsWith(match[0], '%?}')

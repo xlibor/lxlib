@@ -8,8 +8,8 @@ local app, lf, tb, str, new = lx.kit()
 
 function _M:ctor()
 
-    self.presenterInstance = false
-    self.presentableInstance = false
+    self:rawset('presenterInstance', false)
+    self:rawset('presentableInstance', false)
 end
 
 function _M:present(key)

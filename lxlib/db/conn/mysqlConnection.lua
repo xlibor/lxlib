@@ -7,8 +7,6 @@ local _M = {
 local mt = { __index = _M }
 
 local lx = require('lxlib')
-local app = lx.app()
-
 
 return _M
 

@@ -51,6 +51,8 @@ function _M:resolve(name)
     return driver
 end
 
+_M.driver = _M.resolve
+
 function _M.__:createDriver(config)
 
     local driverName = config.driver

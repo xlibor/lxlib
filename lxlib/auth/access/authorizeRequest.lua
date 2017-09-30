@@ -23,7 +23,7 @@ end
 
 function _M.__:parseAbilityAndArguments(ability, arguments)
 
-    if lf.isStr(ability) and str.strpos(ability, '%.') == false then
+    if lf.isStr(ability) and not str.strpos(ability, '%.') then
         
         return ability, arguments
     end

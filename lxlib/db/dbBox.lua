@@ -36,19 +36,16 @@ function _M:reg()
         return app:get('db'):conn(connName):getSchemaBuilder()
     end)
 
-    app:bind('lxlib.db.orm.seed.fair')
-    app:bind('db.seed.fairBuilder',     'lxlib.db.orm.seed.fairBuilder')
-    app:bind('db.seed.faker',           'lxlib.db.orm.seed.faker')
-    app:single('db.seed.fair', function()
-
-        local faker = new 'db.seed.faker'
-        local fair = new('lxlib.db.orm.seed.fair')
-
-        return fair:construct(faker, lx.dir('db', 'seed/fair'))
-    end)
 end
 
 function _M:boot()
+
+    self:makeEntityFactory()
+    self:setUserModel()
+    self:addOrmQueryMtToMsgPack()
+end
+
+function _M.__:makeEntityFactory()
 
     local dbosPath = app:conf('db.dbos')
     local baseDbos
@@ -57,7 +54,21 @@ function _M:boot()
     end
  
     app:make('db.entityFactory', baseDbos)
-    
+end
+
+function _M.__:setUserModel()
+
+    local userModel = app:conf('auth.providers.users.model')
+    local userTable = app:conf('auth.providers.users.table')
+    if userModel then
+        local Models = lx.use('models')
+        Models.setGlobalModel('user', userModel)
+        Models.setGlobalTable('user', userTable)
+    end
+end
+
+function _M.__:addOrmQueryMtToMsgPack()
+
     local MsgPack = lx.use('msgPack')
     local Query = lx.use('orm.query')
 
@@ -122,9 +133,20 @@ function _M:regDepends()
     app:bind('softDeleteQuery',     'lxlib.db.orm.softDeleteQuery')
 
     app:bindFrom('lxlib.db.orm.ext', {
-        'presentableMix', 'presenter'
+        'presentableMix', 'presenter', 'models', 'searchableMix'
     })
     app:bind('modelCol', 'lxlib.db.orm.col')
+
+    app:bind('lxlib.db.orm.seed.fair')
+    app:bind('db.seed.fairBuilder',     'lxlib.db.orm.seed.fairBuilder')
+    app:bind('db.seed.faker',           'lxlib.db.orm.seed.faker')
+    app:single('db.seed.fair', function()
+
+        local faker = new 'db.seed.faker'
+        local fair = new('lxlib.db.orm.seed.fair')
+
+        return fair:construct(faker, lx.dir('db', 'seed/fair'))
+    end)
 end
  
 return _M

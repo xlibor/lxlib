@@ -18,7 +18,11 @@ end
 function _M:new()
     
     local this = {
-        _all = false
+        _all            = false,
+        _posts          = false,
+        _actionName     = false,
+        _ctlerName      = false,
+        _route          = false,
     }
 
     return oo(this, mt)
@@ -69,12 +73,10 @@ end
 
 function _M:init()
 
-    if not self.path then
-        self.path = ngx.var.uri
-        self.method = str.lower(ngx.req.get_method()) or 'get'
-        self.uri = ngx.var.uri
-        self.url = ngx.var.request_uri
-    end
+    self.path = ngx.var.uri
+    self.method = str.lower(ngx.req.get_method()) or 'get'
+    self.uri = ngx.var.uri
+    self.url = ngx.var.request_uri
 end
 
 function _M.__:initPath()
@@ -94,12 +96,21 @@ end
 
 function _M.d__:posts()
 
+    if self._posts then
+        return self._posts
+    end
+
     if not self.isMultiform then
         ngx.req.read_body()
-        return ngx.req.get_post_args()
+        self._posts = ngx.req.get_post_args()
     else
-        return {}
+        self:getFiles()
+        if not self._posts then
+            self._posts = {}
+        end
     end
+
+    return self._posts
 end
 
 function _M.d__:headers()
@@ -121,6 +132,10 @@ function _M.d__:all()
 
     local args = self.gets
     for k, v in pairs(self.posts) do
+        args[k] = v
+    end
+
+    for k, v in pairs(self.allFiles) do
         args[k] = v
     end
 
@@ -253,7 +268,12 @@ function _M.d__:pjax()
     return self:header('x-pjax') or false
 end
 
-function _M.d__:isXmlHttpRequest()
+function _M.d__:ajax()
+
+    return self:isXmlHttpRequest()
+end
+
+function _M:isXmlHttpRequest()
 
     local xrw = self:header('x-requested-with')
     if xrw and xrw == 'XMLHttpRequest' then
@@ -415,6 +435,16 @@ function _M.d__:session()
     return session
 end
 
+function _M.d__:action()
+
+    return self._actionName
+end
+
+function _M.d__:ctler()
+
+    return self._ctlerName
+end
+
 function _M:old(key, default)
 
     local session = self.session
@@ -429,6 +459,7 @@ end
 
 function _M:hasFile(key)
 
+    return self:file(key) and true or false
 end
 
 function _M:getFiles()
@@ -448,14 +479,17 @@ function _M.__:convertUploadedFiles()
     if self.isMultiform then
         local fh = app:make('formHandler', self)
         local ok, msg, err = fh:handle()
+
         if ok then
-            self.posts = fh.params or {}
+            self._posts = fh.params or {}
+            self.posts = nil
+            self._all = false
             self.all = nil
             self.args = nil
 
             return fh.files
         else
-            error('get files fail:', msg, ',', err)
+            error('get files fail:' .. msg .. ',' .. err)
         end
     end
 end
@@ -469,18 +503,28 @@ function _M:routeIs(name)
     end
 end
 
-function _M:getParam(key)
+function _M:route(key)
 
     local route = self:getRoute()
     if route then
+        if not key then
+            return route
+        end
 
         return route:param(key)
     end
 end
 
+_M.param = _M.route
+
 function _M:getRoute()
 
-    return rawget(self, 'route')
+    return self._route
+end
+
+function _M:setRoute(route)
+
+    self._route = route
 end
 
 function _M:setArg(key, value)
@@ -492,7 +536,7 @@ end
 
 function _M:_get_(key)
 
-    return self.args:get(key) or self:getParam(key)
+    return self.args:get(key) or self:param(key)
 end
 
 return _M

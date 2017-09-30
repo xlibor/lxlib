@@ -115,7 +115,7 @@ function _M:run(query, bindings, callback)
 
     local t1 = lf.time(true, true)
 
-    lx.try(function()
+    try(function()
 
         result = self:runQueryCallback(query, bindings, callback)
     end)

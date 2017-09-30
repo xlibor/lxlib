@@ -25,4 +25,14 @@ function _M:ctor()
 
 end
 
+function _M:getBody()
+
+    return self.body or ''
+end
+
+function _M:getHeader(key)
+
+    return self.headers or {}
+end
+
 return _M

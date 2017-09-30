@@ -133,6 +133,9 @@ function _M:parse()
             if pos_s then
                 if tags.stmt_end == '' then
                     t_pos_s, t_pos_e = sfind(text, tags.q_stmt_begin .. [[%w+]], last)
+                    if t_pos_e and t_pos_e > pos_e then
+                        t_pos_s = nil
+                    end
                     if t_pos_s then
                         pos_s, pos_e = t_pos_s, t_pos_s
                     end
@@ -142,6 +145,13 @@ function _M:parse()
                     if t == '@' then
                         signDisable = true
                         pos_s = pos_s - 1
+                    end
+                else
+                    t = ssub(text, pos_s - 1, pos_s - 1)
+                    if not sfind(t, '%W') then
+                        tapd(currParent.child, curText)    
+                        curText = self:addAstNode(nt.text, currParent, ssub(text, last))
+                        break
                     end
                 end
             else
@@ -370,14 +380,24 @@ function _M:parse_cmd_include(cmd, bstack, currParent, arglist, text)
         t = Str.split(t, ',', 2)
         tplName, context = t[1], t[2]
         context = Str.trim(context,' ')
-        context = ssub(context, 2, -2)
-        context = Str.trim(context,' ;')
-
+        tplName = Str.trim(tplName, ' "\'')
+        if sfind(tplName, '@') then
+            local tplList, tplRoot, tplCodes, currTplCode
+            tplRoot, tplCodes = Str.div(tplName, '@')
+            tplCodes = Str.split(tplCodes, ';')
+            tplList = {}
+            for _, v in ipairs(tplCodes) do
+                tapd(tplList, tplRoot .. '.' .. v)
+            end
+            tplName = tplList
+        else
+            context = ssub(context, 2, -2)
+            context = Str.trim(context,' ;')
+        end
     else
         tplName = t
+        tplName = Str.trim(tplName, ' "\'')
     end
-
-    tplName = Str.trim(tplName, ' "\'')
 
     arglist[1] = tplName; arglist[2] = context
 

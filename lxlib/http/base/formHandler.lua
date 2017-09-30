@@ -1,34 +1,30 @@
 
-local _M = {
+local lx, _M, mt = oo{
     _cls_ = ''    
 }
-local mt = { __index = _M }
 
-local lx = require('lxlib')
 local app, lf, tb, str = lx.kit()
 local fs, env, d = lx.fs, lx.env, lx.def
 
 local upload = require("resty.upload")
 
-local sfind, smatch = string.find, string.match
+local sfind, smatch, slen = string.find, string.match, string.len
 
-function _M:new(req)
+function _M:new()
 
     local this = {
         chunkSize = env('upload.chunkSize') or 4096,
         timeout = env('upload.timeout') or 25000,
         tmpDir = env('upload.tmpDir') or lx.dir('tmp', 'lib/upload'),
-        req = req,
         files = {},
         params = {}
     }
 
-    setmetatable(this , mt)
-
-    return this
+    return oo(this , mt)
 end
 
 local function getExtension(fileName)
+
     return fileName:match(".+%.(%w+)$")
 end
 
@@ -45,7 +41,7 @@ function _M:parseFormdata()
 
     form:set_timeout(timeout)
     
-    local files, params= {}, {}
+    local files, params = {}, {}
     local fieldName, uniqueName
     local file, originFileName, fileName, path, extName
     local inFileRecing
@@ -80,12 +76,12 @@ function _M:parseFormdata()
 
             if inFileRecing and originFileName and fileType then
                 extName = getExtension(originFileName)
-                uniqueName = lf.guid()
-                fileName = uniqueName .. "." .. extName
-                path = tmpDir .. d.dirSep .. fileName
- 
-                file, err = io.open(path, "w+")
 
+                uniqueName = lf.guid()
+                fileName = extName and uniqueName .. "." .. extName or uniqueName
+                path = tmpDir .. d.dirSep .. fileName
+
+                file, err = io.open(path, "w+")
                 if err then
                     ok = false; msg = "open file error"
                     return ok, msg, err
@@ -106,17 +102,18 @@ function _M:parseFormdata()
             if inFileRecing then
                 file:close()
                 file = nil
-
-                uploadedFile = app:make('uploadedFile', path, originFileName, fileType)
-                if files[fieldName] then
-                    local t = files[fieldName]
-                    if #t == 0 then
-                        t = {t}
-                        files[fieldName] = t
+                if slen(originFileName) > 0 then
+                    uploadedFile = app:make('uploadedFile', path, originFileName, fileType)
+                    if files[fieldName] then
+                        local t = files[fieldName]
+                        if #t == 0 then
+                            t = {t}
+                            files[fieldName] = t
+                        end
+                        tb.apd(t, uploadedFile)
+                    else
+                        files[fieldName] = uploadedFile
                     end
-                    tb.apd(t, uploadedFile)
-                else
-                    files[fieldName] =  uploadedFile
                 end
                 inFileRecing = false
                 originFileName = nil
@@ -138,12 +135,9 @@ end
 
 function _M:handle()
 
-    local req = self.req
- 
     local ok, msg, err = self:parseFormdata()
 
     return ok, msg, err
- 
 end
 
 return _M

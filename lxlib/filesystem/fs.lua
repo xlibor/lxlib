@@ -118,17 +118,20 @@ _M.fullpath = _M.fullPath
 
 function _M.extension(path)
 
-    return base.extension(path)
+    local ext = base.extension(path)
+    if ext and sfind(ext, '%.') then
+        ext = ssub(ext, 2)
+    end
+
+    return ext
 end
 
 function _M.pathInfo(path)
 
-    local ext = base.extension(path)
-    if ext then
-        ext = ssub(ext, 2)
-    end
+    local ext = _M.extension(path)
+
     local name = base.basename(path)
-    if sfind(name, '.', nil, true) then
+    if sfind(name, '%.') then
         name = ssub(name, 1, str.rfindp(name, '.') - 1)
     end
 

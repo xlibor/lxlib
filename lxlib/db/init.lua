@@ -11,7 +11,7 @@ local loadGrammar = function(self, key)
 
     return function(...)
         
-        return lf.import(basePath..key):new(...)
+        return lf.import(basePath .. key):new(...)
     end 
 end
 

@@ -9,14 +9,15 @@ local dbInit = lx.db
 local pub = require('lxlib.db.pub')
 local slen = string.len
 
-function _M:new()
+function _M:new(asHaving)
 
     local this = {
-        logicalOperators = {},
-        conditions = {},
-        notOperators = {},
-        _tmpNotOperator = false,
-        _needNot = false
+        asHaving            = asHaving,
+        logicalOperators    = {},
+        conditions          = {},
+        notOperators        = {},
+        _tmpNotOperator     = false,
+        _needNot            = false
     }
     
     setmetatable(this, mt)
@@ -161,9 +162,9 @@ function _M:sql(dbType)
     local t
 
     local count = #self.conditions
-    for i,v in ipairs(self.conditions) do
+    for i, v in ipairs(self.conditions) do
         if i > 1 then
-            tapd(sql, ' '..self.logicalOperators[i-1]..' ')
+            tapd(sql, ' '..self.logicalOperators[i - 1]..' ')
         end
         if type(v) == 'table' then
             local clsName = v.__cls
@@ -201,7 +202,8 @@ function _M:sql(dbType)
 end
  
 local function mtMethod(p1, p2, optType)
-    local tCdts,newTopCdts
+
+    local tCdts, newTopCdts
     local p1Type, p2Type, lo
     local p1Type, p2Type = type(p1), type(p2)
     local p1Cls, p2Cls

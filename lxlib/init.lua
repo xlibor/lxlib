@@ -74,6 +74,7 @@ _M.d = _M.def
 _M.pub = _M.f 
 _M.col = _M.n.col
 _M.obj = _M.n.obj
+_M.arr = _M.n.arr
 
 function _M.app()
 

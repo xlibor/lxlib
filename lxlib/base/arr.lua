@@ -12,7 +12,7 @@ local Str = require('lxlib.base.str')
 local utils = require('lxlib.base.utils')
 
 local cachedChainKeys = {}
-
+local type = type
 local tremove, tinsert, tconcat, tsort = table.remove, table.insert, table.concat, table.sort
 local tmaxn = table.maxn
 local cstr, cint = tostring, tonumber
@@ -1304,11 +1304,11 @@ function _M.compare(a, b, desc)
     if vta ~= vtb then
         if vta == 'string' then
             if vtb ~= 'string' then
-                vtb = cstr(b)
+                b = cstr(b)
             end
         else
             if vtb == 'string' then
-                vta = cstr(b)
+                a = cstr(a)
             end
         end
     end
@@ -1944,15 +1944,6 @@ function _M.range(low, high, step)
     end
 
     return ret
-end
-
-function _M.wrap(value)
-
-    if type(value) ~= 'table' then
-        return {value}
-    else
-        return value
-    end
 end
 
 function _M.getValue(value)

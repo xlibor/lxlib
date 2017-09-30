@@ -46,7 +46,7 @@ function _M:make(view, data, defedEngine)
     local namespace
 
     if not defedEngine then
-        view, defedEngine, namespace = self:getInfoFromPath(view)
+        view, defedEngine, namespace = self.finder:getInfoFromPath(view)
     end
 
     if namespace then
@@ -69,27 +69,6 @@ end
 function _M:addNamespace(namespace, path, engine)
 
     self.finder:addNamespace(namespace, path, engine)
-end
-
-function _M.__:getInfoFromPath(path)
-
-    local engine, namespace
-
-    local i, j = str.find(path, '%s')
-
-    if i then
-        return path
-    end
-
-    if str.find(path, '@') then
-        engine, path = str.div(path, '@')
-    end
-
-    if str.find(path, ':') then
-        namespace, path = str.div(path, ':')
-    end
-
-    return path, engine, namespace
 end
 
 function _M.__:prepareData(data)

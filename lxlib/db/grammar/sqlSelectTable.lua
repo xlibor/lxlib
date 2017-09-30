@@ -18,12 +18,13 @@ function _M:new(name, alias)
 end
  
 function _M:sql(dbType)
+    
     local sql
     sql = pub.sqlWrapName(self.name, dbType)
     if self.alias then
         sql = sql .. ' as ' .. pub.sqlWrapName(self.alias, dbType)
     end
-     
+    
     return sql
 end
  

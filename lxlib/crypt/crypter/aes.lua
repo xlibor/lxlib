@@ -1,7 +1,7 @@
 
 local lx, _M, mt = oo{
-    _cls_ = '',
-    _bond_ = 'crypterBond'
+    _cls_   = '',
+    _bond_  = 'crypterBond'
 }
 
 local app, lf, tb, str = lx.kit()
@@ -48,23 +48,28 @@ function _M:ctor(key, config)
     self.padding = padding
 end
 
-function _M:getAes()
+function _M:getDoer(config)
 
     local aesCls = aesBase
     if self.padding == 0 then
         aesCls = aes0Base
     end
 
-    local hash
-    if self.hash then
-        hash = aesCls.hash[self.hash]
+    local info = config or self
+
+    local key, salt, hash, cipherSize, cipher, hashRounds, iv = 
+        info.key, info.salt, info.hash, info.cipherSize,
+        info.cipher, info.hashRounds, info.iv
+
+    if hash then
+        hash = aesCls.hash[hash]
     else
-        hash = {iv = self.iv}
+        hash = {iv = iv}
     end
 
     local aes, err = aesCls:new(
-        self.key, self.salt, aesCls.cipher(self.cipherSize, self.cipher),
-        hash, self.hashRounds
+        key, salt, aesCls.cipher(cipherSize, cipher),
+        hash, hashRounds
     )
 
     if not aes then
@@ -78,7 +83,7 @@ function _M:encrypt(value)
 
     self:preEnc()
 
-    local aes = self:getAes()
+    local aes = self:getDoer()
     value = aes:encrypt(value)
 
     value = toHex(value)
@@ -111,7 +116,7 @@ end
 function _M:decrypt(payload)
 
     payload = self:parsePayload(payload)
-    local aes = self:getAes()
+    local aes = self:getDoer()
 
     payload = fromHex(payload)
     payload = aes:decrypt(payload)

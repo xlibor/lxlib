@@ -122,8 +122,10 @@ function _M:setPrefix(prefix)
 end
 
 function _M:setBar(bar)
+
+    self.action.bar = self.action.bar or {}
+    tapd(self.action.bar, bar)
     
-    self.action.bar = bar
     return self
 end
 

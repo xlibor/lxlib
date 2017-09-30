@@ -111,9 +111,9 @@ end
 
 function _M.__:setForeignAttrsForCreate(model)
 
-    model:rawset(self:getPlainForeignKey(), self:getParentKey())
+    model[self:getPlainForeignKey()] = self:getParentKey()
  
-    model:rawset(self:getPlainMorphType(), self.morphClass)
+    model[self:getPlainMorphType()] = self.morphClass
 end
 
 function _M:getMorphType()

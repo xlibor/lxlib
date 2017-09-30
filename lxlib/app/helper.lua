@@ -254,5 +254,17 @@ function _M.fair(...)
     end
 end
 
+function _M.flash(message, level)
+
+    level = level or 'info'
+    local notifier = app('flash')
+    if message then
+        
+        return notifier:message(message, level)
+    end
+    
+    return notifier
+end
+
 return _M
 

@@ -1,9 +1,9 @@
 
 local lx, _M, mt = oo{
-    _cls_  = '',
-    a__    = {},
-    publishes = {},
-    publishGroups = {}
+    _cls_           = '',
+    a__             = {},
+    publishes       = {},
+    publishGroups   = {}
 }
 
 local app, lf, tb, str = lx.kit()
@@ -44,7 +44,7 @@ function _M.__:loadViewsFrom(path, namespace)
         view:addNamespace(namespace, path)
     end
  
-    view:addNamespace(namespace, appPath)
+    view:addNamespace(namespace, path)
 end
 
 function _M.__:loadShiftFrom(paths)

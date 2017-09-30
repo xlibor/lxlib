@@ -611,14 +611,24 @@ function _M.md5(str)
     end
 end
 
-function _M.base64En(str)
+function _M.base64En(s)
 
-    return ngx.encode_base64(str)
+    return ngx.encode_base64(s)
 end
 
-function _M.base64De(str)
+function _M.base64De(s)
     
-    return ngx.decode_base64(str)
+    return ngx.decode_base64(s)
+end
+
+function _M.base64urlEn(s)
+
+    return Str.rtrim(Str.tr(_M.base64En(s), '+/', '-_'), '=')
+end
+
+function _M.base64urlDe(s)
+
+    return _M.base64De(Str.pad(Str.tr(s, '-_', '+/'), slen(s) % 4, '='))
 end
 
 function _M.escape(w)

@@ -1,11 +1,8 @@
 
-local _M = {
+local lx, _M, mt = oo{
     _cls_    = ''    
 }
 
-local mt = {__index = _M}
-
-local lx = require('lxlib')
 local app, lf, tb, Str = lx.kit()
 
 local concat = table.concat
@@ -24,7 +21,7 @@ function _M:new(tpl)
         output = {}
     }
 
-    setmetatable(this, mt)
+    oo(this, mt)
 
     return this
 end
@@ -423,22 +420,29 @@ function _M:compileExtendedTpl()
     local tplExp = self.tpl.extendsFrom
 
     tplExp = lf.trim(tplExp, ' "\'')
-    local tpl = self.tpl
-    local baseTpl = tpl:new(tpl.engine, tplExp, tpl.namespace, tpl.blocks)
-    baseTpl:prepare()
 
-    self:apd(baseTpl.strCode)
-
+    self:apd(self:newTpl(tplExp, tpl.blocks))
 end
 
 function _M:compileInclude(node)
 
     local content = node.content
     local tplName, context = content[1], content[2]
+    local tplList, currTplCode
+
+    if lf.isTbl(tplName) then
+        tplList = tplName
+        currTplCode = context
+        context = nil
+    end
 
     self:apdLineno(node)
     self:apd('if 1 then \n')
-    self:apd('setCurrentView("' .. tplName .. '") \n')
+    
+    if not currTplCode then
+        self:apd('setCurrentView("' .. tplName .. '") \n')
+    end
+
     if context then
         if not sfind(context, ',') then
             self:apd('  local ' .. context .. ';\n')
@@ -448,14 +452,28 @@ function _M:compileInclude(node)
         end
     end
 
-    local tpl = self.tpl
-    local subTpl = tpl:new(tpl.engine, tplName, tpl.namespace)
-    subTpl:prepare()
- 
-    self:apd(subTpl.strCode)
+    local subTpl
+    local tpl = self.tpl 
+    if not tplList then
+        self:apd(self:newTpl(tplName))
+    else
+        self:apd(' local currTpl = lf.clsBaseName(' .. currTplCode .. ');\n')
+        local ifName = 'if'
+        for i, tplName in ipairs(tplList) do
+            if i > 1 then
+                ifName = 'elseif'
+            end
+            self:apd(ifName .. ' currTpl == "' .. lf.clsBaseName(tplName) .. '" then ')
+            self:apd('setCurrentView("' .. tplName .. '") \n')
+            self:apd(self:newTpl(tplName))
+            self:apd('\nsetCurrentView();\n')
+        end
+        self:apd('    \nend\nend\n')
+    end
 
-    self:apd('setCurrentView() \nend\n')
-
+    if not currTplCode then
+        self:apd(' setCurrentView(); \nend\n')
+    end
 end
 
 function _M:compileEach(node)
@@ -464,12 +482,10 @@ function _M:compileEach(node)
     local tplName, loopTarget, eachVar, emptyTpl = unpack(content)
 
     local tpl = self.tpl
-    local subTpl = tpl:new(tpl.engine, tplName, tpl.namespace)
-    subTpl:prepare()
 
     self:apdLineno(node)
     self:apd('for _, ' .. eachVar .. ' in _tplFunc.myPairs(' .. loopTarget .. ') do \n')
-    self:apd(subTpl.strCode)
+    self:apd(self:newTpl(tplName))
 
     self:apd('end\n')
 
@@ -555,6 +571,45 @@ function _M:compileWhile(block)
 
     self:apd(' end\n')
 
+end
+
+function _M:newTpl(tplName, blocks)
+
+    local tpl = self.tpl
+    local namespace = tpl.namespace
+    if Str.find(tplName, ':') then
+        local path, engine, t = self:getInfoFromPath(tplName)
+        if t then
+            tplName = path
+            namespace = t
+        end
+    end
+    local instance = tpl:new(tpl.engine, tplName, namespace, blocks)
+
+    instance:prepare()
+
+    return instance.strCode
+end
+
+function _M:getInfoFromPath(path)
+
+    local engine, namespace
+
+    local i, j = Str.find(path, '%s')
+
+    if i then
+        return path
+    end
+
+    if Str.find(path, '@') then
+        engine, path = Str.div(path, '@')
+    end
+
+    if Str.find(path, ':') then
+        namespace, path = Str.div(path, ':')
+    end
+
+    return path, engine, namespace
 end
 
 return _M

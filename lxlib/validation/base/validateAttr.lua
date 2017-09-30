@@ -137,8 +137,8 @@ function _M.__:validateAlphaNum(attr, value)
         
         return false
     end
-    
-    return str.rematch(value, '/^[\\pL\\pM\\pN]+$/u') > 0
+
+    return str.allWord(value)
 end
 
 function _M.__:validateArray(attr, value)
@@ -409,7 +409,7 @@ end
 
 function _M.__:validateImage(attr, value)
 
-    return self:validateMimes(attr, value, {'jpeg', 'png', 'gif', 'bmp', 'svg'})
+    return self:validateMimes(attr, value, {'jpeg', 'jpg', 'png', 'gif', 'bmp', 'svg'})
 end
 
 function _M.__:validateIn(attr, value, params)
@@ -489,8 +489,8 @@ function _M.__:validateMimes(attr, value, params)
         
         return false
     end
-    
-    return value:getPath() ~= '' and tb.inList(params, value:guessExtension())
+
+    return value.path and tb.inList(params, value:guessExtension())
 end
 
 function _M.__:validateMimetypes(attr, value, params)
@@ -499,7 +499,7 @@ function _M.__:validateMimetypes(attr, value, params)
         
         return false
     end
-    
+
     return value:getPath() ~= '' and tb.inList(params, value:getMimeType())
 end
 
@@ -735,7 +735,7 @@ function _M:isValidFileInstance(value)
         return false
     end
     
-    return value:__is('file')
+    return value:__is('fileInfo')
 end
 
 function _M.__:compare(first, second, operator)

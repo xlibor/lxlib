@@ -60,6 +60,9 @@ function _M:callWithinStack(instance, route, req, method)
     if not rawget(context, 'req') then
         context.req = req
     end
+    req._actionName = method
+    req._ctlerName = instance.__cls
+    
     local pl = app:make('pipeline', app)
     local bars = instance.bars
 
@@ -83,8 +86,7 @@ function _M:callWithinStack(instance, route, req, method)
         if ret then
             context:output(ret)
         end
-    end,
-    instance, method)
+    end, instance, method)
 end
 
 function _M:makeCtler(ctler, route)

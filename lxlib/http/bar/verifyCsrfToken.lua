@@ -24,11 +24,11 @@ function _M:handle(ctx, next)
 
         next(ctx)
 
-        return self:addCookieToResponse(req, ctx.resp)
+        self:addCookieToResponse(req, ctx.resp)
+        return
     end
 
     throw('tokenMismatchException')
-
 end
 
 function _M.__:shouldPassThrough(request)
@@ -79,8 +79,6 @@ function _M.__:addCookieToResponse(request, response)
             config['path'], config['domain'], config['secure'], false
         )
     )
-
-    return response
 end
 
 function _M.__:isReading(request)

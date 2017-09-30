@@ -80,7 +80,7 @@ end
 function _M:new()
 
     local this = {
-        __cls = 'col',
+        -- __cls = 'col',
         items = {},
         _keys = {},
         isLcase = false,

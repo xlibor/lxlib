@@ -1,17 +1,19 @@
 
-local _M = {
+local lx, _M = oo{
     _cls_ = '',
     _ext_    = {
         path = 'lxlib.core.context'
     }
 }
 
-local lx = require('lxlib')
 local app, lf, tb, str = lx.kit()
 
 function _M:ctor()
 
     self.viewSharedData = {}
+    if not rawget(self, 'formRequestPath') then
+        self.formRequestPath = '.app.http.req.'
+    end
 end
 
 function _M:view(tpl, data, engine)
@@ -90,6 +92,14 @@ end
 
 function _M:file()
 
+end
+
+function _M:form(reqName)
+
+    local req = app:make(self.formRequestPath .. reqName, self.req)
+    req:validate()
+
+    return req
 end
 
 function _M:_get_(key)

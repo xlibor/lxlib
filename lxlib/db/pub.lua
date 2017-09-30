@@ -137,6 +137,7 @@ function _M.sqlCastValue(value, dataType, dbType)
 end
 
 function _M.sqlConvertField(field, dbType)
+    
     local strField = ''
     local ft = type(field)
     if ft == 'table' then
@@ -234,7 +235,7 @@ function _M.sqlConvertWhereIn(value, co, dbType)
             end
         end
         if #sql == 0 then
-            error('whereIn values is invalid')
+            error('invalid whereIn value')
         else
             strSql = co .. ' (' .. tconcat(sql, ',') .. ')'
         end
