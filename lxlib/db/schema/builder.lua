@@ -119,6 +119,20 @@ end
 
 function _M:enableForeignKeyConstraints()
 
+    local conn, dbType = self:getConn()
+    local grammar = dbInit.sqlCommonGrammar(dbType)
+    local sql = grammar:sqlEnableForeignKeyConstraints()
+
+    return conn:exec(sql)
+end
+
+function _M:disableForeignKeyConstraints()
+
+    local conn, dbType = self:getConn()
+    local grammar = dbInit.sqlCommonGrammar(dbType)
+    local sql = grammar:sqlDisableForeignKeyConstraints()
+
+    return conn:exec(sql)
 end
 
 function _M.__:build(sqlable)

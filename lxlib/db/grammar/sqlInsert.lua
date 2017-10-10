@@ -46,8 +46,8 @@ function _M:sql(dbType)
     strFields = table.concat(tblFields, ',')
  
     local tblValues = {}
-    for _,v in pairs(fields) do
-        tapd(tblValues, pub.sqlConvertValue(v.value,dbType))
+    for _, v in pairs(fields) do
+        tapd(tblValues, pub.sqlConvertValue(v.value, dbType))
     end
 
     strValues = table.concat(tblValues,',')

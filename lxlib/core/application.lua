@@ -379,15 +379,23 @@ function _M:fire(obj, event, ...)
     events:fire(obj, event, ...)
 end
 
-function _M:conf(key, value)
+function _M:conf(key, default)
 
     local config = self._config
 
-    if not value then
-        return config:get(key)
-    else
-        config:set(key, value)
+    local t = config:get(key)
+    
+    if default ~= nil and t == nil then
+        t = default
     end
+
+    return t
+end
+
+function _M:setConf(key, value)
+
+    local config = self._config
+    config:set(key, value)
 end
 
 function _M:bindFrom(parentDir, bags, options)
@@ -512,6 +520,11 @@ _M.isTesting = _M.runningUnitTests
 function _M:isLocal()
 
     return self.env == 'local'
+end
+
+function _M:isEnv(env)
+
+    return self.env == env
 end
 
 function _M:getEnv()

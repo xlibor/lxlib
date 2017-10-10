@@ -48,28 +48,36 @@ function _M:reload()
 
     if not self:preCheck() then return end
 
-    self:info(lf.run('openresty -s reload -c '..self:getConfPath()))
+    self:runCmd('openresty -s reload -c '..self:getConfPath())
 end
 
 function _M:stop()
 
     if not self:preCheck() then return end
 
-    self:info(lf.run('openresty -s stop -c '..self:getConfPath()))
+    self:runCmd('openresty -s stop -c '..self:getConfPath())
 end
 
 function _M:quit()
 
     if not self:preCheck() then return end
     
-    self:info(lf.run('openresty -s quit -c '..self:getConfPath()))
+    self:runCmd('openresty -s quit -c '..self:getConfPath())
 end
 
 function _M:start()
 
     if not self:preCheck() then return end
 
-    self:info(lf.run('openresty -c '..self:getConfPath()))
+    self:runCmd('openresty -c '..self:getConfPath())
+end
+
+function _M:runCmd(cmd)
+
+    local t = lf.run(cmd)
+    if t then
+        self:info(t)
+    end
 end
 
 return _M

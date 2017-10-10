@@ -9,13 +9,15 @@ local fs = lx.fs
 
 function _M:ctor()
 
-    self.resolver = app:get('db')
+    self.db = app:get('db')
 end
 
 function _M:run()
 
-    self.resolver:setDefaultConnection(self:getDatabase())
-
+    local db = self.db
+    db:setDefaultConnection(self:getDatabase())
+    db:strictMode(false)
+    
     self:getSeeder():run()
 end
 

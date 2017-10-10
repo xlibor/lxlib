@@ -15,14 +15,17 @@ local lx, _M, mt = oo{
         manyMethods         = {'belongsToMany', 'morphToMany', 'morphedByMany'},
         createdAt           = 'created_at',
         updatedAt           = 'updated_at',
-        queryMethods        = {'select', 'sel', 'pick', 'where', 'orWhere', 'or_', 'whereIn',
+        queryMethods        = {
+            'select', 'sel', 'pick', 'where', 'orWhere', 'or_', 'whereIn',
             'whereBetween', 'between', 'get', 'set', 'find', 'first', 
             'orderBy', 'group', 'groupBy', 'take', 'insert', 'inserts',
             'limit', 'from', 'count', 'withCount', 'withGlobalScope',
-            'withoutGlobalScope', 'withoutGlobalScopes', 'pure', 'findOrFail',
-            'firstOrFail', 'getSql', 'paginate', 'paging', 'simplePaginate',
+            'withoutGlobalScope', 'withoutGlobalScopes', 'pure',
+            'findOrFail', 'firstOrFail', 'firstOrNew', 'firstOrCreate',
+            'updateOrCreate', 'findOrNew',
+            'getSql', 'paginate', 'paging', 'simplePaginate',
             'truncate', 'has', 'doesntHave', 'whereHas', 'whereDoesntHave',
-            'getConnection', 'getConn'
+            'getConnection', 'getConn', 'pluck'
         }
     }
 }

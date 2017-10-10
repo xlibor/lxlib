@@ -26,7 +26,9 @@ function _M:ctor()
 end
 
 function _M:run(options)
-     
+    
+    self.db:strictMode(false)
+
     self.notes = {}
     local path = self:getShiftPath()
 
@@ -85,8 +87,6 @@ end
 function _M:prepareRun()
 
     local conn = self:getConn()
-
-    conn:exec("SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ALLOW_INVALID_DATES';")
 end
 
 function _M:runDown(file, shift, pretend)
@@ -98,6 +98,8 @@ function _M:runDown(file, shift, pretend)
     end
 
     local schema = self:getSchema(instance.connName)
+    schema:disableForeignKeyConstraints()
+    
     instance:down(schema)
 
     self.doer:delete(shift)

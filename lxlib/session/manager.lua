@@ -85,7 +85,7 @@ end
 
 function _M:setDefaultDriver(name)
 
-    app:conf('session.driver', name)
+    app:setConf('session.driver', name)
 end
 
 function _M.__:getConfig(name)

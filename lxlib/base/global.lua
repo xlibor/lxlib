@@ -169,6 +169,7 @@ _G.dd = function(...)
             if var.__cls and not var.__cls == 'col' then
                 content = var.__cls
             else
+                tb.removeFunc(var)
                 content = lx.json.encode(var)
             end
         elseif vt == 'function' then
@@ -377,9 +378,13 @@ function _M.init(appName)
                 local t
                 local lx = require('lxlib')
                 local app = lx.app()
-
-                if app.faces[key] then
-                    t = app.faces[key]
+                local faces = app.faces
+                if faces and faces[key] then
+                    t = faces[key]
+                end
+                if not t then
+                    error(key)
+                    echo(key)
                 end
                 return t
             end

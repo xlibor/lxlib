@@ -79,7 +79,7 @@ function _M:setExists(value)
 
     self.exists = value
 
-    return this
+    return self
 end
 
 function _M.__:getQuery()

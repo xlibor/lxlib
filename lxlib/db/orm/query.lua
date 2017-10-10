@@ -14,9 +14,9 @@ local count = tb.count
 local type = type
 
 local passthru = tb.l2d{
-    'insert', 'insertGetId', 'getBindings', 'getSql', 'toSql',
+    'insert', 'inserts', 'insertGetId', 'getBindings', 'getSql', 'toSql',
     'exists', 'count', 'min', 'max', 'avg', 'sum', 'getConnection', 'getConn',
-    'inserts', 'baseTable',
+    'baseTable',
 }
 
 local redirects = tb.l2d{
@@ -186,6 +186,51 @@ function _M:firstOrFail(...)
     else
         throw('modelNotFoundException', self.model.__cls)
     end
+end
+
+function _M:findOrNew(id, ...)
+
+    local model = self:find(id, ...)
+    if model then
+        
+        return model
+    end
+    
+    return self.model:newInstance()
+end
+
+function _M:firstOrNew(attrs)
+
+    local instance = self:where(attrs):first()
+    if instance then
+        
+        return instance
+    end
+    
+    return self.model:newInstance(attrs)
+end
+
+function _M:firstOrCreate(attrs, values)
+
+    values = values or {}
+    local instance = self:where(attrs):first()
+    if instance then
+        
+        return instance
+    end
+    instance = self.model:newInstance(tb.merge(values, attrs))
+    instance:save()
+    
+    return instance
+end
+
+function _M:updateOrCreate(attrs, values)
+
+    values = values or {}
+    local instance = self:firstOrNew(attrs)
+    instance:fill(values):save()
+    
+    return instance
 end
 
 function _M:find(id, ...)

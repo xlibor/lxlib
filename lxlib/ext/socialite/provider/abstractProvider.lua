@@ -18,7 +18,7 @@ function _M:new(request, clientId, clientSecret, redirectUrl, httpInfo)
         parameters = {},
         scopes = {},
         scopeSeparator = ',',
-        encodingType = PHP_QUERY_RFC1738,
+        encodingType = 'RFC1738',
         stateless = false,
         httpInfo = httpInfo or {}
     }

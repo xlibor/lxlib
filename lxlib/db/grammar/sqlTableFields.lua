@@ -69,6 +69,21 @@ end
 
 _M.drop = _M.dropColumn
 
+function _M:dropSoftDeletes()
+
+    return self:dropColumn('deleted_at')
+end
+
+function _M:dropForeign(index)
+
+    self:ensureAlterModeValid('drop')
+    local field = dbInit.sqlTableField(index)
+    field:mode('drop'):foreign()
+    self.keyItems:add(field, index)
+
+    return field
+end
+
 function _M:sql(dbType)
  
     local sql = {}
@@ -86,6 +101,8 @@ function _M:sql(dbType)
 
     local keyFields = {}
     local count = self:count()
+    local keyCount = self:keyCount()
+
     local field
     if count > 0 then
         for i = 1, count do
@@ -97,17 +114,20 @@ function _M:sql(dbType)
             end
             if i < count then tapd(sql, ', ') end    
         end
+    elseif keyCount > 0 then
+
     else
         error('no column added')
     end
 
-    count = self.keyItems:count()
-    if self.keyItems:count() > 0 then
-        tapd(sql, ', ')
-        for i = 1, count do
+    if keyCount > 0 then
+        if count > 0 then
+            tapd(sql, ', ')
+        end
+        for i = 1, keyCount do
             field = self.keyItems:itemByIdx(i)
             tapd(sql, field:keySql(dbType, showMode, self.table))
-            if i < count then tapd(sql, ', ') end    
+            if i < keyCount then tapd(sql, ', ') end    
         end
     end
 
@@ -132,6 +152,11 @@ function _M:count()
     return self.items:count()
 end
 
+function _M:keyCount()
+
+    return self.keyItems:count()
+end
+
 function _M:exists(fieldName)
 
     return self.items:exists(fieldName)
@@ -141,7 +166,7 @@ function _M:ensureAlterModeValid(alterMode)
 
     if self.createMode then
         if alterMode ~= 'add' then
-            error('invalid alterMode, must be add')
+            error('invalid alter mode, must be add')
         end
     end
     if self.alterMode then 

@@ -747,7 +747,6 @@ function _M:set(...)
     local args = {...}
     if #args == 0 then 
         return self
-        -- error('no args in lxorm->query->set()')
     end
 
     local fieldValues 
@@ -778,8 +777,8 @@ function _M:set(...)
     end
     
     if p1Type == 'table' then
-        if p1.__cls == 'col' then
-            p1 = p1.values
+        if p1.__cls and p1:__is('arrable') then
+            p1 = p1:toArr()
         end
 
         local tblDef = dbo.tblDef

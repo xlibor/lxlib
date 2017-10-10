@@ -60,7 +60,7 @@ end
 
 function _M:setDefaultDriver(name)
 
-    app:conf('auth.defaults.passwords', name)
+    app:setConf('auth.defaults.passwords', name)
 end
 
 function _M:__call(method, parameters)

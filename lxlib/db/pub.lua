@@ -177,13 +177,15 @@ function _M.sqlConvertValue(value, dbType)
         if vCls then
             if vCls == 'sqlConvertField' then
                 strValue  = value:sql()
+            elseif value:__is('strable') then
+                strValue = value:toStr()
             else
                 error('not support value cls:'..vCls)
             end
         else
             error('not support value type: table')
         end
-         
+
     elseif vt == 'userdata' then
         if value == ngx.null then
             strValue = 'NULL'

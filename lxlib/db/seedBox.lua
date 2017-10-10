@@ -14,7 +14,7 @@ end
 
 function _M:boot()
 
-    app:resolving('commander' ,function(cmder)
+    app:resolving('commander', function(cmder)
 
         cmder:group({ns = 'lxlib.db.cmd.seed', lib = false, app = true}, function()
             cmder:add('db/seed|seed', 'seedManageCmd@run')

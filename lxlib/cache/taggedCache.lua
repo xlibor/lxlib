@@ -21,7 +21,9 @@ end
 
 function _M:flush()
 
-    self.tags:reset()
+    if self.enable then
+        self.tags:reset()
+    end
 end
 
 function _M:taggedItemKey(key)

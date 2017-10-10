@@ -71,7 +71,7 @@ end
 
 function _M:setDefaultDriver(name)
 
-    app:conf('auth.defaults.guard', name)
+    app:setConf('auth.defaults.guard', name)
 end
 
 function _M:viaRequest(driver, callback)

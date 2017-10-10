@@ -295,7 +295,7 @@ function _M:sql(dbType, showMode)
                 local newName = self.attrs.newName
                 sql = 'change '..fieldName..' '..newName..' '..dataType..' '..columnOptions
             elseif alterMode == 'drop' then
-                sql = 'drop column '..fieldName
+                sql = 'drop column ' .. fieldName
             end
         else
             sql = baseInfo
@@ -380,6 +380,7 @@ function _M:keySql(dbType, showMode, tableName)
     local sql = ''
     local keyType = self.attrs.keyType
     local keyName = self.attrs.keyName
+    local fieldName = self.attrs.name
 
     local alterMode = self.attrs.alterMode
     if (not showMode) and alterMode == 'drop' then
@@ -392,7 +393,16 @@ function _M:keySql(dbType, showMode, tableName)
             elseif alterMode == 'change' or alterMode == 'rename' then
                 sql = 'change '
             elseif alterMode == 'drop' then
-                sql = 'drop '
+
+                if keyType == 'foreign' then
+                    sql = 'drop foreign key ' .. fieldName
+                elseif keyType == 'index' or keyType == 'unique' then
+                    sql = 'drop index ' .. fieldName
+                elseif keyType == 'primary' then
+                    sql = 'drop primary'
+                end
+
+                return sql
             end
         else
 

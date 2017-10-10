@@ -134,7 +134,7 @@ function _M:scopeBetween(query, participants)
 
     return query:whereHas('participants', function(q)
         q:whereIn('user_id', participants)
-        :select({'thread_id', _, 'distinct'})
+        :select({'thread_id', nil, 'distinct'})
         :groupBy('thread_id')
         :havingRaw('COUNT(thread_id)=' .. #participants)
     end)

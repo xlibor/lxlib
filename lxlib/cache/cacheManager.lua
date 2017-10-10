@@ -78,6 +78,14 @@ function _M:getDefaultDriver()
     return app:conf('cache.driver')
 end
 
+function _M:enable(isEnable)
+
+    isEnable = lf.needTrue(isEnable)
+    app:setConf('cache.enable', isEnable)
+
+    return self
+end
+
 function _M:_run_(method)
 
     return 'store'

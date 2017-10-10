@@ -1,7 +1,7 @@
 
 local lx, _M, mt = oo{ 
-    _cls_    = '',
-    _bond_    = 'connectionResolverBond'
+    _cls_       = '',
+    _bond_      = 'connectionResolverBond'
 }
 
 local app, lf, tb, str = lx.kit()
@@ -85,7 +85,7 @@ end
 
 function _M:setDefaultConnection(name)
 
-    app:conf('db.default', name)
+    app:setConf('db.default', name)
 end
 
 _M.setDefaultConn = _M.setDefaultConnection
@@ -103,6 +103,15 @@ end
 function _M:getConnections()
 
     return self.connections
+end
+
+function _M:strictMode(strict)
+
+    strict = lf.needTrue(strict)
+
+    app:setConf('db.connections.mysql.strict', strict)
+
+    return self
 end
 
 return _M

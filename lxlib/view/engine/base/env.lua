@@ -45,6 +45,7 @@ function _M:new(tpl, context, blocks)
     this.echo = function(p)
         tapd(tplTexts, tplFunc.toStr(p))
     end
+
     this.mergeContext  = function(this, data)
         for k, v in pairs(data) do
             context[k] = v
@@ -82,18 +83,21 @@ function _M:new(tpl, context, blocks)
     end
 
     this.setCurrentView = setCurrentView
-
+    this.Ctx = context
+    
     local currView, data
     setmetatable(this, {__index = function(tbl, k)
-        local t = context[k] or H[k] or _G[k]
-        if not t then
-            if type(t) == 'nil' then
-                currView = rawget(this, 'currentView')
-                if currView then
-                    data = nestedData[currView]
-                    if data then
-                        t = data[k]
-                    end
+        local t = context[k]
+        if t == nil then
+            t = H[k] or _G[k]
+        end
+
+        if t == nil then
+            currView = rawget(this, 'currentView')
+            if currView then
+                data = nestedData[currView]
+                if data then
+                    t = data[k]
                 end
             end
         end

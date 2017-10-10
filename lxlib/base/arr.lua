@@ -303,6 +303,7 @@ function _M.listAdds(list, data)
 end
  
 function _M.dictRemoveKeys(dict, ...)
+
     local keys = {}
     local args = {...}
     local p1 = args[1]
@@ -326,7 +327,7 @@ function _M.cleanup(tbl)
     if len > 0 then
         for idx = len, 1, -1 do
             if type(tbl[idx]) == 'table' then 
-                table.remove(tbl, idx)
+                tremove(tbl, idx)
             end
         end
     else
@@ -350,6 +351,17 @@ function _M.clear(tbl)
     if next(tbl) then
         for k, v in pairs(tbl) do
             tbl[k] = nil
+        end
+    end
+end
+
+function _M.removeFunc(tbl)
+
+    for k, v in pairs(tbl) do
+        if type(v) == 'function' then
+            tbl[k] = nil
+        elseif type(v) == 'table' then
+            _M.removeFunc(v)
         end
     end
 end
@@ -2112,6 +2124,23 @@ function _M.slice(tbl, offset, length)
     if first <= tblLen then
         for i = first, last do
             tapd(ret, tbl[i])
+        end
+    end
+
+    return ret
+end
+
+function _M.column(tbl, columnKey, indexKey)
+
+    local ret = {}
+    local t
+
+    for _, item in ipairs(tbl) do
+        t = item[columnKey]
+        if indexKey then
+            ret[item[indexKey]] = t
+        else
+            tapd(ret, t)
         end
     end
 

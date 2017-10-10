@@ -33,7 +33,7 @@ function _M.__:mergeConfigFrom(path, key)
     local data = require(path)
     config = tb.merge(config, data)
 
-    app:conf(key, config)
+    app:setConf(key, config)
 end
 
 function _M.__:loadViewsFrom(path, namespace)

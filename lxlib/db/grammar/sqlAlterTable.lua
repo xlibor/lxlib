@@ -15,6 +15,7 @@ function _M:new(name)
 
     local fields = dbInit.sqlTableFields(name)
     fields.alterMode = 'alter'
+
     local this = {
         name = name,
         fields = fields
@@ -34,7 +35,7 @@ function _M:sql(dbType)
         error('table name has not been set')
     end
 
-    if fields:count() == 0 then
+    if fields:count() == 0 and fields:keyCount() == 0 then
         error('fields have not been added')
     end
     fields.alterMode = 'mix'

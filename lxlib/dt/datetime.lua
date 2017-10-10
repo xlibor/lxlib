@@ -1,7 +1,8 @@
 
 local lx, _M, mt = oo{
-    _cls_ = '',
-    _static_ = {
+    _cls_       = '',
+    _bond_      = 'strable',
+    _static_    = {
         sunday          = 0,
         monday          = 1,
         tuesday         = 2,
@@ -21,7 +22,7 @@ local lx, _M, mt = oo{
             [5] = 'Friday',
             [6] = 'Saturday'
         },
-        defaultFormat       = 'Y-m-d H:i:s',
+        defaultFormat       = '%Y-%m-%d',
         monthsPerYear       = 12,
         yearsPerCentury     = 100,
         yearsPerDecade      = 10,
