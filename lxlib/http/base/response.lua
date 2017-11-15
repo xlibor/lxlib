@@ -23,7 +23,7 @@ function _M:ctor(content, status, headers)
     self.content = content or false
     self:setStatusCode(status or 200)
 
-    self.headers = app:make('responseHeader', headers)
+    self.headers = app:make('lxlib.http.base.responseHeader', headers)
 end
 
 function _M:create(content, status, headers)

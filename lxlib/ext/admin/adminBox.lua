@@ -8,11 +8,16 @@ local app, lf, tb, str = lx.kit()
 
 function _M:boot()
 
-    self:loadViewsFrom(__DIR__ .. '/../../views', 'admin')
-    self:mergeConfigFrom(__DIR__ .. '/../../config/admin.php', 'admin')
-    self:loadTranslationsFrom(__DIR__ .. '/../../lang', 'admin')
-    self:publishes({['__DIR__ .. '/../../config/admin.php'] = config_path('admin.php')})
-    self:publishes({['__DIR__ .. '/../../../public'] = public_path('packages/summerblue/admin')}, 'public')
+    local dir = lx.getPath(true)
+    self:loadViewsFrom(dir .. '/res/view', 'admin')
+    self:mergeConfigFrom(dir .. '/conf/admin', 'admin')
+    self:loadTranslationsFrom(dir .. '/res/lang', 'admin')
+
+    if app:isCmdMode then
+        self:publish({[dir .. '/conf/admin.lua'] = config_path('admin.php')})
+        self:publish({[dir .. '/../../../pub'] = public_path('packages/summerblue/admin')}, 'public')
+    end
+
     --set the locale
     self:setLocale()
     app['events']:fire('admin.ready')

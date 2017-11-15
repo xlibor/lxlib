@@ -2,7 +2,7 @@
 local lx, _M, mt = oo{
     _cls_   = '',
     _bond_  = 'authGuardBond',
-    _mix_   = 'auth.guardHelper'
+    _mix_   = 'lxlib.auth.guardHelper'
 }
 
 local app, lf, tb, str = lx.kit()

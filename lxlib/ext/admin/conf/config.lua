@@ -20,7 +20,7 @@ function _M:new()
 end
 
 -- The validator instance.
--- @var \Frozennode\Administrator\Validator
+-- @var \Frozennode\admin\Validator
 -- The site's normal validator instance.
 -- @var \Illuminate\Validation\Validator
 -- The user supplied options table.
@@ -32,7 +32,7 @@ end
 -- The rules property.
 -- @var table
 -- Create a new model Config instance.
--- @param \Frozennode\Administrator\Validator validator
+-- @param \Frozennode\admin\Validator validator
 -- @param \Illuminate\Validation\Validator    custom_validator
 -- @param table                               options
 

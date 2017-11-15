@@ -18,10 +18,10 @@ end
 -- The config instance.
 -- @var \Illuminate\Config\Repository
 -- The config instance.
--- @var \Frozennode\Administrator\Config\Factory
+-- @var \Frozennode\admin\Config\Factory
 -- Create a new Menu instance.
 -- @param \Illuminate\Config\Repository            config
--- @param \Frozennode\Administrator\Config\Factory config
+-- @param \Frozennode\admin\Config\Factory config
 
 function _M:ctor(config, configFactory)
 
@@ -38,7 +38,7 @@ function _M:getMenu(subMenu)
     local config
     local menu = {}
     if not subMenu then
-        subMenu = self.config:get('administrator.menu')
+        subMenu = self.config:get('admin.menu')
     end
     --iterate over the menu to build the return table of valid menu items
     for key, item in pairs(subMenu) do
@@ -47,7 +47,7 @@ function _M:getMenu(subMenu)
             --fetch the appropriate config file
             config = self.configFactory:make(item)
             --if a config object was returned and if the permission passes, add the item to the menu
-            if is_a(config, 'Frozennode\\Administrator\\Config\\Config') and config:getOption('permission') then
+            if is_a(config, 'Frozennode\\admin\\Config\\Config') and config:getOption('permission') then
                 menu[item] = config:getOption('title')
             elseif config == true then
                 menu[item] = key

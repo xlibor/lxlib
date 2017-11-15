@@ -33,8 +33,8 @@ return {
     valid_title = "Du måste ange en giltig 'title' och 'single name' i varje modells konfiguration",
     valid_model = "Du måste ange en 'model'-option i varje modells konfiguration",
     valid_edit = "Du måste ange en giltig 'edit_fields'-array i varje modells konfiguration",
-    valid_menu = "Du måste ange en giltig 'menu'-option i administrator.php:s konfiguration",
-    valid_config_path = "Du måste ange en giltig 'model_config_path' i administrator.php:s konfiguration. Katalogen måste även existera samt vara skrivbar.",
+    valid_menu = "Du måste ange en giltig 'menu'-option i admin.php:s konfiguration",
+    valid_config_path = "Du måste ange en giltig 'model_config_path' i admin.php:s konfiguration. Katalogen måste även existera samt vara skrivbar.",
     not_eloquent = ' är inte en Eloquent-modell',
     storage_path_permissions = "Du måste göra din 'storage path' skrivbar för att skapa en inställningssida (settings page)",
     valid_home_page = "Du måste ange en giltig 'menu item' i 'home_page'-inställningen i din konfiguration"

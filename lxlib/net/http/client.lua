@@ -53,10 +53,11 @@ function _M.__:requestAsync(method, uri, options)
     local headers = options.headers or {}
     local body = options.body
     local version = options.version or '1.1'
+    local query = options.query
 
     uri = self:buildUri(uri, options)
 
-    local request = new('net.http.request', method, uri, headers, body, version)
+    local request = new('net.http.request', method, uri, headers, body, version, query)
     
     options.headers = nil; options.body = nil; options.version = nil
 
@@ -66,9 +67,11 @@ end
 function _M.__:transfer(request, options)
 
     local httpc = restyHttp.new()
+
     local res, err = httpc:request_uri(request.uri, {
         method = request.method,
         body = request.body,
+        query = request.query,
         headers = request.headers or {
             ["Content-Type"] = "application/x-www-form-urlencoded",
         },
@@ -88,10 +91,15 @@ end
 function _M.__:applyOptions(options)
 
     local body = options.body
-    local vt = type(body)
-    if vt == 'table' then
+    if type(body) == 'table' then
         body = lf.httpBuildQuery(body)
         options.body = body
+    end
+
+    local query = options.query
+    if type(query) == 'table' then
+        query = lf.httpBuildQuery(query)
+        options.query = query
     end
 
     return options

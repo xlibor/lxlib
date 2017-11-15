@@ -6,6 +6,7 @@ local lx, _M, mt = oo{
 
 local metadataBase = require('lxlib.session.metadata')
 local app, lf, tb, str, new = lx.kit()
+local cookieHandler = 'lxlib.session.handler.cookieHandler'
 
 local packer
 
@@ -363,7 +364,7 @@ end
 
 function _M:handlerNeedsRequest()
 
-    if self.handler:__is('session.cookieHandler') then
+    if self.handler:__is(cookieHandler) then
         
         return true
     end

@@ -33,9 +33,9 @@ return {
     valid_title = 'Musisz podać poprawny tytuł i pojedynczą nazwę dla każdego zdefiniowanego modelu',
     valid_model = 'Dla każdego zdefiniowanego modelu musisz podać jego opcje',
     valid_edit = "Musisz podać poprawną tablicę 'edit_fields' dla każdego zdefiniowanego modelu",
-    valid_menu = "Musisz podać poprawną opcję 'menu' w pliku konfiguracyjnym administrator.php",
-    valid_config_path = "Musisz podać poprawny 'model_config_path' w pliku konfiguracyjnym administrator.php. Katalog musi istnieć i mieć prawo do odczytu.",
+    valid_menu = "Musisz podać poprawną opcję 'menu' w pliku konfiguracyjnym admin.php",
+    valid_config_path = "Musisz podać poprawny 'model_config_path' w pliku konfiguracyjnym admin.php. Katalog musi istnieć i mieć prawo do odczytu.",
     not_eloquent = ' nie jest Eloquent model',
     storage_path_permissions = "Aby utworzyć stronę typu 'settings' katalog 'storage_path' musi istnieć i mieć prawo do zapisu",
-    valid_home_page = "Musisz podać poprawny element 'menu' dla opcji 'home_page' w pliku konfiguracyjnym administrator.php"
+    valid_home_page = "Musisz podać poprawny element 'menu' dla opcji 'home_page' w pliku konfiguracyjnym admin.php"
 }

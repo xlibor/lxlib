@@ -47,6 +47,11 @@ function _M.__:loadViewsFrom(path, namespace)
     view:addNamespace(namespace, path)
 end
 
+function _M.__:loadTranslationsFrom(path, namespace)
+
+    app:get('translator'):addNamespace(namespace, path)
+end
+
 function _M.__:loadShiftFrom(paths)
 
 end

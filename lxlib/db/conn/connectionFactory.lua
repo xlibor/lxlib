@@ -4,6 +4,7 @@ local lx, _M, mt = oo{
 }
 
 local app, lf, tb, str = lx.kit()
+local throw = lx.throw
 
 function _M:new()
     
@@ -38,23 +39,9 @@ function _M:createConnector(config)
         throw('invalidArgumentException', 'a driver must be specified.')
     end
  
-    local key = 'db.connector.' .. driver
-    if app:bound(key) then 
-        return app:make(key)
-    end
+    local key = 'lxlib.db.connector.' .. driver .. 'connector'
 
-    if driver == 'mysql' then
-        app:bind(key, 'lxlib.db.connector.mysqlConnector')
-        return app:make(key)
-    elseif driver == 'sqlite' then 
-        app:bind(key, 'lxlib.db.connector.sqliteConnector')
-        return app:make(key)
-    elseif driver == 'pgsql' then 
-        app:bind(key, 'lxlib.db.connector.postgresConnector')
-        return app:make(key)
-    end
-
-    throw('invalidArgumentException', 'unsupported driver:' .. driver)
+    return app:make(key)
 end
 
 function _M.__:createConnection(driver, ldo, dbName, prefix, config)
@@ -66,11 +53,11 @@ function _M.__:createConnection(driver, ldo, dbName, prefix, config)
     end
 
     if driver == 'mysql' then 
-        return app:make('mysqlConn', ldo, dbName, prefix, config)
+        return app:make('lxlib.db.conn.mysqlConnection', ldo, dbName, prefix, config)
     elseif driver == 'sqlite' then
-        return app:make('sqliteConn', ldo, dbName, prefix, config)
+        return app:make('lxlib.db.conn.sqliteConnection', ldo, dbName, prefix, config)
     elseif driver == 'pgsql' then 
-        return app:make('pgsqlConn', ldo, dbName, prefix, config)
+        return app:make('lxlib.db.conn.pgsqlConnection', ldo, dbName, prefix, config)
     end
 
     throw('invalidArgumentException', 'unsupported driver:' .. driver)

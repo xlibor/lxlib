@@ -2,7 +2,7 @@
 local lx, _M, mt = oo{
     _cls_ = '',
     _ext_ = 'controller',
-    _mix_ = 'auth.regUser'
+    _mix_ = 'lxlib.auth.regUser'
 }
 
 local User = lx.use('.app.model.user')

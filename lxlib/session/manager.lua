@@ -4,7 +4,11 @@ local lx, _M = oo{
     _ext_ = 'manager'
 }
 
-local app = lx.app()
+local app, lf, tb, str = lx.kit()
+
+local dbHandler, cookieHandler, fileHandler, cacheHandler = str.make(
+    {'db', 'cookie', 'file', 'cache'}, 'lxlib.session.handler.%sHandler'
+)
 
 function _M:ctor()
 
@@ -21,7 +25,7 @@ function _M.__:createCookieDriver(config)
     local lifetime = app:conf('session.lifetime')
  
     return self:buildSession(
-        app:make('session.cookieHandler', lifetime)
+        app:make(cookieHandler, lifetime)
     )
 end
 
@@ -30,17 +34,17 @@ function _M.__:createFileDriver(config)
     local path = config.path
  
     return self:buildSession(
-        app:make('session.fileHandler', app.files, path)
+        app:make(fileHandler, app.files, path)
     )
 end
 
 function _M.__:createDbDriver(config)
-     
+
     local conn = self:getDbConnection(config)
     local table = config.table
 
     return self:buildSession(
-        app:make('session.dbHandler', conn, table)
+        app:make(dbHandler, conn, table)
     )
 end
 
@@ -65,7 +69,7 @@ function _M.__:createCacheHandler(driver)
     local store = driver
     local minutes = app:conf('session.lifetime')
 
-    return app:make('session.cacheHandler',
+    return app:make(cacheHandler,
         app.cache:store(store):__clone(), minutes
     )
 end

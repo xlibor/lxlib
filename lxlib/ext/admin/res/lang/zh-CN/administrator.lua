@@ -35,9 +35,9 @@ return {
     valid_title = '在每个 model 的配置中你必须要提供有效的标题（ title ）和单数名字（ single ）参数',
     valid_model = '在每个 model 的配置中你必须要提供有效的模型（ model ）参数',
     valid_edit = "在每个 model 的配置中你必须提供一个有效的 'edit_fields' 数组",
-    valid_menu = "在 administrator.php 的配置中你必须提供一个有效的 'menu' 参数",
-    valid_config_path = "在 administrator.php 的配置中你必须提供一个有效的 'model_config_path' 参数。这个文件夹必须是存在并且可读的。",
+    valid_menu = "在 admin.php 的配置中你必须提供一个有效的 'menu' 参数",
+    valid_config_path = "在 admin.php 的配置中你必须提供一个有效的 'model_config_path' 参数。这个文件夹必须是存在并且可读的。",
     not_eloquent = ' 不是 Eloquent model',
     storage_path_permissions = '为了使用设置页面，你必须用于 storage 路径写入的权限',
-    valid_home_page = "在 administrator.php 的配置中你必须提供一个有效的 'home_page' 参数"
+    valid_home_page = "在 admin.php 的配置中你必须提供一个有效的 'home_page' 参数"
 }

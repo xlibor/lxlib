@@ -16,7 +16,7 @@ local type = type
 local passthru = tb.l2d{
     'insert', 'inserts', 'insertGetId', 'getBindings', 'getSql', 'toSql',
     'exists', 'count', 'min', 'max', 'avg', 'sum', 'getConnection', 'getConn',
-    'baseTable',
+    'baseTable', 'truncate'
 }
 
 local redirects = tb.l2d{
@@ -168,6 +168,14 @@ function _M:whereBetween(column, values)
     return self
 end
 
+function _M:create(attrs)
+
+    local model = self:newModelInstance(attrs)
+    model:save()
+
+    return model
+end
+
 function _M:first(...)
 
     local models = self:take(1):get(...)
@@ -196,7 +204,7 @@ function _M:findOrNew(id, ...)
         return model
     end
     
-    return self.model:newInstance()
+    return self:newModelInstance()
 end
 
 function _M:firstOrNew(attrs)
@@ -207,7 +215,7 @@ function _M:firstOrNew(attrs)
         return instance
     end
     
-    return self.model:newInstance(attrs)
+    return self:newModelInstance(attrs)
 end
 
 function _M:firstOrCreate(attrs, values)
@@ -218,7 +226,7 @@ function _M:firstOrCreate(attrs, values)
         
         return instance
     end
-    instance = self.model:newInstance(tb.merge(values, attrs))
+    instance = self:newModelInstance(tb.merge(values, attrs))
     instance:save()
     
     return instance
@@ -254,6 +262,11 @@ function _M:findOrFail(id, ...)
     else
         throw('modelNotFoundException', self.model.__cls)
     end
+end
+
+function _M:newModelInstance(attrs)
+
+    return self.model:newInstance(attrs)
 end
 
 function _M:toBase()

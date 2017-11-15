@@ -1,6 +1,6 @@
 
 local lx, _M, mt = oo{ 
-    _cls_    = ''
+    _cls_    = '',
 }
 
 local app, lf, tb, str = lx.kit()

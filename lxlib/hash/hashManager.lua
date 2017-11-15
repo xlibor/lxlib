@@ -18,14 +18,14 @@ end
 
 function _M:createShaDriver(config)
 
-    local shaHasher = app:make('hash.hasher.sha', config)
+    local shaHasher = app:make('lxlib.hash.hasher.sha', config)
 
     return shaHasher
 end
 
 function _M:createMd5Driver(config)
 
-    local md5Hasher = app:make('hash.hasher.md5', config)
+    local md5Hasher = app:make('lxlib.hash.hasher.md5', config)
 
     return md5Hasher
 end

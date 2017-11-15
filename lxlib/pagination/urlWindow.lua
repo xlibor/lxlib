@@ -1,6 +1,9 @@
 
 local lx, _M, mt = oo{
-    _cls_ = ''
+    _cls_ = '',
+    _static_ = {
+
+    }
 }
 
 local app, lf, tb, str = lx.kit()
@@ -14,7 +17,7 @@ function _M:new(paginator)
     return oo(this, mt)
 end
 
-function _M.make(paginator, onEachSide)
+function _M.s__.make(paginator, onEachSide)
 
     onEachSide = onEachSide or 3
     

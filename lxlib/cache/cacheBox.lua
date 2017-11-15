@@ -39,14 +39,6 @@ function _M:regDepends()
     app:bind('cache.taggedDoer',    'lxlib.cache.taggedCache')
     app:bind('cache.tagSet',        'lxlib.cache.tagSet')
     
-    app:bindFrom('lxlib.cache.store', {
-        ['cache.arrStore']          = 'arr',
-        ['cache.fileStore']         = 'file',
-        ['cache.dbStore']           = 'db',
-        ['cache.redisStore']        = 'redis',
-        ['cache.memcStore']         = 'memc'
-    })
-    
     app:bond('cacheStoreBond', 'lxlib.cache.bond.store')
 end
 

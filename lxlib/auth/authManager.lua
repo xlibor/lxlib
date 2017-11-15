@@ -3,7 +3,7 @@ local lx, _M, mt = oo{
     _cls_   = '',
     _ext_   = 'manager',
     _bond_  = 'authFactoryBond',
-    _mix_   = 'auth.createUserProvider'
+    _mix_   = 'lxlib.auth.createUserProvider'
 }
 
 local app, lf, tb, str, new = lx.kit()
@@ -27,7 +27,7 @@ function _M:createSessionDriver(config)
 
     local name = config.driver
     local provider = self:createUserProvider(config['provider'])
-    local guard = new('auth.sessionGuard', name, provider, app:get('session.store'))
+    local guard = new('lxlib.auth.guard.session', name, provider, app:get('session.store'))
     
     if guard:__has('setCookieJar') then
         guard:setCookieJar(app:get('cookie'))
@@ -41,7 +41,7 @@ end
 
 function _M:createTokenDriver(config)
 
-    local guard = new('auth.tokenGuard', 
+    local guard = new('lxlib.auth.guard.token', 
         self:createUserProvider(config['provider']), app:get('request')
     )
     app:refresh('request', guard, 'setRequest')
@@ -77,7 +77,7 @@ end
 function _M:viaRequest(driver, callback)
 
     return self:extend(driver, function()
-        guard = new('auth.requestGuard', callback, app:get('request'))
+        guard = new('lxlib.auth.guard.request', callback, app:get('request'))
         app:refresh('request', guard, 'setRequest')
         
         return guard

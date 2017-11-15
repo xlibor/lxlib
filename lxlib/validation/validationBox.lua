@@ -34,30 +34,17 @@ function _M.__:regVerifier()
 
     app:single('validation.verifier', function()
         
-        return new('dbVerifier', app:get('db'))
+        return new('lxlib.validation.dbVerifier', app:get('db'))
     end)
 end
 
 function _M.__:regDepends()
     
     app:bindFrom('lxlib.validation', {
-        validationRuleParser        = 'ruleParser',
-        validationData              = 'validationData',
-        validationRule              = 'validationRule',
         validateRequest             = 'validateRequest',
-        dbVerifier                  = 'dbVerifier',
-        ['validation.validator']    = 'validator',
         validateWhenResolvedMix     = 'validateWhenResolvedMix',
     })
-
-    app:bindFrom('lxlib.validation.base', {
-        'formatMsg', 'validateAttr', 'replaceAttr',
-    }, {prefix = 'validation.'})
-
-    app:bindFrom('lxlib.validation.rules', {
-        'dimensions', 'exists', 'in', 'notin', 'unique',
-    }, {prefix = 'validation.rules.'})
-
+ 
     app:bindFrom('lxlib.validation.excp', {
         validationException     = 'validationException',
         unauthorizedException   = 'unauthorizedException'

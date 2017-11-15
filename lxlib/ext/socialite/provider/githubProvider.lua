@@ -33,7 +33,7 @@ end
 
 function _M.__:getUserByToken(token)
 
-    local userUrl = 'https://api.github.com/user?access_token=' .. token
+    local userUrl = 'https://api.github.com/user?access_token=' .. token:getToken()
     local response = self:getHttpClient():get(userUrl, self:getRequestOptions())
     local user = lf.jsde(response:getBody(), true)
     if tb.inList(self.scopes, 'user:email') then
@@ -49,7 +49,7 @@ end
 
 function _M.__:getEmailByToken(token)
 
-    local emailsUrl = 'https://api.github.com/user/emails?access_token=' .. token
+    local emailsUrl = 'https://api.github.com/user/emails?access_token=' .. token:getToken()
     
     local response
     local ok, ret = try(function()
@@ -74,11 +74,12 @@ end
 
 function _M.__:mapUserToObject(user)
 
-    return new('socialite.user'):setRaw(user):map({
+    return new('socialite.user', {
         id = user.id,
         nickname = user.login,
-        name = tb.get(user, 'name'),
-        email = tb.get(user, 'email'),
+        username = user.login,
+        name = user.name,
+        email = user.email,
         avatar = user.avatar_url
     })
 end

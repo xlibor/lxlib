@@ -6,7 +6,7 @@ local lx, _M = oo{
 local app, lf, tb, str = lx.kit()
 local sfind = string.find 
 
-local ValidationData = lx.use('validationData')
+local ValidationData = lx.use('lxlib.validation.validationData')
 
 function _M.__:validateAccepted(attr, value)
 
@@ -118,7 +118,7 @@ end
 
 function _M.__:validateAlpha(attr, value)
 
-    return lf.isStr(value) and str.allAlpha(value)
+    return lf.isStr(value) and str.rematch(value, [[^[\pL\pM]+$]], 'ijou')
 end
 
 function _M.__:validateAlphaDash(attr, value)
@@ -128,7 +128,7 @@ function _M.__:validateAlphaDash(attr, value)
         return false
     end
     
-    return str.rematch(value, '/^[\\pL\\pM\\pN_-]+$/u') > 0
+    return str.rematch(value, [[^[\\pL\\pM\\pN_-]+$]], 'ijou')
 end
 
 function _M.__:validateAlphaNum(attr, value)
@@ -138,7 +138,7 @@ function _M.__:validateAlphaNum(attr, value)
         return false
     end
 
-    return str.allWord(value)
+    return str.rematch(value, [[^[\pL\pM\pN]+$]], 'ijou')
 end
 
 function _M.__:validateArray(attr, value)
@@ -275,7 +275,7 @@ end
 
 function _M.__:validateEmail(attr, value)
 
-    return lf.filter(value, 'email') ~= false
+    return lf.filter(value, 'email')
 end
 
 function _M.__:validateExists(attr, value, params)
@@ -295,7 +295,7 @@ function _M.__:getExistCount(connection, table, column, value, params)
     local extra = self:getExtraConditions(tb.values(tb.slice(params, 2)))
     
     local currentRule = self.currentRule
-    if lf.isA(currentRule, 'validation.rules.exists') then
+    if lf.isA(currentRule, 'lxlib.validation.rules.exists') then
         extra = tb.merge(extra, currentRule:queryCallbacks())
     end
     
@@ -319,7 +319,7 @@ function _M.__:validateUnique(attr, value, params)
     local extra = self:getUniqueExtra(params)
 
     local currentRule = self.currentRule
-    if lf.isA(currentRule, 'validation.rules.unique') then
+    if lf.isA(currentRule, 'lxlib.validation.rules.unique') then
         extra = tb.merge(extra, currentRule:queryCallbacks())
     end
     

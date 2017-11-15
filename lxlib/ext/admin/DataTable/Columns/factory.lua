@@ -22,9 +22,9 @@ function _M:new()
 end
 
 -- The validator instance.
--- @var \Frozennode\Administrator\Validator
+-- @var \Frozennode\admin\Validator
 -- The config instance.
--- @var \Frozennode\Administrator\Config\ConfigInterface
+-- @var \Frozennode\admin\Config\ConfigInterface
 -- The config instance.
 -- @var \Illuminate\Database\DatabaseManager
 -- The column objects.
@@ -54,8 +54,8 @@ const HAS_MANY = 'Illuminate\\Database\\Eloquent\\Relations\\HasMany'
 
 const HAS_ONE = 'Illuminate\\Database\\Eloquent\\Relations\\HasOne'
 -- Create a new action Factory instance.
--- @param \Frozennode\Administrator\Validator              validator
--- @param \Frozennode\Administrator\Config\ConfigInterface config
+-- @param \Frozennode\admin\Validator              validator
+-- @param \Frozennode\admin\Config\ConfigInterface config
 -- @param \Illuminate\Database\DatabaseManager             db
 
 function _M:ctor(validator, config, db)
@@ -68,7 +68,7 @@ end
 
 -- Fetches a Column instance from the supplied options.
 -- @param table options
--- @return \Frozennode\Administrator\DataTable\Columns\Column
+-- @return \Frozennode\admin\DataTable\Columns\Column
 
 function _M:make(options)
 
@@ -77,7 +77,7 @@ end
 
 -- Creates the Column instance.
 -- @param table options
--- @return \Frozennode\Administrator\DataTable\Columns\Column
+-- @return \Frozennode\admin\DataTable\Columns\Column
 
 function _M:getColumnObject(options)
 
@@ -193,7 +193,7 @@ function _M:getIncludedColumns(fields)
         end
         --make sure any belongs_to fields that aren't on the columns list are included
         for _, field in pairs(fields) do
-            if is_a(field, 'Frozennode\\Administrator\\Fields\\Relationships\\BelongsTo') then
+            if is_a(field, 'Frozennode\\admin\\Fields\\Relationships\\BelongsTo') then
                 self.includedColumns[field:getOption('foreign_key')] = model:getTable() .. '.' .. field:getOption('foreign_key')
             end
         end

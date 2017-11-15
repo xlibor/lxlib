@@ -41,7 +41,7 @@ function _M:take()
 
 end
 
-function _M:bind(nick, bagInfo, concrete, shared, sharedInCtx)
+function _M:bind(nick, bagInfo, concrete, shared, sharedInCtx, isAuto)
 
     local bag
     local typ = type(bagInfo)
@@ -72,7 +72,8 @@ function _M:bind(nick, bagInfo, concrete, shared, sharedInCtx)
 
     self.binds[nick] = {
         nick = nick, bag = bag, concrete = concrete, 
-        shared = shared, sharedInCtx = sharedInCtx
+        shared = shared, sharedInCtx = sharedInCtx,
+        auto = isAuto
     }
 
 end
@@ -107,7 +108,7 @@ function _M:make(nick, ...)
         return obj
     end
 
-    local bind = self:getBind(nick)
+    local bind = self:getBind(nick, true)
     if not bind then
         error(nick .. ' not bound.')
     end
@@ -177,7 +178,7 @@ function _M:makeWith(nick, superObj, ...)
         return instance
     end
 
-    local bind = self:getBind(nick)
+    local bind = self:getBind(nick, true)
     if not bind then
         error(nick .. ' no bind info.')
     end
@@ -287,7 +288,7 @@ end
 
 function _M:getBag(nick)
 
-    local bind = self:getBind(nick)
+    local bind = self:getBind(nick, true)
 
     if bind then
         return bind.bag
@@ -302,12 +303,17 @@ function _M:isShared(nick)
     return false
 end
 
-function _M:getBind(nick)
+function _M:getBind(nick, tryBind)
 
     local t = self.binds[nick]
     if not t then
-        if ssub(nick, 1, 4) == '.app' then
-            self:bind(nick)
+        if tryBind then
+            local bag = lf.prequire(nick)
+            if not bag or not bag._cls_ then
+                -- error('invalid bag:' .. nick)
+                return
+            end
+            self:bind(nick, nick, nil, nil, nil, true)
             t = self:getBind(nick)
         end
     end
@@ -394,7 +400,7 @@ end
 
 function _M:hasClass(cls)
 
-    local bind = self:getBind(cls)
+    local bind = self:getBind(cls, true)
     
     return bind and true or false
 end
@@ -407,7 +413,7 @@ end
 function _M:getClsInfo(cls)
 
     local bagPath = cls
-    local bind = self:getBind(cls)
+    local bind = self:getBind(cls, true)
     if bind then
         bagPath = bind.bag or cls
     end
@@ -428,7 +434,7 @@ function _M:getBagPath(nick)
 
     local isNick = false
     local bagPath = nick
-    local bind = self:getBind(nick)
+    local bind = self:getBind(nick, true)
     if bind then
         bagPath = bind.bag or nick
         isNick = true
@@ -457,7 +463,7 @@ end
 
 function _M:isSubClsOf(cls, parent)
 
-    local bindInfo = self:getBind(parent)
+    local bindInfo = self:getBind(parent, true)
     if bindInfo then
         parent = bindInfo.bag
     end

@@ -712,7 +712,7 @@ function _M:mergeMixin(bag, mixins, mixinCtors)
 
     for _, mix in ipairs(currMixinList) do
 
-        local bindInfo = app:getBind(mix)
+        local bindInfo = app:getBind(mix, true)
         if bindInfo then
             mixBag = lf.import(bindInfo.bag)
         else
@@ -864,7 +864,7 @@ function _M:getClassBaseInfo(bagPath)
         for k, v in pairs(bag.s__) do
             staticInfo[k] = v
             if type(v) == 'function' then
-                bag[k] = v
+                -- bag[k] = v
             end
         end
     end
@@ -904,7 +904,7 @@ function _M:getClassBaseInfo(bagPath)
 
         superNick, superPath = extendInfo.from, extendInfo.path
         if superNick and not superPath then
-            local bindInfo = app:getBind(superNick)
+            local bindInfo = app:getBind(superNick, true)
             if bindInfo then
                 superPath = bindInfo.bag
             else
@@ -1359,17 +1359,18 @@ function _M:getStaticObj(cls, nick)
     if static then
         obj.static = static
     end
+
     local stack = baseMt.__stackBak
     if stack then
         for k, v in pairs(stack) do
             obj[k] = function(...)
-                
+
                 return v(obj, ...)
             end
         end
     end
 
-    setmetatable(obj, {__index = baseMt})
+    setmetatable(obj, {__index = static})
 
     app.staticObjs[cls] = obj
 

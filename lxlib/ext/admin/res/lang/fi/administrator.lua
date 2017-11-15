@@ -33,9 +33,9 @@ return {
     valid_title = "Jokaisen mallin asetuksissa tulee olla kelvolliset 'title' ja 'single' -kentät",
     valid_model = "Jokaisen mallin asetuksissa tulee olla 'model'-kenttä täytettynä",
     valid_edit = "Jokaisen mallin asetuksissa tulee olla kelvollinen 'edit_fields'-taulu",
-    valid_menu = "administrator.php -asetuksissa tulee olla kelvollinen 'menu'-asetus",
-    valid_config_path = "administrator.php -asetustiedostossa täytyy olla kelvollinen 'model_config_path'-kenttä. Tämän hakemiston pitää myös olla olemassa ja siihen pitää olla lukuoikeudet.",
+    valid_menu = "admin.php -asetuksissa tulee olla kelvollinen 'menu'-asetus",
+    valid_config_path = "admin.php -asetustiedostossa täytyy olla kelvollinen 'model_config_path'-kenttä. Tämän hakemiston pitää myös olla olemassa ja siihen pitää olla lukuoikeudet.",
     not_eloquent = ' ei ole Eloquent-malli',
     storage_path_permissions = 'Anna storage-polulle kirjoitusoikeudet, jotta asetukset-sivu (settings) toimisi',
-    valid_home_page = 'Administrator.php:n home_page -asetuksen arvon tulee olla kelvollinen menu-kohta.'
+    valid_home_page = 'admin.php:n home_page -asetuksen arvon tulee olla kelvollinen menu-kohta.'
 }

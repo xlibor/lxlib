@@ -35,11 +35,11 @@ function _M:new()
 end
 
 -- The validator instance.
--- @var \Frozennode\Administrator\Validator
+-- @var \Frozennode\admin\Validator
 -- The site's normal validator instance.
 -- @var \Illuminate\Validation\Validator
 -- The config instance.
--- @var \Frozennode\Administrator\Config\ConfigInterface
+-- @var \Frozennode\admin\Config\ConfigInterface
 -- The main options table.
 -- @var table
 -- The config name.
@@ -53,7 +53,7 @@ end
 -- The rules table.
 -- @var table
 -- Create a new config Factory instance.
--- @param \Frozennode\Administrator\Validator validator
+-- @param \Frozennode\admin\Validator validator
 -- @param \Illuminate\Validation\Validator    custom_validator
 -- @param table                               options
 
@@ -66,7 +66,7 @@ function _M:ctor(validator, custom_validator, options)
     validator:override(self.options, self.rules)
     --if the validator failed, throw an exception
     if validator:fails() then
-        lx.throw(\InvalidArgumentException, 'There are problems with your administrator.php config: ' .. str.join(validator:messages():all(), '. '))
+        lx.throw(\InvalidArgumentException, 'There are problems with your admin.php config: ' .. str.join(validator:messages():all(), '. '))
     end
 end
 
@@ -102,7 +102,7 @@ function _M:updateConfigOptions()
 end
 
 -- Gets the current config item.
--- @return \Frozennode\Administrator\Config\ConfigInterface
+-- @return \Frozennode\admin\Config\ConfigInterface
 
 function _M:getConfig()
 
@@ -213,7 +213,7 @@ end
 
 -- Gets an instance of the config.
 -- @param table options
--- @return \Frozennode\Administrator\Config\ConfigInterface
+-- @return \Frozennode\admin\Config\ConfigInterface
 
 function _M:getItemConfigObject(options)
 

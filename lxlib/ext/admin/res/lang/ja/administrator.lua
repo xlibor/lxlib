@@ -33,8 +33,8 @@ return {
     valid_title = '有効な title と single 名を各モデルの設定で指定してください',
     valid_model = "有効な 'model' オプションを各モデルの設定で指定してください",
     valid_edit = "有効な 'edit_fields' 配列を各モデルの設定で指定してください",
-    valid_menu = "有効な 'menu' オプションを administrator.php の設定で指定してください",
-    valid_config_path = "有効な 'model_config_path' オプションを administrator.php の設定で指定してください。このディレクトリは存在していてかつ読取可能にしてください。",
+    valid_menu = "有効な 'menu' オプションを admin.php の設定で指定してください",
+    valid_config_path = "有効な 'model_config_path' オプションを admin.php の設定で指定してください。このディレクトリは存在していてかつ読取可能にしてください。",
     not_eloquent = ' は Eloquent モデルではありません',
     storage_path_permissions = '設定ページを作成するにはストレージパスを書き込み可能にしてください',
     valid_home_page = '有効なメニューアイテムを設定ファイルの home_page オプションで指定してください。'

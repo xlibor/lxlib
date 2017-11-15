@@ -1,6 +1,7 @@
 
 local lx, _M, mt = oo{
-    _cls_ = ''
+    _cls_       = '',
+    _static_    = {}
 }
 
 local app, lf, tb, str, new = lx.kit()
@@ -21,7 +22,7 @@ function _M:ctor(className)
     end
 
     local clsInfo = app:getClsInfo(className)
-    self.bindInfo = app:getBind(className)
+    self.bindInfo = app:getBind(className, true)
     self.path = self.bindInfo.bag
     self.clsInfo = clsInfo
     self.baseMt = clsInfo.baseMt
@@ -92,6 +93,39 @@ end
 function _M:is(cls)
 
     return objectBase.isInstanceOf(self.baseMt, cls)
+end
+
+function _M.s__.classExists(cls)
+
+    return app:hasClass(cls)
+end
+
+function _M.s__.methodExists(class, method)
+
+    if lf.isStr(class) then
+        local classInfo = app:getClsInfo(class)
+        if classInfo then
+            local baseMt = classInfo.baseMt
+            return baseMt[method] and true or false
+        end
+    elseif lf.isObj(class) then
+        return obj:__has(method)
+    else
+        error('invalid class')
+    end
+end
+
+function _M.s__.isA(obj, class)
+
+    return obj:__is(class)
+end
+
+function _M.s__.getCalledClass()
+
+    local fromDir, fromClass = lx.getPath(true, 1)
+    fromClass = fromClass:sub(1, -5)
+    
+    return fromClass, fromDir
 end
 
 return _M

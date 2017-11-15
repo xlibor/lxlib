@@ -4,6 +4,7 @@ local lx, _M, mt = oo{
 }
 
 local app, lf, tb, str = lx.kit()
+local cookieHandler = 'lxlib.session.handler.cookieHandler'
 
 function _M:new()
 
@@ -119,7 +120,7 @@ function _M.c__:usingCookieSessions()
         return false
     end
 
-    if self.manager:driver():getHandler():__is('session.cookieHandler') then
+    if self.manager:driver():getHandler():__is(cookieHandler) then
         return true
     end
 end

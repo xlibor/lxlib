@@ -5,14 +5,15 @@ local lx, _M, mt = oo{
 
 local app, lf, tb, str = lx.kit()
 
-function _M:new(method, uri, headers, body, version)
+function _M:new(method, uri, headers, body, version, query)
 
     local this = {
         method = str.upper(method),
         uri    = uri,
         headers = headers or {},
         body    = body,
-        protocol = version or '1.1'
+        protocol = version or '1.1',
+        query = query
     }
 
     return oo(this, mt)

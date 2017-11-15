@@ -6,6 +6,8 @@ local _M = {
 local base = require('lxlib.filesystem.base.fs')
 local fsCache = require('lxlib.filesystem.base.fsffi')
 local str = require('lxlib.base.str')
+local MimeType = require('lxlib.filesystem.base.mimeType')
+
 local sfind, slen, ssub = string.find, string.len, string.sub
 
 _M.base = base
@@ -82,18 +84,20 @@ function _M.copy(src, dst, opt)
         if sfind(opt, 'r') then recurse = true end
         opt = {overwrite = overwrite, recurse = recurse}
     end
-     
+
     return base.copy(src, dst, opt)
 end
 
 function _M.fileName(path)
 
-    local baseName, ext = _M.baseName(path), _M.extension(path)
-    local t = baseName:gsub(ext, '')
-    return t
+    local baseName = _M.baseName(path)
+    local filename = ssub(baseName, 1, str.rfindp(baseName, '.') - 1)
+
+    return filename
 end
 
 _M.name = _M.fileName
+_M.filename = _M.fileName
 
 function _M.dirName(path)
 
@@ -126,16 +130,23 @@ function _M.extension(path)
     return ext
 end
 
-function _M.pathInfo(path)
+function _M.pathInfo(path, style)
 
-    local ext = _M.extension(path)
+    local extension = _M.extension(path)
+    local basename = base.basename(path)
+    local dirname = base.dirname(path)
+    local filename = _M.fileName(path)
 
-    local name = base.basename(path)
-    if sfind(name, '%.') then
-        name = ssub(name, 1, str.rfindp(name, '.') - 1)
+    if style and (style == 1) then
+        return {
+            dirname = dirname,
+            basename = basename,
+            extension = extension,
+            filename = filename
+        }
+    else
+        return dirname, basename, extension, filename
     end
-
-    return base.dirname(path), name, ext
 end
 
 _M.pathinfo = _M.pathInfo
@@ -144,8 +155,9 @@ function _M.fileType(path)
 
 end
  
-function _M.mimeType(path)
+function _M.mimeType(file)
 
+    return MimeType.via_path(file)
 end
 
 function _M.size(path)
@@ -303,9 +315,27 @@ function _M.remove(path, options)
     return base.remove(path, options)
 end
 
+function _M.rename(src, dst)
 
-function _M.rename(path, newName, force)
+    return base.rename(src, dst)
+end
 
+function _M.move(src, dst, flags)
+
+    if flags and _M.exists(dst) and _M.exists(src) then
+        local ok, err = _M.remove(dst)
+        if not ok then return nil, err end
+    end
+    if (not _M.isWin()) and _M.exists(dst) then
+        return nil, "destination alredy exists"
+    end
+ 
+    local dstDir = _M.split(dst)
+    if dstDir and not _M.exists(dstDir) then
+        _M.makeDir(dstDir)
+    end
+
+    return os.rename(src, dst)
 end
 
 function _M.isWin()

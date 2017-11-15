@@ -2,7 +2,7 @@
 local lx, _M, mt = oo{
     _cls_ = '',
     _bond_ = 'validatorBond',
-    _mix_ = {'validation.formatMsg', 'validation.validateAttr'},
+    _mix_ = {'lxlib.validation.base.formatMsg', 'lxlib.validation.base.validateAttr'},
     fileRules = {'File', 'Image', 'Mimes', 'Mimetypes', 'Min', 'Max', 'Size', 'Between', 'Dimensions'},
     implicitRules = {'Required', 'Filled', 'RequiredWith', 'RequiredWithAll', 'RequiredWithout', 'RequiredWithoutAll', 'RequiredIf', 'RequiredUnless', 'Accepted', 'Present'},
     dependentRules = {'RequiredWith', 'RequiredWithAll', 'RequiredWithout', 'RequiredWithoutAll', 'RequiredIf', 'RequiredUnless', 'Confirmed', 'Same', 'Different', 'Unique', 'Before', 'After', 'BeforeOrEqual', 'AfterOrEqual'}
@@ -12,8 +12,8 @@ local app, lf, tb, str, new = lx.kit()
 local throw = lx.throw
 local ssub, sfind = string.sub, string.find
 
-local RuleParser = lx.use('validationRuleParser')
-local ValidationData = lx.use('validationData')
+local RuleParser = lx.use('lxlib.validation.ruleParser')
+local ValidationData = lx.use('lxlib.validation.validationData')
 
 function _M:new()
 
@@ -366,7 +366,7 @@ end
 
 function _M:addRules(rules)
 
-    local response = new('validationRuleParser', self.data):explode(rules)
+    local response = new('lxlib.validation.ruleParser', self.data):explode(rules)
     self.rules = tb.deepMerge(self.rules, response.rules)
 
     self.implicitAttrs = tb.merge(self.implicitAttrs, response.implicitAttrs)

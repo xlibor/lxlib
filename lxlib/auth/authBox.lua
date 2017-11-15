@@ -42,38 +42,17 @@ end
 
 function _M.__:regEvents()
 
-    app:listen('auth.sessionGuard', 'lxlib.auth.event.listener')
+    app:listen('lxlib.auth.guard.session', 'lxlib.auth.event.listener')
 end
 
 function _M.__:regDepends()
     
     app:bindFrom('lxlib.auth', {
-        ['recaller']                    = 'recaller',
-        ['auth.createUserProvider']     = 'createUserProvider',
-        ['auth.guardHelper']            = 'guardHelper',
-        ['auth.authenticateUser']       = 'authenticateUser',
-        ['auth.regUser']                = 'regUser',
-        ['auth.sendPwdResetEmail']      = 'sendPwdResetEmail',
-        ['auth.redirectUser']           = 'redirectUser',
-        ['auth.genericUser']            = 'genericUser',
         authenticatable                 = 'authenticatable',
-        ['auth.user']                   = 'user'
-    })
-
-    app:bindFrom('lxlib.auth.guard', {
-        ['auth.requestGuard']           = 'request',
-        ['auth.sessionGuard']           = 'session',
-        ['auth.tokenGuard']             = 'token'
-    })
-
-    app:bindFrom('lxlib.auth.provider', {
-        ['auth.dbUserProvider']         = 'dbUser',
-        ['auth.ormUserProvider']        = 'ormUser'
     })
 
     app:bindFrom('lxlib.auth.access', {
         handleAuthorization         = 'handleAuthorization',
-        authAccessResponse          = 'response',
         authorizable                = 'authorizable',
         authorizeRequest            = 'authorizeRequest'
     })

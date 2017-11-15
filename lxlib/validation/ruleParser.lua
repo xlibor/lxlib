@@ -1,11 +1,20 @@
 
 local lx, _M, mt = oo{
-    _cls_ = ''
+    _cls_       = '',
+    _static_    = {
+
+    }
 }
 
 local app, lf, tb, str = lx.kit()
 
 local sfind = string.find
+local static
+
+function _M._init_(this)
+
+    static = this.static
+end
 
 function _M:new(data)
 
@@ -95,36 +104,36 @@ function _M.__:mergeRulesForAttribute(results, attribute, rules)
     return results
 end
 
-function _M.parse(rules)
+function _M.s__.parse(rules)
 
     if lf.isTbl(rules) then
-        rules = _M.parseArrayRule(rules)
+        rules = static.parseArrayRule(rules)
     else 
-        rules = _M.parseStringRule(rules)
+        rules = static.parseStringRule(rules)
     end
-    rules[1] = _M.normalizeRule(rules[1])
+    rules[1] = static.normalizeRule(rules[1])
 
     return rules
 end
 
-function _M.__.parseArrayRule(rules)
+function _M.s__.parseArrayRule(rules)
 
     return {str.studly(str.trim(tb.get(rules, 1))), tb.slice(rules, 1)}
 end
 
-function _M.__.parseStringRule(rules)
+function _M.s__.parseStringRule(rules)
 
     local parameters = {}
     
     if sfind(rules, ':') then
         rules, parameter = str.div(rules, ':')
-        parameters = _M.parseParameters(rules, parameter)
+        parameters = static.parseParameters(rules, parameter)
     end
     
     return {str.studly(str.trim(rules)), parameters}
 end
 
-function _M.__.parseParameters(rule, parameter)
+function _M.s__.parseParameters(rule, parameter)
 
     if str.lower(rule) == 'regex' then
         
@@ -134,7 +143,7 @@ function _M.__.parseParameters(rule, parameter)
     return str.split(parameter, ',')
 end
 
-function _M.__.normalizeRule(rule)
+function _M.s__.normalizeRule(rule)
 
     local st = rule
     if st == 'Int' then

@@ -17,7 +17,7 @@ local lx, _M, mt = oo{
         updatedAt           = 'updated_at',
         queryMethods        = {
             'select', 'sel', 'pick', 'where', 'orWhere', 'or_', 'whereIn',
-            'whereBetween', 'between', 'get', 'set', 'find', 'first', 
+            'whereBetween', 'between', 'get', 'set', 'first', 'find', 'create',
             'orderBy', 'group', 'groupBy', 'take', 'insert', 'inserts',
             'limit', 'from', 'count', 'withCount', 'withGlobalScope',
             'withoutGlobalScope', 'withoutGlobalScopes', 'pure',
@@ -305,45 +305,9 @@ function _M:save(options)
     return saved
 end
 
-function _M:create(attrs)
-
-    local model = self:__new(attrs)
-    model:save()
-
-    return model
-end
-
-function _M:createOn(attrs)
-
-    local instance = self:__new():newQueryWithoutScopes()
-        :where(attrs):first()
-
-    if instance then
-        return instance
-    end
-
-    return self:create(attrs)
-end
-
-_M.firstOrCreate = _M.createOn
-
-function _M:newOn(attrs)
-
-    local instance = self:__new():newQueryWithoutScopes()
-        :where(attrs):first()
-
-    if instance then
-        return instance
-    end
-
-    return self:__new(attrs)
-end
-
-_M.firstOrNew = _M.newOn
-
-function _M:all(...)
+function _M.t__.all(this, ...)
  
-    local instance = self:__new()
+    local instance = new(this)
  
     return instance:newQuery():get(...)
 end
@@ -701,6 +665,8 @@ function _M:setAttr(key, value)
     return self
 end
 
+_M.setAttribute = _M.setAttr
+
 function _M:getIncrementing()
 
     return self.incrementing
@@ -745,7 +711,6 @@ function _M.s__.defaultTimestamps(value)
 
     value = lf.needTrue(value)
     static.timestamps = value
-
 end
 
 function _M:setCreatedAt(value)
@@ -1522,6 +1487,43 @@ function _M.__:fireModelEvent(event)
     return app:fire(self, event)
 end
 
+function _M.t__.regModelEvent(this, event, callback)
+
+    local class = this.__cls
+
+    app:listen(class .. '@' .. event, callback)
+end
+
+function _M.t__.created(this, callback)
+
+    this:regModelEvent('created')
+end
+
+function _M.t__.creating(this, callback)
+
+    this:regModelEvent('creating')
+end
+
+function _M.t__.updated(this, callback)
+
+    this:regModelEvent('updated')
+end
+
+function _M.t__.updating(this, callback)
+
+    this:regModelEvent('updating')
+end
+
+function _M.t__.deleted(this, callback)
+
+    this:regModelEvent('deleted')
+end
+
+function _M.t__.deleting(this, callback)
+
+    this:regModelEvent('deleting')
+end
+
 function _M:normalize(var)
 
     return lf.needCls(var)
@@ -1607,7 +1609,7 @@ function _M._load_(cls)
     local bag = cls.bag
 
     local baseMt = cls.baseMt
-
+    local stackInfo = cls.stack
     local scope, field
     local mutator
 
@@ -1648,6 +1650,15 @@ function _M._load_(cls)
         if not baseMt[method] then
             baseMt[method] = function(self, ...)
                 local query = self:newQuery()
+                local func = query[method]
+
+                return func(query, ...)
+            end
+
+            stackInfo[method] = function(this, ...)
+ 
+                local instance = new(this)
+                local query = instance:newQuery()
                 local func = query[method]
 
                 return func(query, ...)

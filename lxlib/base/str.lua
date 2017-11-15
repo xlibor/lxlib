@@ -20,7 +20,7 @@ local tinsert, tconcat, tremove = table.insert, table.concat, table.remove
 local rematch, resub, regsub, refind, resplit, regmatch =
     ngx.re.match, ngx.re.sub, ngx.re.gsub, ngx.re.find, ngx.re.split, ngx.re.gmatch
 
-local studlyCache    = {}
+local studlyCache   = {}
 local snakeCache    = {}
 local camelCache    = {}
 
@@ -192,7 +192,7 @@ end
 
 function _M.replaceLast(subject, search, replace)
 
-    local position = _M.strrpos(subject, search)
+    local position = _M.rpos(subject, search)
     if position then
         
         return _M.substrReplace(subject, replace, position, slen(search))
@@ -985,7 +985,7 @@ function _M.words(value, words, theEnd)
     return _M.rtrim(matches[0]) .. theEnd
 end
 
-function _M.strrpos(s, f)   
+function _M.rpos(s, f)   
 
     if s and f then
         local t = true
@@ -1099,6 +1099,52 @@ function _M.pad(s, length, padStr, padStyle)
     end
 
     return s
+end
+
+function _M.make(subList, pattern, style)
+
+    style = style or 1
+    local ret = {}
+
+    local patType = type(pattern)
+
+    if patType == 'string' then
+        for _, v in ipairs(subList) do
+            if style == 1 then
+                v = _M.format(pattern, v)
+            elseif style == 2 then
+                v = pattern .. v
+            elseif style == 3 then
+                v = v .. pattern
+            end
+
+            tapd(ret, v)
+        end
+    elseif patType == 'function' then
+        for _, v in ipairs(subList) do
+            v = pattern(v)
+            tapd(ret, v)
+        end
+    end
+
+    return unpack(ret)
+end
+
+function _M.str(s, needle, beforeNeedle)
+
+    local i, j = sfind(s, needle)
+    if not i then
+        return false
+    end
+
+    local ret
+    if beforeNeedle then
+        ret = ssub(s, 1, i - 1)
+    else
+        ret = ssub(s, i)
+    end
+
+    return ret
 end
 
 return _M

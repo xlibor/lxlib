@@ -1,7 +1,7 @@
 
 local lx, _M, mt = oo{
     _cls_ = '',
-    _ext_ = 'baseResponse',
+    _ext_ = 'lxlib.http.base.response',
     _mix_ = 'responseMix'
 }
 

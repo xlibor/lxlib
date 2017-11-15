@@ -33,8 +33,8 @@ return {
     valid_title = 'Sie müssen einen gültigen Titel und einen Single-Name in jedem Config-Model bieten',
     valid_model = "Sie müssen eine 'model'-Option in jedem Config-Model bieten",
     valid_edit = "Sie müssen einen gültigen 'edit_fields'-Array in jedem Config-Model bieten",
-    valid_menu = "Sie müssen eine gültige 'menu'-Option in der administrator.php-Config bieten",
-    valid_config_path = "Sie müssen eine gültige 'model_config_path'-Option in der administrator.php-Config bieten. Das Verzeichnis muss ebenfalls vorhanden und lesbar sein.",
+    valid_menu = "Sie müssen eine gültige 'menu'-Option in der admin.php-Config bieten",
+    valid_config_path = "Sie müssen eine gültige 'model_config_path'-Option in der admin.php-Config bieten. Das Verzeichnis muss ebenfalls vorhanden und lesbar sein.",
     not_eloquent = ' ist kein Eloquent-Model',
     storage_path_permissions = 'Sie müssen ihren Speicherpfad schreibbar machen, um eine Einstellungs-Seite zu erstellen',
     valid_home_page = 'Sie müssen ein gültiges Menü-Element in der home_page-Option Ihrer Config bieten'

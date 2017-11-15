@@ -63,7 +63,7 @@ function _M.__:getGenericUser(user)
 
     if user then
         
-        return new('auth.genericUser', user)
+        return new('lxlib.auth.genericUser', user)
     end
 end
 

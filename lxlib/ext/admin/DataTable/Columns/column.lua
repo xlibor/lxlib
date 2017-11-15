@@ -43,9 +43,9 @@ function _M:new()
 end
 
 -- The validator instance.
--- @var \Frozennode\Administrator\Validator
+-- @var \Frozennode\admin\Validator
 -- The config instance.
--- @var \Frozennode\Administrator\Config\ConfigInterface
+-- @var \Frozennode\admin\Config\ConfigInterface
 -- The config instance.
 -- @var \Illuminate\Database\DatabaseManager
 -- The options table.
@@ -65,8 +65,8 @@ end
 -- The table prefix.
 -- @var string
 -- Create a new action Factory instance.
--- @param \Frozennode\Administrator\Validator              validator
--- @param \Frozennode\Administrator\Config\ConfigInterface config
+-- @param \Frozennode\admin\Validator              validator
+-- @param \Frozennode\admin\Config\ConfigInterface config
 -- @param \Illuminate\Database\DatabaseManager             db
 -- @param table                                            options
 

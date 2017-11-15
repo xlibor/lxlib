@@ -10,11 +10,7 @@ function _M:reg()
 
     app:bond('crypterBond',     'lxlib.crypt.crypterBond')
     
-    app:bindFrom('lxlib.crypt.crypter', {
-        ['crypt.crypter.aes']     = 'aes'
-    })
-    app:bond('crypterBond',     'lxlib.crypt.crypterBond')
-    app:bind('crypt',         'lxlib.crypt.cryptManager')
+    app:bind('crypt',           'lxlib.crypt.cryptManager')
 end
 
 function _M:boot()

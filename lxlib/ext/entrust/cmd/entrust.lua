@@ -21,7 +21,6 @@ end
 -- The console command description.
 -- @var string
 -- Execute the console command.
--- @return void
 
 function _M:fire()
 

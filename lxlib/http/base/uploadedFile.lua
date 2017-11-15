@@ -13,9 +13,9 @@ function _M:ctor(path, originalName, mimeType)
     self.mimeType = self:guessMimetype(mimeType)
 end
 
-function _M:move()
+-- function _M:move(directory, name)
 
-end
+-- end
 
 function _M:isValid()
 

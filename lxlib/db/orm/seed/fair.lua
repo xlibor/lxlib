@@ -112,7 +112,7 @@ function _M:of(class, name)
     class = lf.needCls(class)
     name = name or 'default'
     
-    return new('db.seed.fairBuilder', class, name, self.definitions, self.faker)
+    return new('lxlib.db.orm.seed.fairBuilder', class, name, self.definitions, self.faker)
 end
 
 return _M

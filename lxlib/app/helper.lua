@@ -266,5 +266,34 @@ function _M.flash(message, level)
     return notifier
 end
 
+function _M.view(tpl, ctx)
+
+    local view = app:make('view')
+    
+    return view:make(tpl, ctx)
+end
+
+function _M.hash(value)
+
+    local hash = app:get('hash')
+
+    return hash:make(value)
+end
+
+function _M.validator(data, rules, messages, customAttrs)
+
+    customAttrs = customAttrs or {}
+    messages = messages or {}
+    rules = rules or {}
+    local factory = app('validator')
+    if not data then
+        
+        return factory
+    end
+    data = data or {}
+    
+    return factory:make(data, rules, messages, customAttrs)
+end
+
 return _M
 

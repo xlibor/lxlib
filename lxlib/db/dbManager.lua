@@ -114,5 +114,6 @@ function _M:strictMode(strict)
     return self
 end
 
+
 return _M
 

@@ -3,7 +3,7 @@ local lx, _M, mt = oo{
     _cls_        = '',
     a__            = {},
     _static_     = {
-        morphMap = {},
+        _morphMap = {},
         constraints = true
     }
 }
@@ -20,9 +20,9 @@ end
 function _M:new(query, parent)
 
     local this = {
-        query    = query,
-        parent    = parent,
-        related    = query:getModel()
+        query       = query,
+        parent      = parent,
+        related     = query:getModel()
     }
 
     oo(this, mt)
@@ -77,7 +77,7 @@ function _M:getRelationQuery(query, parent, ...)
     return query:where(self:getHasCompareKey(), '=', query:exp(key))
 end
 
-function _M.noConstraints(cb)
+function _M.s__.noConstraints(cb)
 
     local previous = static.constraints
     static.constraints = false
@@ -142,20 +142,20 @@ function _M:warp(value)
     return value
 end
 
-function _M.morphMap(map, merge)
+function _M.s__.morphMap(map, merge)
  
     merge = lf.needTrue(merge)
 
-    map = _M.buildMorphMapFromModels(map)
+    map = static.buildMorphMapFromModels(map)
 
     if lf.isTbl(map) then
-        static.morphMap = merge and tb.merge(static.morphMap, map) or map
+        static._morphMap = merge and tb.merge(static._morphMap, map) or map
     end
 
-    return static.morphMap
+    return static._morphMap
 end
 
-function _M.buildMorphMapFromModels(models)
+function _M.s__.buildMorphMapFromModels(models)
 
     if not models then return models end
     if tb.isAssoc(models) then return models end

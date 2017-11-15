@@ -32,7 +32,7 @@ end
 
 function _M:getHeader(key)
 
-    return self.headers or {}
+    return self.headers[key]
 end
 
 return _M

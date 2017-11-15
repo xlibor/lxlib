@@ -1,7 +1,7 @@
 
 local _M = {
     _cls_ = '',
-    _ext_ = 'baseLdo'
+    _ext_ = 'lxlib.db.ldo.ldo'
 }
 
 local mt = { __index = _M }

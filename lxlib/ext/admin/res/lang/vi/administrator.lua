@@ -33,8 +33,8 @@ return {
     valid_title = 'Bạn phải cung cấp đúng tiêu đề và tên từng cấu hình model',
     valid_model = 'Bạn phải cung cấp các lựa chọn trong mỗi cấu hình model',
     valid_edit = "Bạn phải cung cấp đúng mảng 'edit_fields' cho mỗi cấu hình model",
-    valid_menu = 'Bạn phải cung cấp đúng lựa chọn menu trong cấu hình file administrator.php',
-    valid_config_path = "Bạn phải cung cấp đúng 'model_config_path trong cấu hình file administrator.php. Thư mục đồng thời phải tồn tại và có quyền truy cập.",
+    valid_menu = 'Bạn phải cung cấp đúng lựa chọn menu trong cấu hình file admin.php',
+    valid_config_path = "Bạn phải cung cấp đúng 'model_config_path trong cấu hình file admin.php. Thư mục đồng thời phải tồn tại và có quyền truy cập.",
     not_eloquent = ' không phải model Eloquent',
     storage_path_permissions = 'Bạn phải cung cấp đường dẫn lưu trữ có quyền ghi để tạo cài đặt cho các trang',
     valid_home_page = 'Bạn phải cung cấp đúng các phần tử menu trong lựa chọn cho home_page trong tệp cài đặt'

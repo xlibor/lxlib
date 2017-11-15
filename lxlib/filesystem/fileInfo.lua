@@ -80,6 +80,13 @@ function _M.c__:isLink()
     
     return fs.isLink(self.fpath)
 end
- 
+
+function _M:move(dir, name)
+
+    local target = dir .. '/' .. name
+
+    return fs.move(self.fullPath, target)
+end
+
 return _M
 

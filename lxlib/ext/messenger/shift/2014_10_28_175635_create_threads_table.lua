@@ -7,7 +7,6 @@ local lx, _M, mt = oo{
 local app, lf, tb, str = lx.kit()
 
 -- Run the migrations.
--- @return void
 
 function _M:up()
 
@@ -15,11 +14,11 @@ function _M:up()
         table:increments('id')
         table:string('subject')
         table:timestamps()
+        table:softDeletes()
     end)
 end
 
 -- Reverse the migrations.
--- @return void
 
 function _M:down()
 

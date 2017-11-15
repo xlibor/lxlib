@@ -11,7 +11,7 @@ local sgsub, slower = string.gsub, string.lower
 function _M:new(disper)
 
     local this = {
-        routes              = new('routeCol'),
+        routes              = new('lxlib.routing.routeCol'),
         bars                = lx.n.obj(),
         barGroups           = lx.n.obj(),
         groups              = lx.n.obj(),
@@ -489,7 +489,7 @@ function _M:resource(name, controller, options)
 
     options = options or {}
 
-    local registrar = new('resourceEntry', self)
+    local registrar = new('lxlib.routing.resourceEntry', self)
 
     registrar:reg(name, controller, options)
 end
@@ -497,7 +497,7 @@ end
 function _M:_run_(method)
 
     return function(self, ...)
-        local entry = new('routeEntry', self)
+        local entry = new('lxlib.routing.routeEntry', self)
 
         return entry:attribute(method, ...)
     end

@@ -153,7 +153,7 @@ function _M:regBaseBinds()
     self:bindFrom('lxlib.base', {
         'col', 'msgBag', 'msgPack', 'chain',
         'nameParser', 'viewErrorBag', 'htmlStr',
-        {libHelper = 'helper'}, 'timing'
+        {libHelper = 'helper'}, 'timing', 'attr'
     })
 
     self:bindFrom('lxlib.core', {
@@ -375,7 +375,7 @@ end
 function _M:fire(obj, event, ...)
     
     local events = self:get('events')
-
+ 
     events:fire(obj, event, ...)
 end
 

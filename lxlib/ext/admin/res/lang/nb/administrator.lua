@@ -33,8 +33,8 @@ return {
     valid_title = 'Du må oppgi en gyldig tittel og et gyldig tittelnavn i hver modell-konfigurasjon',
     valid_model = "Du må oppgi en 'model'-option i hver modell-konfigurasjon",
     valid_edit = "Du må oppgi en gyldig 'edit_fields'-array i hver modell-konfigurasjon",
-    valid_menu = "Du må oppgi en gyldig 'menu'-option i administrator.php:s konfigurasjonen",
-    valid_config_path = "Du må oppgi en gyldig 'model_config_path' i administrator.php:s konfigurasjonen. Mappen må også eksistere og må være leselig (readable).",
+    valid_menu = "Du må oppgi en gyldig 'menu'-option i admin.php:s konfigurasjonen",
+    valid_config_path = "Du må oppgi en gyldig 'model_config_path' i admin.php:s konfigurasjonen. Mappen må også eksistere og må være leselig (readable).",
     not_eloquent = ' er ikke en Eloquent-modell',
     storage_path_permissions = "Du må gjøre din 'storage path' skrivelig(writable) for å opprette en innstillingsside (settings page)",
     valid_home_page = "Du må oppgi en gyldig 'menu item' i 'home_page'-innstillingen i din konfigurasjon"

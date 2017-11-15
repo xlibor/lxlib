@@ -33,8 +33,8 @@ return {
     valid_title = "Du skal angive en gyldig 'titel' og 'single' i hver models indstillingsfil",
     valid_model = "Du skal angive en 'model'-indstilling i hver models indstillingsfil",
     valid_edit = "Du skal angive et gyldig 'edit_fields'-array i hver models indstillingsfil",
-    valid_menu = "Du skal angive en gyldig 'menu'-indstilling i administrator.php indstillingsfilen",
-    valid_config_path = "Du skal angive en gyldig 'model_config_path' i administrator.php indstillingsfilen. Denne mappe skal eksistere, og være læsbar.",
+    valid_menu = "Du skal angive en gyldig 'menu'-indstilling i admin.php indstillingsfilen",
+    valid_config_path = "Du skal angive en gyldig 'model_config_path' i admin.php indstillingsfilen. Denne mappe skal eksistere, og være læsbar.",
     not_eloquent = ' er ikke en Eloquent model',
     storage_path_permissions = "Du skal gøre din 'storage'-sti læsbar for at kunne lave en indstillingsside",
     valid_home_page = "Du skal angive et gyldigt menu-element i din 'home_page'-indstilling i din indstillingsfil"

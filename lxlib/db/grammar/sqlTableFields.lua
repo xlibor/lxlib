@@ -292,6 +292,9 @@ end
 
 function _M:integer(column, autoIncrement, unsigned)
 
+    autoIncrement = lf.needFalse(autoIncrement)
+    unsigned = lf.needFalse(unsigned)
+    
     return self:add(column, 'integer')
         :autoIncrement(autoIncrement)
         :unsigned(unsigned)

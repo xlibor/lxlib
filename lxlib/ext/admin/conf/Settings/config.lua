@@ -64,7 +64,7 @@ end
 function _M:getStoragePath()
 
     local path = self:getOption('storage_path')
-    path = path and path or storage_path() .. '/administrator_settings/'
+    path = path and path or storage_path() .. '/admin_settings/'
     
     return str.rtrim(path, '/') .. '/'
 end

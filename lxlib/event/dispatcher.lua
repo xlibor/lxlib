@@ -76,9 +76,9 @@ function _M:fire(obj, p1, ...)
     else
         event = obj
     end
-     
+
     tapd(self.firingList, event)
- 
+
     if cls and obj:__is 'shouldBroadcast' then
         self:broadcastEvent(obj)
     end
@@ -87,6 +87,7 @@ function _M:fire(obj, p1, ...)
 
     local listeners = {}
     if cls then
+
         listeners = self:getListeners(cls, event)
     else
         listeners = self:getListeners(event)

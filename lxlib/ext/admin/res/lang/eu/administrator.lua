@@ -33,8 +33,8 @@ return {
     valid_title = 'Modelo bakoitzaren konfigurazioan baliozko titulu bat eta izen bakar bat proportzionatu behar duzu',
     valid_model = "Modelo bakoitzaren konfigurazioan 'model' aukera bat propotzionatu behar duzu",
     valid_edit = "Modelo bakoitzaren konfigurazioan baliozko 'edit_fields' array bat proportzionatu behar duzu",
-    valid_menu = "administrator.php konfigurazioan baliozko 'menu' aukera bat proportzionatu behar duzu",
-    valid_config_path = "administrator.php konfigurazioan baliozko 'model_config_path' bat proportzionatu behar duzu. Direktorio honek existitu egin behar du eta irakurgarria izan behar du",
+    valid_menu = "admin.php konfigurazioan baliozko 'menu' aukera bat proportzionatu behar duzu",
+    valid_config_path = "admin.php konfigurazioan baliozko 'model_config_path' bat proportzionatu behar duzu. Direktorio honek existitu egin behar du eta irakurgarria izan behar du",
     not_eloquent = ' ez da Eloquent modelo bat',
     storage_path_permissions = 'You must make your storage path writable in order to make a settings page',
     valid_home_page = 'You must provide a valid menu item in the home_page option of your config'

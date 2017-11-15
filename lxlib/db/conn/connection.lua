@@ -12,6 +12,7 @@ local app, lf, tb, str = lx.kit()
 local try, throw = lx.try, lx.throw
 local sgsub = string.gsub
 local fmt = string.format
+local dbInit = lx.db
 
 function _M:new(ldo, dbName, tablePrefix, config)
 
@@ -475,6 +476,15 @@ function _M:getSchemaBuilder()
 
     return sb
 end
+
+function _M:getGrammar()
+
+    local commonGrammar = dbInit.common(self:getDbType())
+
+    return commonGrammar
+end
+
+_M.grammar = _M.getGrammar
 
 return _M
 

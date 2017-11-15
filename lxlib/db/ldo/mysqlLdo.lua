@@ -1,7 +1,7 @@
 
 local lx, _M, mt = oo{ 
     _cls_    = '',
-    _ext_    = 'baseLdo'
+    _ext_    = 'lxlib.db.ldo.ldo'
 }
 
 local app, lf, tb, str = lx.kit()

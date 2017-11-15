@@ -2,7 +2,7 @@
 local lx, _M, mt = oo{
     _cls_ = '',
     _ext_ = 'controller',
-    _mix_ = 'auth.sendPwdResetEmail'
+    _mix_ = 'lxlib.auth.sendPwdResetEmail'
 }
 
 function _M:ctor()

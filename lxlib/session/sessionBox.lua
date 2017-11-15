@@ -31,11 +31,6 @@ end
 
 function _M.__:regDepends()
     
-    app:bindFrom('lxlib.session.handler', {
-        'cookieHandler', 'fileHandler', 'dbHandler',
-        'cacheHandler'
-    }, {prefix = 'session.'})
-    
     app:bind('session.commonStore',         'lxlib.session.store')
     app:bind('tokenMismatchException',      'lxlib.session.excp.tokenMismatchException')
 end

@@ -76,7 +76,7 @@ function _M:output(content)
     local resp = self.resp
 
     if lf.isObj(content) then
-        if content:__is('baseResponse') then
+        if content:__is('lxlib.http.base.response') then
             self.resp = content
             
             return

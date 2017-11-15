@@ -19,7 +19,7 @@ end
 function _M:createAesDriver(config)
 
     local key = app:conf('app.key')
-    local aesCrypter = app:make('crypt.crypter.aes', key, config)
+    local aesCrypter = app:make('lxlib.crypt.crypter.aes', key, config)
 
     return aesCrypter
 end

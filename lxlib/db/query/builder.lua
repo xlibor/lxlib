@@ -511,10 +511,12 @@ function _M:truncate()
 
     if not self.testMode then
         local conn = self:getConn()
-        local res = conn:exec(
-            'truncate table ' .. self:wrap(tableName))
+        local sqls = dbInit.common(dbType):truncate(tableName)
+        for _, sql in ipairs(sqls) do
+            conn:exec(sql)
+        end
 
-        return res
+        return true
     else
         return true
     end
@@ -698,6 +700,24 @@ function _M.__:initSelectFields()
     end
 
     return self._selects
+end
+
+function _M.__:initOrders()
+
+    if not self._orders then
+        self._orders = dbInit.sqlSelectOrderByFields()
+    end
+
+    return self._orders
+end
+
+function _M.__:initGroups()
+
+    if not self._groups then
+        self._groups = dbInit.sqlSelectGroupByFields()
+    end
+
+    return self._groups
 end
 
 function _M:selectedCount()
@@ -1142,16 +1162,14 @@ end
 function _M:groupBy(...)
 
     local args = {...}
-    local groupBy = dbInit.sqlSelectGroupByFields()
+    local groupBy = self:initGroups()
+
     for _,v in pairs(args) do 
         groupBy:add(v)
     end
-    self._groups = groupBy 
 
     return self
 end
-
-_M.group = _M.groupBy
 
 function _M:orderBy(...)
 
@@ -1161,7 +1179,7 @@ function _M:orderBy(...)
         return self
     end
 
-    local orderBy = dbInit.sqlSelectOrderByFields()
+    local orderBy = self:initOrders()
 
     if len == 2 then
         local p1, p2 = args[1], args[2]
@@ -1170,8 +1188,6 @@ function _M:orderBy(...)
             p2 = slower(p2)
             if p2 == 'asc' or p2 == 'desc' then
                 orderBy:add(p1, nil, p2)
-                self._orders = orderBy 
-
                 return self
             end
         end
@@ -1191,12 +1207,8 @@ function _M:orderBy(...)
         end 
     end
 
-    self._orders = orderBy 
-
     return self
 end
-
-_M.order = _M.orderBy
 
 function _M:latest(column)
 

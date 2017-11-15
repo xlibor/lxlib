@@ -19,11 +19,11 @@ function _M:regDepends()
         'abstractProvider', 'bitbucketProvider',
         'facebookProvider', 'githubProvider',
         'googleProvider', 'linkedInProvider',
-        'user'
+        'wechatProvider', 'qqProvider'
     }, {prefix = 'socialite.'})
 
-    app:bind('socialite.abstractUser',  boxPath .. 'abstractUser')
-
+    app:bind('socialite.user',  boxPath .. 'user')
+    app:bind('socialite.accessToken', boxPath .. 'accessToken')
     app:bond('socialite.userBond',      boxPath .. 'bond.user')
     app:bond('socialite.providerBond',  boxPath .. 'bond.provider')
     app:bind('socialite.invalidStateException', boxPath .. 'excp.invalidStateException')

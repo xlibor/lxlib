@@ -44,13 +44,12 @@ end
 
 function _M.needArgs(...)
 
-    local args = {...}
-    local argsLen = #args
+    local argsLen, args = select('#', ...), {...}
     local p1 = args[1]
     local p1Type = type(p1)
 
-    if p1Type == 'table' then
-        return p1, 1
+    if argsLen == 1 and p1Type == 'table' then
+        return p1, #p1
     else
         return args, argsLen
     end

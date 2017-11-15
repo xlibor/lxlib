@@ -7,7 +7,6 @@ local lx, _M, mt = oo{
 local app, lf, tb, str = lx.kit()
 
 -- Run the migrations.
--- @return void
 
 function _M:up()
 
@@ -17,11 +16,11 @@ function _M:up()
         table:integer('user_id'):unsigned()
         table:text('body')
         table:timestamps()
+        table:softDeletes()
     end)
 end
 
 -- Reverse the migrations.
--- @return void
 
 function _M:down()
 

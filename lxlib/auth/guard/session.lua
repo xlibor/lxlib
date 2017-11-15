@@ -2,7 +2,7 @@
 local lx, _M, mt = oo{
     _cls_   = '',
     _bond_  = {'statefulGuard', 'supportBasicAuth'},
-    _mix_   = 'auth.guardHelper'
+    _mix_   = 'lxlib.auth.guardHelper'
 }
 
 local app, lf, tb, str, new = lx.kit()
@@ -93,7 +93,7 @@ function _M.__:recaller()
     local recaller = self.request.cookies:get(self:getRecallerName())
     if recaller then
         
-        return new('recaller', recaller)
+        return new('lxlib.auth.recaller', recaller)
     end
 end
 

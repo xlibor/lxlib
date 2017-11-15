@@ -14,6 +14,7 @@ local dtBase = require('lxlib.resty.date')
 local Str = require('lxlib.base.str')
 local jsonBase = require('lxlib.json.base')
 local utils = require('lxlib.base.utils')
+local filterVar = require('lxlib.base.common.filterVar')
 
 local stDtPat = "%Y-%m-%d %H:%M:%S"
 local ssub, sgsub, sfind, slower= string.sub, string.gsub, string.find, string.lower
@@ -595,6 +596,8 @@ function _M.datetime(format, time)
     return os.date(format, time)
 end
 
+_M.date = _M.datetime
+
 function _M.cost(callback, ...)
 
     local t1 = _M.timestamp(true, true)
@@ -784,19 +787,8 @@ function _M.mustArgs(...)
     end
 end
 
-function _M.needArgs(...)
+_M.needArgs = utils.needArgs
 
-    local argsLen, args = select('#', ...), {...}
-    local p1 = args[1]
-    local p1Type = type(p1)
-
-    if argsLen == 1 and p1Type == 'table' then
-        return p1, #p1
-    else
-        return args, argsLen
-    end
-end
- 
 function _M.use(args, cb)
     
     if not cb then
@@ -1063,26 +1055,12 @@ _M.rawurldecode = _M.urldecode
 
 function _M.parseUrl(url, option)
 
-    local pat = [[(?:(\w+)://)?(?:(\w+)\:(\w+)@)?]]
-        .. [[([^/:]+)?(?:\:(\d*))?([^#?]+)?(?:\?([^#]+))?(?:#(.+$))?]]
-    local fields = {'url','scheme','user','pass',
-        'host','port','path','query','fragment'
-    }
+    return filterVar.parseUrl(url, option)
+end
 
-    local m = rematch(url, pat)
-    local ret = {}
+function _M.parseStr(s)
 
-    for i, v in ipairs(fields) do
-        ret[v] = m[i - 1]
-    end
-
-    if option then
-        if option == 'port' then
-            ret = tonumber(ret.port)
-        else
-            ret = ret[option]
-        end
-    end
+    local ret = ngx.decode_args(s)
 
     return ret
 end
@@ -1110,8 +1088,9 @@ function _M.sha1(s)
     return _M.hex(s)
 end
 
-function _M.filter(var, options)
+function _M.filter(var, filter, options)
 
+    return filterVar.filter(var, filter, options)
 end
 
 function _M.isScalar(var)

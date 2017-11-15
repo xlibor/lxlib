@@ -10,10 +10,12 @@ local app, lf, tb, str, new = lx.kit()
 function _M:new(request, clientId, clientSecret, redirectUrl, httpInfo)
 
     local this = {
+        name = nil,
         request = request,
         httpClient = nil,
         clientId = clientId,
         clientSecret = clientSecret,
+        accessToken = nil,
         redirectUrl = redirectUrl,
         parameters = {},
         scopes = {},
@@ -38,7 +40,7 @@ function _M.a__:getAuthUrl(state) end
 function _M.a__:getTokenUrl() end
 
 -- Get the raw user for the given access token.
--- @param  string  token
+-- @param  socialite.accessToken  token
 -- @return table
 
 function _M.a__:getUserByToken(token) end
@@ -52,9 +54,12 @@ function _M.a__:mapUserToObject(user) end
 -- Redirect the user of the application to the provider's authentication screen.
 -- @return redirectResponse
 
-function _M:redirect()
+function _M:redirect(redirectUrl)
 
     local state
+    if redirectUrl then
+        self.redirectUrl = redirectUrl
+    end
     if self:usesState() then
         state = self:getState()
         self.request.session:put('state', state)
@@ -104,18 +109,17 @@ end
 
 -- {@inheritdoc}
 
-function _M:user()
+function _M:user(token)
 
-    if self:hasInvalidState() then
+    if not token and self:hasInvalidState() then
         lx.throw('socialite.invalidStateException')
     end
-    local response = self:getAccessTokenResponse(self:getCode())
-    local token = tb.get(response, 'access_token')
-    local user = self:mapUserToObject(self:getUserByToken(token))
+    token = token or self:getAccessToken(self:getCode())
+    local user = self:getUserByToken(token)
+    user = self:mapUserToObject(user):merge{original = user}
     
     return user:setToken(token)
-        :setRefreshToken(tb.get(response, 'refresh_token'))
-        :setExpiresIn(tb.get(response, 'expires_in'))
+        :setProviderName(self:getName())
 end
 
 -- Get a Social User instance from a known access token.
@@ -145,9 +149,9 @@ end
 
 -- Get the access token response for the given code.
 -- @param  string  code
--- @return table
+-- @return socialite.accessToken
 
-function _M:getAccessTokenResponse(code)
+function _M:getAccessToken(code)
 
     local response = self:getHttpClient()
         :post(self:getTokenUrl(), {
@@ -156,7 +160,7 @@ function _M:getAccessTokenResponse(code)
             }
         )
 
-    return lf.jsde(response:getBody(), true)
+    return self:parseAccessToken(response:getBody())
 end
 
 -- Get the POST fields for the token request.
@@ -171,6 +175,25 @@ function _M.__:getTokenFields(code)
         code = code,
         redirect_uri = self.redirectUrl
     }
+end
+
+-- Get the access token from the token response body.
+-- @param mixed body
+-- @return socialite.accessToken
+
+function _M.__:parseAccessToken(body)
+
+    local bodyRaw = body
+
+    if not lf.isTbl(body) then
+        body = lf.jsde(body)
+    end
+
+    if lf.isEmpty(body.access_token) then
+        error('Authorize Failed: ' .. bodyRaw)
+    end
+    
+    return new('socialite.accessToken', body)
 end
 
 -- Get the code from the request.
@@ -226,6 +249,8 @@ end
 -- @return net.http.client
 
 function _M.__:getHttpClient()
+
+    do return new('net.http.client', self.httpInfo) end
 
     if not self.httpClient then
         self.httpClient = new('net.http.client', self.httpInfo)
@@ -299,6 +324,15 @@ function _M:with(parameters)
     self.parameters = parameters
     
     return self
+end
+
+function _M:getName()
+
+    if not self.name then
+        self.name = str.str(self.__name, 'Provider', true)
+    end
+    
+    return self.name
 end
 
 return _M

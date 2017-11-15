@@ -7,6 +7,11 @@ local lx, _M = oo{
 local app, lf, tb, str = lx.kit()
 local throw = lx.throw
 
+local arrStore, dbStore, fileStore, memcStore, redisStore = str.make(
+    {'arr', 'db', 'file', 'memc', 'redis'},
+    'lxlib.cache.store.%s'
+)
+
 function _M:ctor()
 
 end
@@ -20,18 +25,14 @@ _M.store = _M.driver
 
 function _M.__:createArrDriver(config)
 
-    return self:buildDoer(
-        app:make('cache.arrStore'),
-        config
-    )
+    return self:buildDoer(app:make(arrStore), config)
 end
 
 function _M.__:createFileDriver(config)
 
     local path = config.path
 
-    return self:buildDoer(
-        app:make('cache.fileStore', app.files, path),
+    return self:buildDoer(app:make(fileStore, app.files, path),
         config
     )
 end
@@ -43,8 +44,7 @@ function _M.__:createDbDriver(config)
     local conn = db:connection(connName)
 
     return self:buildDoer(
-        app:make('cache.dbStore',
-            conn, config['table']
+            app:make(dbStore, conn, config.table
         ), config
     )
 end
@@ -55,9 +55,7 @@ function _M:createRedisDriver(config)
     local connection = config.connection or 'default'
 
     return self:buildDoer(
-        app:make('cache.redisStore',
-            redis, connection
-        ), config
+        app:make(redisStore, redis, connection), config
     )
 end
 

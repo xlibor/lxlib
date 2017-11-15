@@ -39,7 +39,7 @@ function _M:sql(dbType)
         error('fields have not been added')
     end
     fields.alterMode = 'mix'
-    local strSql = "alter table "..pub.sqlWrapName(name, dbType).." "..fields:sql(dbType)
+    local strSql = "alter table " .. pub.sqlWrapName(name, dbType).." "..fields:sql(dbType)
 
     return strSql
 end

@@ -26,8 +26,8 @@ function _M:ctor(query, parent, table, foreignKey, otherKey, relationName)
     self.otherKey = otherKey
     self.foreignKey = foreignKey
     self.relationName = relationName
-    self.pivotCreatedAt = nil
-    self.pivotUpdatedAt = nil
+    self.pivotCreatedAt = false
+    self.pivotUpdatedAt = false
 
     self.__skip = true
     self:__super(_M, 'ctor', query, parent)
@@ -801,8 +801,8 @@ end
 
 function _M:withTimestamps(createdAt, updatedAt)
 
-    self.pivotCreatedAt = createdAt
-    self.pivotUpdatedAt = updatedAt
+    self.pivotCreatedAt = createdAt or false
+    self.pivotUpdatedAt = updatedAt or false
 
     return self:withPivot(self:createdAt(), self:updatedAt())
 end

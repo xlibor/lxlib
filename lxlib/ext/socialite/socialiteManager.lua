@@ -19,12 +19,28 @@ function _M:with(driver)
     return self:resolve(driver)
 end
 
--- Create an instance of the specified driver.
+-- Create an instance of the github driver.
 -- @return socialite.abstractProvider
 
 function _M:createGithubDriver(config)
-    
+
     return self:buildProvider('socialite.githubProvider', config)
+end
+
+-- Create an instance of the wechat driver.
+-- @return socialite.abstractProvider
+
+function _M:createWechatDriver(config)
+
+    return self:buildProvider('socialite.wechatProvider', config)
+end
+
+-- Create an instance of the qq driver.
+-- @return socialite.abstractProvider
+
+function _M:createQqDriver(config)
+
+    return self:buildProvider('socialite.qqProvider', config)
 end
 
 -- Create an instance of the specified driver.

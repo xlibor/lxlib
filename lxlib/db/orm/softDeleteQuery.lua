@@ -5,7 +5,7 @@ local lx, _M, mt = oo{
 }
 
 local app, lf, tb, str = lx.kit()
-local scope = 'softDeleteScope'
+local scope = 'lxlib.db.orm.softDeleteScope'
 
 function _M:forceDelete()
 

@@ -1,7 +1,7 @@
 
 local lx, _M = oo{
     _cls_ = '',
-    _mix_ = {'auth.redirectUser'}
+    _mix_ = {'lxlib.auth.redirectUser'}
 }
 
 local app, lf, tb, str = lx.kit()

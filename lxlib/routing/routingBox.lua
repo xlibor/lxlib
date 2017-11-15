@@ -22,7 +22,7 @@ function _M.__:regRouter()
 
     local router = 'lxlib.routing.router'
     app:single('router', router, function()
-        return new(router, app:make('ctlerDispatcher'))
+        return new(router, app:make('lxlib.routing.dispatcher'))
     end)
 end
 
@@ -33,7 +33,7 @@ function _M.__:regUrlGenerator()
         
         app:instance('routes', routes)
         
-        local url = app:make('urlGenerator', routes)
+        local url = app:make('lxlib.routing.urlGenerator', routes)
 
         return url
     end)
@@ -42,7 +42,7 @@ end
 function _M.__:regRedirector()
 
     app:keep('redirect', function()
-        local redirector = new('redirector', app.url)
+        local redirector = new('lxlib.routing.redirector', app.url)
         local sessionStore = app:get('session.store')
         if sessionStore then
             redirector:setSession(sessionStore)
@@ -55,28 +55,18 @@ end
 function _M.__:regDepends()
     
     app:bindFrom('lxlib.routing', {
-        'route', 'routeGroup', 'routeCol', 'controller',
-        'routeEntry', 'resourceEntry', 'redirector',
-        'urlGenerator', 'pipeline',
+        'route', 'routeGroup', 'controller',
+        'pipeline',
     })
 
-    app:single('ctlerDispatcher',       'lxlib.routing.dispatcher')
-
-    app:bind('routeBase',               'lxlib.routing.base.route')
-    app:single('routeCompiler',         'lxlib.routing.base.routeCompiler')
-    app:bind('compiledRoute',           'lxlib.routing.base.compiledRoute')
-
-    app:bindFrom('lxlib.routing.matching', {
-        'hostMatcher', 'methodMatcher',
-        'schemeMatcher', 'uriMatcher'
-    })
-
+    app:single('lxlib.routing.dispatcher')
+    app:single('lxlib.routing.base.routeCompiler')
     app:single('routeMatchers', function()
         local matchers = {
-            new 'methodMatcher',
-            new 'schemeMatcher',
-            new 'hostMatcher',
-            new 'uriMatcher'
+            new 'lxlib.routing.matching.methodMatcher',
+            new 'lxlib.routing.matching.schemeMatcher',
+            new 'lxlib.routing.matching.hostMatcher',
+            new 'lxlib.routing.matching.uriMatcher'
         }
 
         return matchers

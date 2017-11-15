@@ -27,15 +27,11 @@ function _M.__:regLoader()
 
     app:single('translation.loader', function()
 
-        return new('translation.fileLoader', app.files, app.langPath)
+        return new('lxlib.translation.loader.file', app.files, app.langPath)
     end)
 end
 
 function _M.__:regDepends()
-
-    app:bindFrom('lxlib.translation.loader', {
-        ['translation.fileLoader']      = 'file'
-    })
 
     app:bond('translationLoaderBond',   'lxlib.translation.bond.loader')
     app:bond('translatorBond',          'lxlib.translation.bond.translator')

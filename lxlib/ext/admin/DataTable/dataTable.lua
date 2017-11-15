@@ -20,11 +20,11 @@ function _M:new()
 end
 
 -- The config instance.
--- @var \Frozennode\Administrator\Config\ConfigInterface
+-- @var \Frozennode\admin\Config\ConfigInterface
 -- The validator instance.
--- @var \Frozennode\Administrator\DataTable\Columns\Factory
+-- @var \Frozennode\admin\DataTable\Columns\Factory
 -- The validator instance.
--- @var \Frozennode\Administrator\Fields\Factory
+-- @var \Frozennode\admin\Fields\Factory
 -- The column objects.
 -- @var table
 -- The sort options.
@@ -32,9 +32,9 @@ end
 -- The number of rows per page for this data table.
 -- @var int
 -- Create a new action DataTable instance.
--- @param \Frozennode\Administrator\Config\ConfigInterface    config
--- @param \Frozennode\Administrator\DataTable\Columns\Factory columnFactory
--- @param \Frozennode\Administrator\Fields\Factory            fieldFactory
+-- @param \Frozennode\admin\Config\ConfigInterface    config
+-- @param \Frozennode\admin\DataTable\Columns\Factory columnFactory
+-- @param \Frozennode\admin\Fields\Factory            fieldFactory
 
 function _M:ctor(config, columnFactory, fieldFactory)
 
@@ -267,9 +267,9 @@ function _M:setRowsPerPage(session, globalPerPage, override)
     local perPage
     if override then
         perPage = tonumber(override)
-        session:put('administrator_' .. self.config:getOption('name') .. '_rows_per_page', perPage)
+        session:put('admin_' .. self.config:getOption('name') .. '_rows_per_page', perPage)
     end
-    local perPage = session:get('administrator_' .. self.config:getOption('name') .. '_rows_per_page')
+    local perPage = session:get('admin_' .. self.config:getOption('name') .. '_rows_per_page')
     if not perPage then
         perPage = tonumber(globalPerPage)
     end

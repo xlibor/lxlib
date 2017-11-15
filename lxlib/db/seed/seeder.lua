@@ -17,7 +17,12 @@ end
 
 function _M:call(class)
 
-    return self:resolve(class):run()
+    self:resolve(class):run()
+
+    local cmd = self.command or app:get('app.command')
+    if cmd then
+        cmd:info('seeded: ' .. class)
+    end
 end
 
 function _M:resolve(class)

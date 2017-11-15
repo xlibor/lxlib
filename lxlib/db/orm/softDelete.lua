@@ -19,8 +19,8 @@ end
 
 function _M._fix_(this)
 
-    app:fix(this, 'orm.query', 'softDeleteQuery')
-    local bag = app:getClsBaseInfo('softDeleteQuery').bag
+    app:fix(this, 'orm.query', 'lxlib.db.orm.softDeleteQuery')
+    local bag = app:getClsBaseInfo('lxlib.db.orm.softDeleteQuery').bag
     for k, v in pairs(bag) do
         if lf.isFunc(v) and not _M[k] then
             this[k] = function(model, ...)
@@ -36,7 +36,7 @@ end
 
 function _M:bootSoftDelete()
 
-    self:addGlobalScope(app:make('softDeleteScope'))
+    self:addGlobalScope(app:make('lxlib.db.orm.softDeleteScope'))
 end
 
 function _M:forceDelete()

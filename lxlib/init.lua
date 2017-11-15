@@ -6,7 +6,6 @@ local _M = {
     str         = require('lxlib.base.str'),
     tb          = require('lxlib.base.arr'),
     n           = require('lxlib.core.initer'),
-    cvt         = require('lxlib.base.arr'),
     json        = require('lxlib.json.base'),
     db          = require('lxlib.db.init'),
     def         = require('lxlib.base.define'),
@@ -37,7 +36,7 @@ function _M.getPath(onlyDir, stackLevel)
     local t = filePath:sub(2)
     if onlyDir then
         local fs = _M.fs
-        t = fs.split(t)
+        return fs.split(t)
     end
 
     return t
@@ -287,11 +286,11 @@ function _M.namespace(ns)
         local len = #args
 
         if len == 1 then
-            return app:getBaseMt(ns .. '.' .. args[1])
+            return app:use(ns .. '.' .. args[1])
         elseif len > 1 then
             local t = {}
             for _, v in ipairs(args) do
-                t[#t + 1] = app:getBaseMt(ns .. '.' .. v)
+                t[#t + 1] = app:use(ns .. '.' .. v)
             end
             return unpack(t)
         end

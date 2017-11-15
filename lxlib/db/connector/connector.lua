@@ -10,7 +10,7 @@ function _M:createConnection(config)
 
     local driver = self.driver
     local ldo
-    local ldoType = driver .. 'Ldo'
+    local ldoType = 'lxlib.db.ldo.' .. driver .. 'Ldo'
 
     lx.try(function()
 

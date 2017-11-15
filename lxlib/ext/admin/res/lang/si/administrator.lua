@@ -33,9 +33,9 @@ return {
     valid_title = 'Podati morate veljaven title v vseh nastavitvah modela',
     valid_model = "Podati morate opcijo 'model' v vseh nastavitvah modela",
     valid_edit = "Podati morate veljavno polje 'edit_fields' v vseh nastavitvah modela",
-    valid_menu = "Podati morate veljavno opcijo 'menu' v nastavitveni datoteki administrator.php",
-    valid_config_path = "Podati morate veljavno opcijo 'model_config_path' v nastavitveni datoteki administrator.php. Prav tako mora imenik obstajati in imeti nastavalene pravice za branje.",
+    valid_menu = "Podati morate veljavno opcijo 'menu' v nastavitveni datoteki admin.php",
+    valid_config_path = "Podati morate veljavno opcijo 'model_config_path' v nastavitveni datoteki admin.php. Prav tako mora imenik obstajati in imeti nastavalene pravice za branje.",
     not_eloquent = 'ni Eloquent model',
     storage_path_permissions = 'Za stran z nastavitvami je potrebno nastaviti pot do imenika ki ima pravice za pisanje',
-    valid_home_page = "Podati morate veljavno opcijo 'home_page' v nastavitveni datoteki administrator.php"
+    valid_home_page = "Podati morate veljavno opcijo 'home_page' v nastavitveni datoteki admin.php"
 }

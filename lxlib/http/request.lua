@@ -1,7 +1,7 @@
  
 local lx, _M, mt = oo{
     _cls_       = '',
-    _mix_       = 'baseRequest',
+    _mix_       = 'lxlib.http.base.request',
     _static_    = {
 
     }
@@ -115,7 +115,7 @@ end
 
 function _M.d__:headers()
 
-    local reqHeader = app:make('requestHeader', ngx.req.get_headers())
+    local reqHeader = app:make('lxlib.http.base.requestHeader', ngx.req.get_headers())
     return reqHeader
 end
 
@@ -477,7 +477,7 @@ end
 function _M.__:convertUploadedFiles()
 
     if self.isMultiform then
-        local fh = app:make('formHandler', self)
+        local fh = app:make('lxlib.http.base.formHandler', self)
         local ok, msg, err = fh:handle()
 
         if ok then
@@ -492,6 +492,16 @@ function _M.__:convertUploadedFiles()
             error('get files fail:' .. msg .. ',' .. err)
         end
     end
+end
+
+function _M:replace(data)
+
+    self.all = data
+end
+
+function _M:merge(data)
+
+    self.all = tb.replace(self.all, data)
 end
 
 function _M:routeIs(name)

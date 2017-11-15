@@ -23,13 +23,7 @@ function _M.__:regDepends()
     app:bind('formRequest',         'lxlib.http.formRequest')
 
     app:bindFrom('lxlib.http.base', {
-        baseRequest         = 'request',
-        baseResponse        = 'response',
-    })
-
-    app:bindFrom('lxlib.http.base', {
-        'requestHeader', 'responseHeader', 'responseMix',
-        'formHandler', 'uploadedFile', 'extensionGuessor',
+        'responseMix', 'uploadedFile'
     })
  
     app:bindFrom('lxlib.http', {

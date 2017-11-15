@@ -43,7 +43,7 @@ function _M:parseFormdata()
     
     local files, params = {}, {}
     local fieldName, uniqueName
-    local file, originFileName, fileName, path, extName
+    local file, originFileName, fileName, fileType, path, extName
     local inFileRecing
     local paramName, paramValue
     local uploadedFile

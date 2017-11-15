@@ -53,7 +53,7 @@ function _M:fire(name, ...)
     local eventDef = events[name]
 
     if eventDef then
- 
+
         local eventArgs = {
             sender    = self,
             name     = name,

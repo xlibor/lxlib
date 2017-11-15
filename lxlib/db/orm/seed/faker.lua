@@ -78,7 +78,7 @@ end
 
 function _M:userName()
 
-    return str.random(10)
+    return str.random(6)
 end
 
 function _M:randomElement(arr)

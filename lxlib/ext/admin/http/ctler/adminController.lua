@@ -14,7 +14,7 @@ function _M:new()
         request = nil,
         session = nil,
         formRequestErrors = nil,
-        layout = 'administrator::layouts.default'
+        layout = 'admin:layouts.default'
     }
     
     return oo(this, mt)
@@ -45,7 +45,7 @@ end
 function _M:index(modelName)
 
     --set the layout content and title
-    self.layout.content = view('administrator::index')
+    self.layout.content = view('admin:index')
     
     return self.layout
 end
@@ -77,7 +77,7 @@ function _M:item(modelName, itemId)
         
         return response:header('Vary', 'Accept')
     else 
-        view = view('administrator::index', {itemId = itemId})
+        view = view('admin:index', {itemId = itemId})
         --set the layout content and title
         self.layout.content = view
         
@@ -211,7 +211,7 @@ function _M:customModelAction(modelName)
         if is_a(result, 'Symfony\\Component\\HttpFoundation\\BinaryFileResponse') then
             file = result:getFile():getRealPath()
             headers = result.headers:all()
-            self.session:put('administrator_download_response', {file = file, headers = headers})
+            self.session:put('admin_download_response', {file = file, headers = headers})
             response['download'] = route('admin_file_download')
         elseif is_a(result, '\\Illuminate\\Http\\RedirectResponse') then
             response['redirect'] = result:getTargetUrl()
@@ -259,7 +259,7 @@ function _M:customModelItemAction(modelName, id)
         if is_a(result, 'Symfony\\Component\\HttpFoundation\\BinaryFileResponse') then
             file = result:getFile():getRealPath()
             headers = result.headers:all()
-            self.session:put('administrator_download_response', {file = file, headers = headers})
+            self.session:put('admin_download_response', {file = file, headers = headers})
             response['download'] = route('admin_file_download')
         elseif is_a(result, '\\Illuminate\\Http\\RedirectResponse') then
             response['redirect'] = result:getTargetUrl()
@@ -275,20 +275,20 @@ end
 function _M:dashboard()
 
     --if the dev has chosen to use a dashboard
-    if app:conf('administrator.use_dashboard') then
+    if app:conf('admin.use_dashboard') then
         --set the layout dashboard
         self.layout.dashboard = true
         --set the layout content
-        self.layout.content = view(app:conf('administrator.dashboard_view'))
+        self.layout.content = view(app:conf('admin.dashboard_view'))
         
         return self.layout
     else 
         configFactory = app('admin_config_factory')
-        home = app:conf('administrator.home_page')
+        home = app:conf('admin.home_page')
         --first try to find it if it's a model config item
         config = configFactory:make(home)
         if not config then
-            lx.throw(\InvalidArgumentException, 'Administrator: ' .. trans('administrator::administrator.valid_home_page'))
+            lx.throw(\InvalidArgumentException, 'admin: ' .. trans('admin:admin.valid_home_page'))
         elseif config:getType() == 'model' then
             
             return redirect():route('admin_index', {config:getOption('name')})
@@ -376,9 +376,9 @@ end
 function _M:fileDownload()
 
     local filename
-    local response = self.session:get('administrator_download_response')
+    local response = self.session:get('admin_download_response')
     if response then
-        self.session:forget('administrator_download_response')
+        self.session:forget('admin_download_response')
         filename = str.substr(response['headers']['content-disposition'][0], 22, -1)
         
         return response():download(response['file'], filename, response['headers'])
@@ -422,7 +422,7 @@ end
 function _M:settings(settingsName)
 
     --set the layout content and title
-    self.layout.content = view('administrator::settings')
+    self.layout.content = view('admin:settings')
     
     return self.layout
 end
@@ -474,7 +474,7 @@ function _M:settingsCustomAction(settingsName)
         if is_a(result, 'Symfony\\Component\\HttpFoundation\\BinaryFileResponse') then
             file = result:getFile():getRealPath()
             headers = result.headers:all()
-            self.session:put('administrator_download_response', {file = file, headers = headers})
+            self.session:put('admin_download_response', {file = file, headers = headers})
             response['download'] = route('admin_file_download')
         elseif is_a(result, '\\Illuminate\\Http\\RedirectResponse') then
             response['redirect'] = result:getTargetUrl()
@@ -490,8 +490,8 @@ end
 
 function _M:switchLocale(locale)
 
-    if tb.inList(app:conf('administrator.locales'), locale) then
-        self.session:put('administrator_locale', locale)
+    if tb.inList(app:conf('admin.locales'), locale) then
+        self.session:put('admin_locale', locale)
     end
     
     return redirect():back()

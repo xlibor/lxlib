@@ -15,6 +15,13 @@ local loadGrammar = function(self, key)
     end 
 end
 
+function _M.common(dbType)
+
+    local commonGrammar = lf.import(basePath .. 'sqlCommonGrammar'):new(dbType)
+
+    return commonGrammar
+end
+
 setmetatable(_M, {__index = loadGrammar})
 
 return _M

@@ -1,7 +1,7 @@
 
 local _M = { 
     _cls_    = '',
-    _ext_    = 'baseConnector',
+    _ext_    = 'lxlib.db.connector.connector',
     _bond_    = 'connectorBond'
 }
 

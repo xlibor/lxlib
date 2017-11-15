@@ -33,8 +33,8 @@ return {
     valid_title = "Minden model konfigurációjában meg kell adni érvényes 'title' és 'single name' értékeket",
     valid_model = "Minden model konfigurációjában meg kell adni érvényes 'model' opciót",
     valid_edit = "Minden model konfigurációjában meg kell adni érvényes 'edit_fields' tömböt",
-    valid_menu = "Az administrator.php konfigurációjában meg kell adni érvényes 'menu' opciót",
-    valid_config_path = "Az administrator.php konfigurációjában meg kell adni érvényes 'model_config_path' értéket. Léteznie kell ennek a könyvtárnak, és írhatónak kell lennie",
+    valid_menu = "Az admin.php konfigurációjában meg kell adni érvényes 'menu' opciót",
+    valid_config_path = "Az admin.php konfigurációjában meg kell adni érvényes 'model_config_path' értéket. Léteznie kell ennek a könyvtárnak, és írhatónak kell lennie",
     not_eloquent = ' nem egy Eloquent model',
     storage_path_permissions = "A beállításokat tároló 'storage path' mappának írhatónak kell lennie",
     valid_home_page = "A konfigurációban a 'home_page' opciónak érvényes menüpontot kell megadni"

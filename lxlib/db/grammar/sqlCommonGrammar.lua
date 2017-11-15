@@ -20,7 +20,7 @@ function _M:new(dbType)
     return this
 end
 
-function _M:sqlEnableForeignKeyConstraints()
+function _M:enableForeignKeyConstraints()
 
     local sql
     local dbType = self.dbType
@@ -36,7 +36,7 @@ function _M:sqlEnableForeignKeyConstraints()
     return sql
 end
 
-function _M:sqlDisableForeignKeyConstraints()
+function _M:disableForeignKeyConstraints()
 
     local sql
     local dbType = self.dbType
@@ -50,6 +50,32 @@ function _M:sqlDisableForeignKeyConstraints()
     end
 
     return sql
+end
+
+function _M:truncate(table)
+
+    local sql
+    local dbType = self.dbType
+    local table = self:wrap(table)
+
+    if dbType == 'mysql' then
+        sql = {'truncate ' .. table}
+    elseif dbType == 'pgsql' then
+        sql = {'truncate ' .. table .. ' restart identity'}
+    elseif dbType == 'sqlite' then
+        sql = {
+            'delete from sqlite_sequence where name = ' .. table,
+            'delete from ' .. table
+        }
+    end
+
+    return sql
+end
+
+function _M:wrap(value)
+
+    local dbType = self.dbType
+    return pub.sqlWrapName(value, dbType)
 end
 
 return _M

@@ -37,12 +37,12 @@ function _M:createDbProvider(config)
 
     local conn = app:get('db'):connection()
     
-    return new('auth.dbUserProvider', conn, app('hash'), config.table)
+    return new('lxlib.auth.provider.dbUser', conn, app('hash'), config.table)
 end
 
 function _M:createOrmProvider(config)
 
-    return new('auth.ormUserProvider', app('hash'), config.model)
+    return new('lxlib.auth.provider.ormUser', app('hash'), config.model)
 end
 
 return _M

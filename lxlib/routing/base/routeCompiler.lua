@@ -62,7 +62,7 @@ function _M:compile(route)
     tokens = result.tokens
     regex = result.regex
 
-    return new('compiledRoute',
+    return new('lxlib.routing.base.compiledRoute',
         pathPre,
         regex,
         tokens,

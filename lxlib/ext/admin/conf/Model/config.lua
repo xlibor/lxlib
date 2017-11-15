@@ -128,7 +128,7 @@ end
 
 -- Fills a model with the necessary relationship values for a field.
 -- @param \Illuminate\Database\Eloquent\Model    model
--- @param \Frozennode\Administrator\Fields\Field field
+-- @param \Frozennode\admin\Fields\Field field
 
 function _M:setModelRelationship(model, field)
 
@@ -182,7 +182,7 @@ end
 
 -- Fills a model with the necessary relationship values.
 -- @param \Illuminate\Database\Eloquent\Model    model
--- @param \Frozennode\Administrator\Fields\Field field
+-- @param \Frozennode\admin\Fields\Field field
 -- @return \Illuminate\Database\Eloquent\Collection
 
 function _M:getModelRelatedItems(model, field)
@@ -207,8 +207,8 @@ end
 
 -- Updates a model with the latest permissions, links, and fields.
 -- @param \Illuminate\Database\Eloquent\Model       model
--- @param \Frozennode\Administrator\Fields\Factory  fieldFactory
--- @param \Frozennode\Administrator\Actions\Factory actionFactory
+-- @param \Frozennode\admin\Fields\Factory  fieldFactory
+-- @param \Frozennode\admin\Actions\Factory actionFactory
 -- @return \Illuminate\Database\Eloquent\Model
 
 function _M:updateModel(model, fieldFactory, actionFactory)
@@ -221,10 +221,10 @@ function _M:updateModel(model, fieldFactory, actionFactory)
         model:setAttribute('admin_item_link', link)
     end
     --set up the model with the edit fields new data
-    model:setAttribute('administrator_edit_fields', fieldFactory:getEditFieldsArrays(true))
+    model:setAttribute('admin_edit_fields', fieldFactory:getEditFieldsArrays(true))
     --set up the new actions data
-    model:setAttribute('administrator_actions', actionFactory:getActionsOptions(true))
-    model:setAttribute('administrator_action_permissions', actionFactory:getActionPermissions(true))
+    model:setAttribute('admin_actions', actionFactory:getActionsOptions(true))
+    model:setAttribute('admin_action_permissions', actionFactory:getActionPermissions(true))
     
     return model
 end
@@ -377,7 +377,7 @@ end
 
 -- Gets the formatted value of a relationship input.
 -- @param string                                 value
--- @param \Frozennode\Administrator\Fields\Field field
+-- @param \Frozennode\admin\Fields\Field field
 -- @return mixed table | string
 
 function _M.__:formatRelationshipInput(value, field)

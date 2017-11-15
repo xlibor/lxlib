@@ -1,6 +1,6 @@
 
 local _M = {
-    _cls_ = ''
+    _cls_ = '',
 }
 
 local mt = { __index = _M }
@@ -243,7 +243,7 @@ function _M:compileRoute()
     local domain = self:getDomain()
     local wheres = self.wheres
 
-    local baseRoute = new('routeBase', uri, optionals, wheres, {}, domain)
+    local baseRoute = new('lxlib.routing.base.route', uri, optionals, wheres, {}, domain)
     
     self.compiled = baseRoute:compile()
 end

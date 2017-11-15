@@ -33,8 +33,8 @@ return {
     valid_title = "Morate unijesi ispravana 'title' i 'single name' u konfiguraciji svakog modela",
     valid_model = "Morate unijeti 'model' u konfiguraciju svakog modela",
     valid_edit = "Morate unijeti ispravan niz 'edit_fields' u konfiguraciju svakog modela",
-    valid_menu = "Morate unijesti ispravnu 'menu' opciju u administrator.php konfiguracijskoj datoteci",
-    valid_config_path = "Morate unijeti ispravnu 'model_config_path' putanju u administrator.php konfiguracijsku datoteku. Direktorij mora postojati i biti čitljiv.",
+    valid_menu = "Morate unijesti ispravnu 'menu' opciju u admin.php konfiguracijskoj datoteci",
+    valid_config_path = "Morate unijeti ispravnu 'model_config_path' putanju u admin.php konfiguracijsku datoteku. Direktorij mora postojati i biti čitljiv.",
     not_eloquent = ' nije Eloquent model',
     storage_path_permissions = "Vaša storage putanja mora imati atribut 'writeable' ako želite kreirati 'settings' stranicu",
     valid_home_page = "Morate unijeti važeću 'menu item' stavku u opciji 'home_page' u konfiguracijskoj datoteci"

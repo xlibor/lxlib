@@ -20,7 +20,7 @@ function _M:new(path, defaults, requirements, options, host, schemes, methods, c
         options = options or {},
         compiled = nil,
         condition = condition or '',
-        compiler = new 'routeCompiler'
+        compiler = new 'lxlib.routing.base.routeCompiler'
     }
 
     setmetatable(this, mt)

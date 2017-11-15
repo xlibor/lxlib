@@ -127,6 +127,12 @@ _G.With = function(tbl, cb)
     setfenv(cb, tbl)()
 end
 
+_G.Use = function(cls)
+    
+    local lx = require('lxlib')
+    return lx.use(cls)
+end
+
 _G.Fmt = Str.fmtv
 
 _G.Compact = function(...)
@@ -383,7 +389,7 @@ function _M.init(appName)
                     t = faces[key]
                 end
                 if not t then
-                    error(key)
+                    error('global var:' .. key)
                     echo(key)
                 end
                 return t

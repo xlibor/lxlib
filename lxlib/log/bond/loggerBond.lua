@@ -6,7 +6,6 @@ local __ = {
 -- System is unusable.
 -- @param string message
 -- @param table  context
--- @return void
 
 function __:emergency(message, context) end
 
@@ -15,7 +14,6 @@ function __:emergency(message, context) end
 -- trigger the SMS alerts and wake you up.
 -- @param string message
 -- @param table  context
--- @return void
 
 function __:alert(message, context) end
 
@@ -23,7 +21,6 @@ function __:alert(message, context) end
 -- Example: Application component unavailable, unexpected exception.
 -- @param string message
 -- @param table  context
--- @return void
 
 function __:critical(message, context) end
 
@@ -31,7 +28,6 @@ function __:critical(message, context) end
 -- be logged and monitored.
 -- @param string message
 -- @param table  context
--- @return void
 
 function __:error(message, context) end
 
@@ -40,14 +36,12 @@ function __:error(message, context) end
 -- that are not necessarily wrong.
 -- @param string message
 -- @param table  context
--- @return void
 
 function __:warning(message, context) end
 
 -- Normal but significant events.
 -- @param string message
 -- @param table  context
--- @return void
 
 function __:notice(message, context) end
 
@@ -55,14 +49,12 @@ function __:notice(message, context) end
 -- Example: User logs in, SQL logs.
 -- @param string message
 -- @param table  context
--- @return void
 
 function __:info(message, context) end
 
 -- Detailed debug information.
 -- @param string message
 -- @param table  context
--- @return void
 
 function __:debug(message, context) end
 
@@ -70,7 +62,6 @@ function __:debug(message, context) end
 -- @param mixed  level
 -- @param string message
 -- @param table  context
--- @return void
 
 function __:log(level, message, context) end
 

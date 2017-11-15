@@ -45,7 +45,6 @@ end
 
 -- Writes the record down to the log of the implementing handler
 -- @param  table record
--- @return void
 
 function _M.a__:write(record) end
 

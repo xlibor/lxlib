@@ -17,12 +17,12 @@ function _M:handle(request, next)
     local loginUrl
     local configFactory = app('admin_config_factory')
     --get the admin check closure that should be supplied in the config
-    local permission = app:conf('administrator.permission')
+    local permission = app:conf('admin.permission')
     local response = permission()
     --if this is a simple false value, send the user to the login redirect
     if not (response) then
-        loginUrl = url(app:conf('administrator.login_path', 'user/login'))
-        redirectKey = app:conf('administrator.login_redirect_key', 'redirect')
+        loginUrl = url(app:conf('admin.login_path', 'user/login'))
+        redirectKey = app:conf('admin.login_redirect_key', 'redirect')
         redirectUri = request:url()
         
         return redirect():guest(loginUrl):with(redirectKey, redirectUri)
@@ -30,7 +30,7 @@ function _M:handle(request, next)
         
         return response
     elseif is_a(response, 'Illuminate\\Http\\RedirectResponse') then
-        redirectKey = app:conf('administrator.login_redirect_key', 'redirect')
+        redirectKey = app:conf('admin.login_redirect_key', 'redirect')
         redirectUri = request:url()
         
         return response:with(redirectKey, redirectUri)
