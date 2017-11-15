@@ -1,0 +1,20 @@
+@if(lf.isTbl(item))
+	<li class="menu">
+		<span>{{ key }}</span>
+		<ul>
+			@foreach(item as k, subitem)
+				@include('admin:partials.menu_item', {item = subitem, key = k, settingsPrefix = settingsPrefix, pagePrefix = pagePrefix})
+			@endforeach
+		</ul>
+	</li>
+@else
+	<li class="item">
+		@if(Str.strpos(key, settingsPrefix) == 1)
+			<a href="{{ route('admin_settings', {Str.substr(key, Str.len(settingsPrefix))}) }}">{{ item }}</a>
+		@elseif(Str.strpos(key, pagePrefix) == 1)
+			<a href="{{ route('admin_page', {Str.substr(key, Str.len(pagePrefix))}) }}">{{ item }}</a>
+		@else
+			<a href="{{ route('admin_index', {key}) }}">{{ item }}</a>
+		@endif
+	</li>
+@endif

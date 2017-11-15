@@ -34,9 +34,9 @@ function _M:new()
 end
 
 -- The validator instance.
--- @var \Frozennode\Administrator\Validator
+-- @var \Frozennode\admin\Validator
 -- The config interface instance.
--- @var \Frozennode\Administrator\Config\ConfigInterface
+-- @var \Frozennode\admin\Config\ConfigInterface
 -- The config instance.
 -- @var \Illuminate\Database\DatabaseManager
 -- The originally supplied options.
@@ -52,8 +52,8 @@ end
 -- The specific rules for subclasses to override.
 -- @var table
 -- Create a new Field instance.
--- @param \Frozennode\Administrator\Validator              validator
--- @param \Frozennode\Administrator\Config\ConfigInterface config
+-- @param \Frozennode\admin\Validator              validator
+-- @param \Frozennode\admin\Config\ConfigInterface config
 -- @param \Illuminate\Database\DatabaseManager             db
 -- @param table                                            options
 

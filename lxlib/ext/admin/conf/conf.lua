@@ -2,8 +2,8 @@ return {
     uri = 'admin',
     domain = '',
     title = 'EST 官网管理',
-    model_config_path = config_path('administrator'),
-    settings_config_path = config_path('administrator/settings'),
+    model_config_path = config_path('admin'),
+    settings_config_path = config_path('admin/settings'),
     menu = {},
     permission = function()
     
@@ -18,5 +18,5 @@ end,
     login_redirect_key = 'redirect',
     global_rows_per_page = 20,
     locales = {},
-    custom_routes_file = app_path('Http/routes/administrator.php')
+    custom_routes_file = app_path('Http/routes/admin.php')
 }

@@ -9,25 +9,25 @@ function _M:new()
 
     local this = {
         fieldTypes = {
-        key = 'Frozennode\\Administrator\\Fields\\Key',
-        text = 'Frozennode\\Administrator\\Fields\\Text',
-        textarea = 'Frozennode\\Administrator\\Fields\\Text',
-        wysiwyg = 'Frozennode\\Administrator\\Fields\\Text',
-        markdown = 'Frozennode\\Administrator\\Fields\\Text',
-        password = 'Frozennode\\Administrator\\Fields\\Password',
-        date = 'Frozennode\\Administrator\\Fields\\Time',
-        time = 'Frozennode\\Administrator\\Fields\\Time',
-        datetime = 'Frozennode\\Administrator\\Fields\\Time',
-        number = 'Frozennode\\Administrator\\Fields\\Number',
-        bool = 'Frozennode\\Administrator\\Fields\\Bool',
-        enum = 'Frozennode\\Administrator\\Fields\\Enum',
-        image = 'Frozennode\\Administrator\\Fields\\Image',
-        file = 'Frozennode\\Administrator\\Fields\\File',
-        color = 'Frozennode\\Administrator\\Fields\\Color',
-        belongs_to = 'Frozennode\\Administrator\\Fields\\Relationships\\BelongsTo',
-        belongs_to_many = 'Frozennode\\Administrator\\Fields\\Relationships\\BelongsToMany',
-        has_one = 'Frozennode\\Administrator\\Fields\\Relationships\\HasOne',
-        has_many = 'Frozennode\\Administrator\\Fields\\Relationships\\HasMany'
+        key = 'Frozennode\\admin\\Fields\\Key',
+        text = 'Frozennode\\admin\\Fields\\Text',
+        textarea = 'Frozennode\\admin\\Fields\\Text',
+        wysiwyg = 'Frozennode\\admin\\Fields\\Text',
+        markdown = 'Frozennode\\admin\\Fields\\Text',
+        password = 'Frozennode\\admin\\Fields\\Password',
+        date = 'Frozennode\\admin\\Fields\\Time',
+        time = 'Frozennode\\admin\\Fields\\Time',
+        datetime = 'Frozennode\\admin\\Fields\\Time',
+        number = 'Frozennode\\admin\\Fields\\Number',
+        bool = 'Frozennode\\admin\\Fields\\Bool',
+        enum = 'Frozennode\\admin\\Fields\\Enum',
+        image = 'Frozennode\\admin\\Fields\\Image',
+        file = 'Frozennode\\admin\\Fields\\File',
+        color = 'Frozennode\\admin\\Fields\\Color',
+        belongs_to = 'Frozennode\\admin\\Fields\\Relationships\\BelongsTo',
+        belongs_to_many = 'Frozennode\\admin\\Fields\\Relationships\\BelongsToMany',
+        has_one = 'Frozennode\\admin\\Fields\\Relationships\\HasOne',
+        has_many = 'Frozennode\\admin\\Fields\\Relationships\\HasMany'
     },
         relationshipBase = 'Illuminate\\Database\\Eloquent\\Relations\\',
         settingsFieldExclusions = {'key', 'belongs_to', 'belongs_to_many', 'has_one', 'has_many'},
@@ -49,9 +49,9 @@ end
 -- The base string for the relationship classes.
 -- The base string for the relationship classes.
 -- The validator instance.
--- @var \Frozennode\Administrator\Validator
+-- @var \Frozennode\admin\Validator
 -- The config interface instance.
--- @var \Frozennode\Administrator\Config\ConfigInterface
+-- @var \Frozennode\admin\Config\ConfigInterface
 -- The config instance.
 -- @var \Illuminate\Database\DatabaseManager
 -- The compiled filters objects.
@@ -65,8 +65,8 @@ end
 -- The edit field data model.
 -- @var table
 -- Create a new model Config instance.
--- @param \Frozennode\Administrator\Validator              validator
--- @param \Frozennode\Administrator\Config\ConfigInterface config
+-- @param \Frozennode\admin\Validator              validator
+-- @param \Frozennode\admin\Config\ConfigInterface config
 -- @param \Illuminate\Database\DatabaseManager             db
 
 function _M:ctor(validator, config, db)
@@ -94,7 +94,7 @@ end
 -- Instantiates a field object.
 -- @param table options
 -- @param bool  loadRelationships
--- @return Frozennode\Administrator\Fields\Field
+-- @return Frozennode\admin\Fields\Field
 
 function _M:getFieldObject(options)
 
@@ -237,7 +237,7 @@ end
 
 -- Given a field name, this returns the field object from the edit fields table.
 -- @param string field
--- @return \Frozennode\Administrator\Fields\Field
+-- @return \Frozennode\admin\Fields\Field
 
 function _M:findField(field)
 
@@ -252,7 +252,7 @@ end
 
 -- Given a field name, this returns the field object from the filters table.
 -- @param string field
--- @return \Frozennode\Administrator\Fields\Field
+-- @return \Frozennode\admin\Fields\Field
 
 function _M:findFilter(field)
 
@@ -462,7 +462,7 @@ end
 -- Filters a relationship options query by a search term.
 -- @param mixed                                  term
 -- @param \Illuminate\Database\Query\Builder     query
--- @param \Frozennode\Administrator\Fields\Field fieldObject
+-- @param \Frozennode\admin\Fields\Field fieldObject
 -- @param table                                  selectedItems
 -- @param string                                 relatedKeyTable
 
@@ -502,7 +502,7 @@ end
 -- Takes the supplied selectedItems mixed value and formats it to a usable table.
 -- @param \Illuminate\Database\Query\Builder     query
 -- @param table                                  selectedItems
--- @param \Frozennode\Administrator\Fields\Field fieldObject
+-- @param \Frozennode\admin\Fields\Field fieldObject
 -- @param string                                 relatedKeyTable
 -- @return table
 
@@ -520,7 +520,7 @@ end
 -- Takes the supplied selectedItems mixed value and formats it to a usable table.
 -- @param mixed                                  constraints
 -- @param \Illuminate\Database\Query\Builder     query
--- @param \Frozennode\Administrator\Fields\Field fieldObject
+-- @param \Frozennode\admin\Fields\Field fieldObject
 -- @return table
 
 function _M:applyConstraints(constraints, query, fieldObject)
@@ -552,7 +552,7 @@ function _M:applyConstraints(constraints, query, fieldObject)
 end
 
 -- Takes an eloquent result table and turns it into an options table that can be used in the UI.
--- @param \Frozennode\Administrator\Fields\Field   field
+-- @param \Frozennode\admin\Fields\Field   field
 -- @param \Illuminate\Database\Eloquent\Collection results
 -- @return table
 

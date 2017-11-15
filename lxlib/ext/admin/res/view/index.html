@@ -1,0 +1,82 @@
+
+<div id="admin_page" class="with_sidebar">
+	<div id="sidebar">
+		<div class="panel sidebar_section" id="filters_sidebar_section" data-bind="template: 'filtersTemplate'"></div>
+	</div>
+	<div id="content" data-bind="template: 'adminTemplate'"></div>
+</div>
+
+<script type="text/javascript">
+	var site_url = "{{ request().url }}",
+		base_url = "{{ baseUrl }}/",
+		asset_url = "{{ assetUrl }}",
+		file_url = "{{ route('admin_display_file', {config:getOption('name')}) }}",
+		rows_per_page_url = "{{ route('admin_rows_per_page', {config:getOption('name')}) }}",
+		route = "{{ route }}",
+		csrf = "{{ csrf_token() }}",
+		language = "{{ app:conf('app.locale') }}",
+		adminData = {
+			primary_key: "{{ primaryKey }}",
+			@if(itemid)
+				id: "{{ itemId }}",
+			@endif
+			rows: {{ lf.jsen(rows) }},
+			rows_per_page: {{ dataTable:getRowsPerPage() }},
+			sortOptions: {{ lf.jsen(dataTable:getSort()) }},
+			model_name: "{{ config:getOption('name') }}",
+			model_title: "{{ config:getOption('heading') }}",
+			sub_title: '{{ config:getOption('subtitle', '') }}',
+			model_single: "{{ config:getOption('single') }}",
+			expand_width: {{ formWidth }},
+			actions: {{ lf.jsen(actions) }},
+			global_actions: {{ lf.jsen(globalActions) }},
+			filters: {{ lf.jsen(filters) }},
+			edit_fields: {{ lf.jsen(arrayFields) }},
+			data_model: {{ lf.jsen(dataModel) }},
+			column_model: {{ lf.jsen(columnModel) }},
+			action_permissions: {{ lf.jsen(actionPermissions) }},
+			languages: {{ lf.jsen(trans('admin:knockout')) }},
+			// hack by @Monkey: for paging logic
+			filter_by: "{{ Request.get('filter_by') }}",
+			filter_by_id: {{ tonumber(request('filter_by_id')) }}
+		};
+</script>
+
+<style type="text/css">
+
+	div.item_edit form.edit_form select, div.item_edit form.edit_form input[type=hidden], div.item_edit form.edit_form .select2-container {
+		width: {{ formWidth - 59 }}px !important;
+	}
+
+	div.item_edit form.edit_form .cke {
+		width: {{ formWidth - 67 }}px !important;
+	}
+
+	div.item_edit form.edit_form div.markdown textarea {
+		width: {{ tonumber((formWidth - 75) / 2) - 12 }}px !important;
+		max-width: {{ tonumber((formWidth - 75) / 2) - 12 }}px !important;
+	}
+
+	div.item_edit form.edit_form div.markdown div.preview {
+		width: {{ tonumber((formWidth - 75) / 2) }}px !important;
+	}
+
+	div.item_edit form.edit_form > div.image img, div.item_edit form.edit_form > div.image div.image_container {
+		max-width: {{ formWidth - 65 }}px;
+	}
+
+</style>
+
+<input type="hidden" name="_token" value="{{ csrf_token() }}" />
+
+<script id="adminTemplate" type="text/html">
+	@include('admin:templates.admin')
+</script>
+
+<script id="itemFormTemplate" type="text/html">
+	@include('admin:templates.edit', {config = config})
+</script>
+
+<script id="filtersTemplate" type="text/html">
+	@include('admin:templates.filters')
+</script>

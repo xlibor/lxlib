@@ -1,0 +1,29 @@
+<div id="settings_page">
+	<div id="content" data-bind="template: 'settingsTemplate'"></div>
+</div>
+
+<script type="text/javascript">
+	var site_url = "{{ request().url() }}",
+		base_url = "{{ baseUrl }}/",
+		asset_url = "{{ assetUrl }}",
+		save_url = "{{ route('admin_settings_save', {config:getOption('name')}) }}",
+		custom_action_url = "{{ route('admin_settings_custom_action', {config:getOption('name')}) }}",
+		file_url = "{{ route('admin_settings_display_file', {config:getOption('name')}) }}",
+		route = "{{ route }}",
+		csrf = "{{ csrf_token() }}",
+		language = "{{ app:conf('app.locale') }}",
+		adminData = {
+			name: "{{ config:getOption('name') }}",
+			title: "{{ config:getOption('title') }}",
+			data: {{ lf.jsen(config:getDataModel()) }},
+			actions: {{ lf.jsen(actions) }},
+			edit_fields: {{ lf.jsen(arrayFields) }},
+			languages: {{ lf.jsen(trans('admin:knockout')) }}
+		};
+</script>
+
+<input type="hidden" name="_token" value="{{ csrf_token() }}" />
+
+<script id="settingsTemplate" type="text/html">
+	@include('admin:templates.settings')
+</script>

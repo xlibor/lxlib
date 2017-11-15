@@ -27,9 +27,9 @@ function _M:new()
 end
 
 -- The validator instance.
--- @var \Frozennode\Administrator\Validator
+-- @var \Frozennode\admin\Validator
 -- The config instance.
--- @var \Frozennode\Administrator\Config\ConfigInterface
+-- @var \Frozennode\admin\Config\ConfigInterface
 -- The actions table.
 -- @var table
 -- The table of actions options.
@@ -43,8 +43,8 @@ end
 -- The action permissions defaults.
 -- @var table
 -- Create a new action Factory instance.
--- @param \Frozennode\Administrator\Validator              validator
--- @param \Frozennode\Administrator\Config\ConfigInterface config
+-- @param \Frozennode\admin\Validator              validator
+-- @param \Frozennode\admin\Config\ConfigInterface config
 
 function _M:ctor(validator, config)
 
@@ -55,7 +55,7 @@ end
 -- Takes the model and an info table of options for the specific action.
 -- @param string name    //the key name for this action
 -- @param table  options
--- @return \Frozennode\Administrator\Actions\Action
+-- @return \Frozennode\admin\Actions\Action
 
 function _M:make(name, options)
 
@@ -92,7 +92,7 @@ end
 
 -- Gets an Action object.
 -- @param table options
--- @return \Frozennode\Administrator\Actions\Action
+-- @return \Frozennode\admin\Actions\Action
 
 function _M:getActionObject(options)
 

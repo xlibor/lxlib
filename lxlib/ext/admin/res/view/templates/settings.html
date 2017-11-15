@@ -1,4 +1,3 @@
-?>
 <form class="settings_form" data-bind="submit: save">
 	<h2 data-bind="text: $root.settingsTitle"></h2>
 
@@ -131,14 +130,10 @@
 						<div class="uploader" data-bind="attr: {disabled: $root.freezeForm, id: field_name + '_uploader'}, value: $root.activeItem,
 												fileupload: {field: field_name, size_limit: size_limit, uploading: uploading, image: true,
 															upload_percentage: upload_percentage, upload_url: upload_url}">
-																<?php 
-echo(trans('administrator::administrator.uploadimage'))
-?></div>
+																{{ trans('admin:admin.uploadimage') }}</div>
 						<!-- ko if: uploading -->
 							<div class="uploading"
-							data-bind="text: '<?php 
-echo(trans('administrator::administrator.imageuploading'))
-?>' + upload_percentage() + '%'"></div>
+							data-bind="text: '{{ trans('admin:admin.imageuploading') }}' + upload_percentage() + '%'"></div>
 						<!-- /ko -->
 					</div>
 				<!-- /ko -->
@@ -151,9 +146,7 @@ echo(trans('administrator::administrator.imageuploading'))
 					</div>
 				<!-- /ko -->
 				<!-- ko if: !$root[field_name]() && !editable -->
-					<div class="uneditable" data-bind="text: '<?php 
-echo(trans('administrator::administrator.no_image_uploaded'))
-?>'"></div>
+					<div class="uneditable" data-bind="text: '{{ trans('admin:admin.no_image_uploaded') }}'"></div>
 				<!-- /ko -->
 			<!-- /ko -->
 
@@ -163,14 +156,10 @@ echo(trans('administrator::administrator.no_image_uploaded'))
 						<div class="uploader" data-bind="attr: {disabled: $root.freezeForm, id: field_name + '_uploader'}, value: $root.activeItem,
 												fileupload: {field: field_name, size_limit: size_limit, uploading: uploading,
 															upload_percentage: upload_percentage, upload_url: upload_url}">
-																<?php 
-echo(trans('administrator::administrator.uploadfile'))
-?></div>
+																{{ trans('admin:admin.uploadfile') }}</div>
 						<!-- ko if: uploading -->
 							<div class="uploading"
-							data-bind="text: '<?php 
-echo(trans('administrator::administrator.fileuploading'))
-?>' + upload_percentage() + '%'"></div>
+							data-bind="text: '{{ trans('admin:admin.fileuploading') }}' + upload_percentage() + '%'"></div>
 						<!-- /ko -->
 					</div>
 				<!-- /ko -->
@@ -184,9 +173,7 @@ echo(trans('administrator::administrator.fileuploading'))
 					</div>
 				<!-- /ko -->
 				<!-- ko if: !$root[field_name]() && !editable -->
-					<div class="uneditable" data-bind="text: '<?php 
-echo(trans('administrator::administrator.no_file_uploaded'))
-?>'"></div>
+					<div class="uneditable" data-bind="text: '{{ trans('admin:admin.no_file_uploaded') }}'"></div>
 				<!-- /ko -->
 			<!-- /ko -->
 
@@ -204,9 +191,7 @@ echo(trans('administrator::administrator.no_file_uploaded'))
 	<!-- /ko -->
 
 	<div class="control_buttons">
-		<input type="submit" value="<?php 
-echo(trans('administrator::administrator.save'))
-?>"
+		<input type="submit" value="{{ trans('admin:admin.save') }}"
 			data-bind="attr: {disabled: $root.freezeForm() || $root.freezeActions()}" />
 
 		<!-- ko if: actions().length -->
@@ -222,4 +207,3 @@ echo(trans('administrator::administrator.save'))
 										notification: statusMessage "></span>
 	</div>
 </form>
-<?php 

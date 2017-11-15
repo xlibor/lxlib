@@ -1,22 +1,13 @@
-?>
-<div data-bind="visible: loadingItem" class="loading"><?php 
-echo(trans('administrator::administrator.loading'))
-?></div>
+<div data-bind="visible: loadingItem" class="loading">{{ trans('admin:admin.loading') }}</div>
 
 <form class="edit_form" data-bind="visible: !loadingItem(), submit: saveItem">
-	<h2 data-bind="text: $root[$root.primaryKey]() ? '<?php 
-echo(trans('administrator::administrator.edit'))
-?>' :
-		'<?php 
-echo(trans('administrator::administrator.createnew'))
-?>'"></h2>
+	<h2 data-bind="text: $root[$root.primaryKey]() ? '{{ trans('admin:admin.edit') }}' :
+		'{{ trans('admin:admin.createnew') }}'"></h2>
 
 	<!-- ko if: $root[$root.primaryKey]() -->
 		<!-- ko if: $root.itemLink() -->
 			<a class="item_link" target="_blank" data-bind="attr: {href: $root.itemLink()},
-							text: '<?php 
-echo(trans('administrator::administrator.viewitem', {single = config:getOption('single')}))
-?>'"></a>
+							text: '{{ trans('admin:admin.viewitem', {single = config:getOption('single')}) }}'"></a>
 		<!-- /ko -->
 	<!-- /ko -->
 
@@ -229,14 +220,10 @@ echo(trans('administrator::administrator.viewitem', {single = config:getOption('
 						<div class="uploader" data-bind="attr: {disabled: $root.freezeForm, id: field_name + '_uploader'}, value: $root.activeItem,
 												fileupload: {field: field_name, size_limit: size_limit, uploading: uploading, image: true,
 															upload_percentage: upload_percentage, upload_url: upload_url}">
-																<?php 
-echo(trans('administrator::administrator.uploadimage'))
-?></div>
+																{{ trans('admin:admin.uploadimage') }}</div>
 						<!-- ko if: uploading -->
 							<div class="uploading"
-							data-bind="text: '<?php 
-echo(trans('administrator::administrator.imageuploading'))
-?>' + upload_percentage() + '%'"></div>
+							data-bind="text: '{{ trans('admin:admin.imageuploading') }}' + upload_percentage() + '%'"></div>
 						<!-- /ko -->
 					</div>
 				<!-- /ko -->
@@ -255,9 +242,7 @@ echo(trans('administrator::administrator.imageuploading'))
 					</div>
 				<!-- /ko -->
 				<!-- ko if: !$root[field_name]() && !editable -->
-					<div class="uneditable" data-bind="text: '<?php 
-echo(trans('administrator::administrator.no_image_uploaded'))
-?>'"></div>
+					<div class="uneditable" data-bind="text: '{{ trans('admin:admin.no_image_uploaded') }}'"></div>
 				<!-- /ko -->
 			<!-- /ko -->
 
@@ -267,14 +252,10 @@ echo(trans('administrator::administrator.no_image_uploaded'))
 						<div class="uploader" data-bind="attr: {disabled: $root.freezeForm, id: field_name + '_uploader'}, value: $root.activeItem,
 												fileupload: {field: field_name, size_limit: size_limit, uploading: uploading,
 															upload_percentage: upload_percentage, upload_url: upload_url}">
-																<?php 
-echo(trans('administrator::administrator.uploadfile'))
-?></div>
+																{{ trans('admin:admin.uploadfile') }}</div>
 						<!-- ko if: uploading -->
 							<div class="uploading"
-							data-bind="text: '<?php 
-echo(trans('administrator::administrator.fileuploading'))
-?>' + upload_percentage() + '%'"></div>
+							data-bind="text: '{{ trans('admin:admin.fileuploading') }}' + upload_percentage() + '%'"></div>
 						<!-- /ko -->
 					</div>
 				<!-- /ko -->
@@ -294,9 +275,7 @@ echo(trans('administrator::administrator.fileuploading'))
 					</div>
 				<!-- /ko -->
 				<!-- ko if: !$root[field_name]() && !editable -->
-					<div class="uneditable" data-bind="text: '<?php 
-echo(trans('administrator::administrator.no_file_uploaded'))
-?>'"></div>
+					<div class="uneditable" data-bind="text: '{{ trans('admin:admin.no_file_uploaded') }}'"></div>
 				<!-- /ko -->
 			<!-- /ko -->
 
@@ -332,28 +311,20 @@ echo(trans('administrator::administrator.no_file_uploaded'))
 
 	<div class="control_buttons">
 		<!-- ko if: $root[$root.primaryKey]() -->
-			<input type="button" class="btn btn-block btn-default" value="<?php 
-echo(trans('administrator::administrator.close'))
-?>"
+			<input type="button" class="btn btn-block btn-default" value="{{ trans('admin:admin.close') }}"
 				data-bind="click: closeItem, attr: {disabled: $root.freezeForm() || $root.freezeActions()}" />
 
 			<!-- ko if: actionPermissions.update -->
-				<input type="button" class="btn btn-block btn-primary" value="<?php 
-echo(trans('administrator::administrator.save'))
-?>"
+				<input type="button" class="btn btn-block btn-primary" value="{{ trans('admin:admin.save') }}"
 					data-bind="click: function() { saveItem(true) }, attr: {disabled: $root.freezeForm() || $root.freezeActions()}" />
 			<!-- /ko -->
 		<!-- /ko -->
 
 		<!-- ko ifnot: $root[$root.primaryKey]() -->
-			<input type="button" class="btn btn-block btn-default" value="<?php 
-echo(trans('administrator::administrator.cancel'))
-?>"
+			<input type="button" class="btn btn-block btn-default" value="{{ trans('admin:admin.cancel') }}"
 				data-bind="click: closeItem, attr: {disabled: $root.freezeForm() || $root.freezeActions()}" />
 			<!-- ko if: actionPermissions.create -->
-				<input type="submit" class="btn btn-block btn-primary" value="<?php 
-echo(trans('administrator::administrator.create'))
-?>"
+				<input type="submit" class="btn btn-block btn-primary" value="{{ trans('admin:admin.create') }}"
 					data-bind="attr: {disabled: $root.freezeForm() || $root.freezeActions()}" />
 			<!-- /ko -->
 		<!-- /ko -->
@@ -361,4 +332,3 @@ echo(trans('administrator::administrator.create'))
 										notification: {message: statusMessage, hide: false } "></span>
 	</div>
 </form>
-<?php 
