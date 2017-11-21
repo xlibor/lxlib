@@ -6,8 +6,8 @@ local char = string.char
 local err = function(s) io.stderr:write(s) end
 local out = function(s) io.stdout:write(s) end
 
-local ElementNode = require("lxlib.ext.dom.base.htmlparser.ElementNode")
-local voidelements = require("lxlib.ext.dom.base.htmlparser.voidelements")
+local ElementNode = require("lxlib.dom.base.htmlparser.ElementNode")
+local voidelements = require("lxlib.dom.base.htmlparser.voidelements")
 
 local HtmlParser = {}
 

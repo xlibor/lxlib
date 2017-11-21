@@ -8,7 +8,7 @@ local app, lf, tb, str = lx.kit()
 
 function _M:reg()
 
-    app:bindFrom('lxlib.ext.dom', {
+    app:bindFrom('lxlib.dom', {
         'domNode', 'domDocument', 'domElement'
     })
 end
