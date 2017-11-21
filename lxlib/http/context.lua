@@ -112,11 +112,14 @@ function _M:_get_(key)
 
 end
 
+function _M:getRequest()
+
+    return self.req
+end
+
 function _M:_run_(method)
 
-    local req, resp = self.req, self.resp
- 
-    return {req, resp}
+    return 'getRequest'
 end
 
 function _M:__call()

@@ -13,7 +13,7 @@ function _M:new(statusCode, msg, headers, code, prev)
         statusCode = statusCode,
         msg = msg or '',
         headers = headers,
-        code = cdoe or 0,
+        code = code or 0,
         prev = prev
     }
     

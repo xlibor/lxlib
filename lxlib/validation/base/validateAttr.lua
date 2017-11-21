@@ -335,7 +335,8 @@ end
 
 function _M.__:prepareUniqueId(id)
 
-    if str.rematch(id, '\\[(.*)\\]', matches) then
+    local matches = str.rematch(id, "\\[(.*)\\]")
+    if matches then
         id = self:getValue(matches[1])
     end
     if str.lower(id) == 'null' then

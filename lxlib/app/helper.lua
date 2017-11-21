@@ -5,7 +5,7 @@ local _M = {
 
 local lx = require('lxlib')
 local app, lf, tb, str, new = lx.kit()
-local throw = lx.throw
+local throw, fs = lx.throw, lx.fs
 
 function _M.kit()
 
@@ -45,13 +45,24 @@ end
 
 _M.csrfToken = _M.csrf_token
 
-function _M.mix(path)
+function _M.mix(path, buildPath)
 
+    buildPath = buildPath or 'build'
     local root = app:get('request').root
     local appName = app.name
-    local pubDir = app.scaffold.pub
+    local pubPath = app.scaffold.pub
+    local buildDir = app:getDir('pub', buildPath)
+    local manifestFile = buildDir .. '/mix.json'
 
-    return root .. '/' .. appName .. '/' .. pubDir .. '/' .. path  
+    if fs.exists(manifestFile) then
+        local manifest = lf.jsde(fs.get(manifestFile))
+        if manifest[path] then
+            path = manifest[path]
+            pubPath = pubPath .. '/' .. buildPath
+        end
+    end
+
+    return root .. '/' .. appName .. '/' .. pubPath .. path  
 end
 
 function _M.jsen(p)

@@ -388,9 +388,8 @@ function _M.init(appName)
                 if faces and faces[key] then
                     t = faces[key]
                 end
-                if not t then
+                if not t and env.globalVarCheck then
                     error('global var:' .. key)
-                    echo(key)
                 end
                 return t
             end

@@ -850,6 +850,35 @@ end
 
 _M.rereplace = _M.regsub
 
+function _M.rereplace(subject, regex, replace, options)
+
+    if not options then
+        options = 'jo'
+    end
+    local lookups = {}
+
+    local vt, rtype = type(regex), type(replace)
+    if vt == 'table' then
+        if rtype == 'table' then
+            for i, v in ipairs(regex) do
+                lookups[v] = replace[i] or ''
+            end
+        elseif rtype == 'string' then
+            for i, v in ipairs(regex) do
+                lookups[v] = replace
+            end
+        end
+    else
+        lookups[regex] = replace or ''
+    end
+
+    for k, v in pairs(lookups) do
+        subject = regsub(subject, k, v, options)
+    end
+
+    return subject
+end
+
 function _M.resplit(subject, regex, options)
 
     if not options then

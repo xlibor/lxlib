@@ -279,10 +279,7 @@ end
 
 local function extendMtTable(this, app, defer, run, get, baseMt, key)
     
-    local node
-
-    local func
-    local t, vt
+    local node, func, t, vt
 
     if scopeCheck then
         runScopeCheck(this, baseMt, key)
@@ -332,7 +329,6 @@ local function extendMtTable(this, app, defer, run, get, baseMt, key)
     end
 
     if run then
-
         local saveToMt = true
         local runDef, cancelSaveToMt = run(this, key)
         if cancelSaveToMt then
@@ -346,7 +342,7 @@ local function extendMtTable(this, app, defer, run, get, baseMt, key)
         elseif typ == 'table' then
             if #runDef > 0 then
                 for _, linkObj in ipairs(runDef) do
-                    func = linkObj[key] 
+                    func = linkObj[key]
                     if type(func) == 'function' then
                         node = function(this, ...)
                             return func(linkObj, ...)
@@ -365,7 +361,6 @@ local function extendMtTable(this, app, defer, run, get, baseMt, key)
                 end
             end
         elseif typ == 'string' then
-
             local linkFunc = baseMt[runDef]
             if type(linkFunc) == 'function' then
                 local linkObj = linkFunc(this)
