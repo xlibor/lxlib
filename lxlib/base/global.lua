@@ -19,8 +19,8 @@ end
 local lx = require('lxlib')
 local lf, Str, tb = lx.f, lx.str, lx.tb
 
-local loadedMods = {}
-
+local loadedMods        = {}
+local wrappers          = {}
 local need = require
 
 local libNeeds = {
@@ -194,6 +194,8 @@ local loadMod = function(namespace)
     
     local mod
     local t
+    local namespaceArg = namespace
+
     if namespace == 'lxlib' then
         -- namespace = 'lxlib.init'
     end
@@ -255,11 +257,28 @@ local loadMod = function(namespace)
     local ok, mod = pcall(need, namespace)
  
     if ok then
+        local wrapper = wrappers[namespaceArg]
+
+        if wrapper then
+            wrapper = require(wrapper)
+            wrapper(mod)
+        end
+
         loadedMods[namespace] = mod
         return mod
     end
 
     error(mod, 2)
+end
+
+function _M.setWrapper(src, dst)
+
+    wrappers[src] = dst
+end
+
+function _M.getWrappers()
+
+    return wrappers
 end
 
 function _M.ensureEnvFile(rootPath)

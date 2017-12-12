@@ -21,6 +21,7 @@ local ssub, sgsub, sfind, slower= string.sub, string.gsub, string.find, string.l
 local sfmt, supper, sbyte, slen = string.format, string.upper, string.byte, string.len
 local sreverse = string.reverse
 local rematch = ngx.re.match
+local ceil, floor = math.ceil, math.floor
 
 function _M.ensureSeeded()
     
@@ -437,6 +438,21 @@ end
 function _M.toBool(var)
     
     return var and true or false
+end
+
+function _M.toInt(var, default)
+
+    default = default or 0
+    local num = tonumber(var)
+    if not num then
+        return default
+    end
+
+    if not _M.isInt(var) then
+        num = floor(num)
+    end
+
+    return num
 end
 
 function _M.isset(var)

@@ -11,6 +11,13 @@ function _M:reg()
     app:single('image', 'lxlib.ext.image.imageManager')
 end
 
+function _M:dependOn()
+
+    return {
+        magick = ''
+    }
+end
+
 function _M:boot()
 
 end

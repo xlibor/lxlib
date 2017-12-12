@@ -25,7 +25,7 @@ local lx, _M, mt = oo{
             'updateOrCreate', 'findOrNew',
             'getSql', 'paginate', 'paging', 'simplePaginate',
             'truncate', 'has', 'doesntHave', 'whereHas', 'whereDoesntHave',
-            'getConnection', 'getConn', 'pluck'
+            'getConnection', 'getConn', 'pluck', 'distinct',
         }
     }
 }
@@ -41,6 +41,7 @@ local static
 function _M._init_(this)
 
     static = this.static
+    static.queryMethodsMap = tb.flip(static.queryMethods, true)
 end
 
 function _M:new(attrs)
@@ -614,6 +615,20 @@ function _M:getAttrValue(key)
     return value
 end
 
+function _M:incrAttr(attrName, count)
+
+    count = count or 1
+    local attrValue = self.attrs[attrName] or 0
+    self.attrs[attrName] = attrValue + count
+end
+
+function _M:decrAttr(attrName, count)
+
+    count = count or 1
+    local attrValue = self.attrs[attrName] or 0
+    self.attrs[attrName] = attrValue - count
+end
+
 function _M:getAttributes()
 
     return self.attrs
@@ -773,14 +788,14 @@ function _M:isDirty(...)
     return false
 end
 
-function _M.__:increment(column, amount, extra)
+function _M:increment(column, amount, extra)
 
     amount = amount or 1
     
     return self:incrementOrDecrement(column, amount, extra, 'increment')
 end
 
-function _M.__:decrement(column, amount, extra)
+function _M:decrement(column, amount, extra)
 
     amount = amount or 1
     
@@ -824,7 +839,9 @@ end
 
 function _M.__:changeAttrValueValue(column, amount, method)
 
-    self[column] = self[column] + (method == 'increment' and amount or amount * -1)
+    if not static.queryMethodsMap[column] then
+        self[column] = self[column] + (method == 'increment' and amount or amount * -1)
+    end
     self:syncOriginalAttribute(column)
 end
 

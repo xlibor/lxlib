@@ -21,7 +21,7 @@ function _M:ctor(items, perPage, currentPage, options)
         self[key] = value
     end
     self.perPage = perPage
-    self.currentPage = self:setCurrentPage(currentPage)
+    self._currentPage = self:setCurrentPage(currentPage)
     self.path = self.path ~= '/' and str.rtrim(self.path, '/') or self.path
     self.items = lf.isA(items, 'col') and items or lx.col(items)
     self:checkForMorePages()

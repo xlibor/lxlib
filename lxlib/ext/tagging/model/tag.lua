@@ -15,7 +15,7 @@ end
 
 function _M:ctor()
 
-    self.fillable = {'name'}
+    self.fillable = {'name', 'count', 'suggest'}
     self.table = app:conf('taggable.tags_table_name')
     local connection = app:conf('taggable.connection')
     if connection then
@@ -51,9 +51,8 @@ function _M:save(options)
             self.slug = self.taggingUtil:normalizeAndUniqueSlug(self.name)
         end
         -- this->name = this->taggingUtil->normalizeTagName($this->name);
-        
         return self:__super(_M, 'save', options)
-    else 
+    else
         throw('exception', 'Tag Name is required')
     end
 end
@@ -62,7 +61,7 @@ end
 
 function _M:scopeSuggested(query)
 
-    return query:where('suggest', true)
+    return query:where('suggest', '>', 0)
 end
 
 -- Set the name of the tag : tag.name = 'myname'
@@ -79,7 +78,7 @@ end
 
 function _M.t__.deleteUnused(this)
 
-    return new(this):newQuery():where('count', '=', 0):where('suggest', false):delete()
+    return new(this):newQuery():where('count', '=', 0):where('suggest', '=', 0):delete()
 end
 
 -- Get one Tag item by tag name

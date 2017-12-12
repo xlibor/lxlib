@@ -16,7 +16,9 @@ function _M:boot()
     end)
 
     Paginator.currentPageResolver(function(pageName)
+
         local page = app:get('request'):input(pageName)
+
         page = tonumber(page)
 
         if page and page >= 1 then

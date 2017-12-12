@@ -18,6 +18,13 @@ function _M:reg()
 
 end
 
+function _M:dependOn()
+    
+    return {
+        ["pintsized/lua-resty-http"] = ">=0.10"
+    }
+end
+
 function _M:boot()
 
 end

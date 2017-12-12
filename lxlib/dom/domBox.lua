@@ -6,6 +6,16 @@ local lx, _M = oo{
 
 local app, lf, tb, str = lx.kit()
 
+function _M:wrap()
+
+    app:wrap('lxlib.dom.base.htmlparser',
+        'lxlib.dom.base.htmlparserWrapper'
+    )
+    app:wrap('lxlib.dom.base.htmlparser.ElementNode',
+        'lxlib.dom.base.elementNodeWrapper'
+    )
+end
+
 function _M:reg()
 
     app:bindFrom('lxlib.dom', {

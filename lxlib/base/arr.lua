@@ -1572,12 +1572,28 @@ function _M.reduce(tbl, cb, initial)
     return ret
 end
 
-function _M.map(tbl, callable)
+function _M.map(...)
 
     local ret = {}
+    local tbls = {...}
+    local callable = _M.pop(tbls)
+    local len = #tbls
+    local tbl
 
-    for k, v in pairs(tbl) do
-        ret[k] = lf.call(callable, v, k)
+    if len == 1 then
+        tbl = tbls[1]
+        for k, v in pairs(tbl) do
+            ret[k] = lf.call(callable, v)
+        end
+    elseif len > 1 then
+        tbl = tbls[1]
+        for k, v in ipairs(tbl) do
+            local params = {}
+            for i = 1, len do
+                tapd(params, tbls[i][k])
+            end
+            ret[k] = lf.call(callable, unpack(params))
+        end
     end
 
     return ret

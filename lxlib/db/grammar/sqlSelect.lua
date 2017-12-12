@@ -8,12 +8,12 @@ function _M:new()
 
     local this = {
         dbType = 'mysql',
---        fields = nil,
---        tables = nil,
---        conditions = nil,
---        orderByFields = nil,
---        groupByFields = nil,
---        havings = nil,
+        fields = nil,
+        tables = nil,
+        conditions = nil,
+        orderByFields = nil,
+        groupByFields = nil,
+        havings = nil,
         distinct = false,
         top = 0
     }
@@ -104,7 +104,5 @@ function _M:sql(dbType)
     return strSql
 end
 
-
- 
 return _M
 

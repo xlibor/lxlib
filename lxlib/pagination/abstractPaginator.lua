@@ -38,7 +38,7 @@ end
 
 function _M.__:isValidPageNumber(page)
 
-    return page >= 1 and lf.filter(page, 'int') ~= false
+    return lf.isInt(page) and page >= 1
 end
 
 function _M:getUrlRange(start, last)

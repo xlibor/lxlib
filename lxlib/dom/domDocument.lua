@@ -4,50 +4,30 @@ local lx, _M, mt = oo{
     _ext_   = 'domNode'
 }
 
-local app, lf, tb, str = lx.kit()
+local app, lf, tb, str, new = lx.kit()
 
 local DomParser = require('lxlib.dom.base.htmlparser')
 
 function _M:ctor()
 
-    self.baseDoc = nil
+    self.baseNode = nil
 end
 
-function _M:loadHtml(html)
+function _M:loadHtml(html, limit)
 
-    self.baseDoc = DomParser.parse(html)
+    limit = limit or 3000
+    self.baseNode = DomParser.parse(html, limit)
+
+    return self
 end
 
 function _M:loadXml(xml)
 
-    self.baseDoc = DomParser.parse(xml)
+    self.baseNode = DomParser.parse(xml)
 end
 
 function _M:save()
 
-end
-
-
-function _M:getElementById(elementId)
-
-    local nodes = self.baseDoc('#' .. elementId)
-    if nodes then
-        return nodes[1]
-    end
-end
-
-function _M:getElementsByTagName(tagName)
-
-    local nodes = self.baseDoc(tagName)
-
-    return nodes
-end
-
-function _M:find(selectStr)
-
-    local nodes = self.baseDoc(selectStr)
-
-    return nodes
 end
 
 function _M:createAttribute(name)

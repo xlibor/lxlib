@@ -48,7 +48,7 @@ end
 
 function _M.__:createFacebookDriver()
 
-    local config = app:conf('services.facebook')
+    local config = app:conf('service.facebook')
     
     return self:buildProvider('socialite.facebookProvider', config)
 end
@@ -58,7 +58,7 @@ end
 
 function _M.__:createGoogleDriver()
 
-    local config = app:conf('services.google')
+    local config = app:conf('service.google')
     
     return self:buildProvider('socialite.googleProvider', config)
 end
@@ -68,7 +68,7 @@ end
 
 function _M.__:createLinkedinDriver()
 
-    local config = app:conf('services.linkedin')
+    local config = app:conf('service.linkedin')
     
     return self:buildProvider('socialite.linkedInProvider', config)
 end
@@ -78,7 +78,7 @@ end
 
 function _M.__:createBitbucketDriver()
 
-    local config = app:conf('services.bitbucket')
+    local config = app:conf('service.bitbucket')
     
     return self:buildProvider('socialite.bitbucketProvider', config)
 end
@@ -126,7 +126,7 @@ end
 
 function _M.__:getConfig(name)
 
-    return app:conf('services.' .. name)
+    return app:conf('service.' .. name)
 end
 
 -- Get the default driver name.

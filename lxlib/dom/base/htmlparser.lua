@@ -3,7 +3,7 @@
 local esc = function(s) return string.gsub(s, "([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%" .. "%1") end
 local str = tostring
 local char = string.char
-local err = function(s) io.stderr:write(s) end
+local err = function(s) echo(s) end
 local out = function(s) io.stdout:write(s) end
 
 local ElementNode = require("lxlib.dom.base.htmlparser.ElementNode")
@@ -21,7 +21,6 @@ local tpr = {
 
 local function parse(text,limit)
 	local text=str(text)
-
 	local limit = limit or 1000
 
 	local tpl = false
@@ -62,12 +61,12 @@ local function parse(text,limit)
 
 	local node, descend, tpos, opentags = root, true, 1, {}
 	while true do
+		local openstart, name
 		if index == limit then
 			err("[HTMLParser] [ERR] Main loop reached loop limit ("..limit.."). Please, consider increasing it or check the code for errors")
 			break
 		end
 
-		local openstart, name
 		openstart, tpos, name = root._text:find(
 			"<" ..        -- an uncaptured starting "<"
 			"([%w-]+)" .. -- name = the first word, directly following the "<"

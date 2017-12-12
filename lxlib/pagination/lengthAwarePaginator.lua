@@ -32,6 +32,7 @@ function _M:ctor(items, total, perPage, currentPage, options)
     self.path = self.path ~= '/' and str.rtrim(self.path, '/') or self.path
 
     self._currentPage = self:setCurrentPage(currentPage, self._lastPage)
+
     self.items = lf.isA(items, 'col') and items or lx.col(items)
 end
 
@@ -82,7 +83,7 @@ function _M:render(view)
         last
     }
     elements = tb.filter(elements)
- 
+
     viewFactory:fill(
         view or static.defaultView, {
         paginator = self,

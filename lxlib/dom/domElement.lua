@@ -1,10 +1,10 @@
 
 local lx, _M, mt = oo{
-    _cls_   = ''
+    _cls_   = '',
     _ext_   = 'domNode'
 }
 
-local app, lf, tb, str = lx.kit()
+local app, lf, tb, str, new = lx.kit()
 
 function _M:ctor()
 
@@ -14,6 +14,7 @@ end
 
 function _M:getAttribute(name)
 
+    return self.baseNode:getAttr(name)
 end
 
 function _M:getAttributeNode(name)
@@ -24,16 +25,9 @@ function _M:getAttributeNodeNS(namespaceURI, localName)
 
 end
 
-function _M:getElementsByTagName(name)
-
-end
-
-function _M:getElementsByTagNameNS(namespaceURI, localName)
-
-end
-
 function _M:hasAttribute(name)
 
+    return self:getAttribute(name) and true or false
 end
 
 function _M:hasAttributeNS(namespaceURI, localName)
@@ -78,6 +72,12 @@ end
 
 function _M:setIdAttributeNS(namespaceURI, localName, isId)
 
+end
+
+function _M:__call(...)
+
+    local nodes = self.baseNode:select(...)
+    return self:initNodes(nodes)
 end
 
 return _M

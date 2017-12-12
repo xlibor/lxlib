@@ -678,14 +678,14 @@ function _M:paginate(perPage, columns, pageName, page)
     columns = columns or {'*'}
 
     page = page or Paginator.resolveCurrentPage(pageName)
-
+    page = lf.toInt(page)
     perPage = perPage or self.model:getPerPage()
     local query = self:toBase()
 
     local total = query:getCountForPagination()
 
     local results = self:page(page, perPage):get()
-    
+
     return new('lengthAwarePaginator', results, total, perPage,
         page, {
             path = Paginator.resolveCurrentPath(), pageName = pageName

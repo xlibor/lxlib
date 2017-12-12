@@ -23,11 +23,13 @@ function _M.a__:reg() end
 
 function _M.a__:boot() end
 
-function _M:order()
-
+function _M:dependOn()
 end
 
-function _M.__:mergeConfigFrom(path, key)
+function _M:wrap()
+end
+
+function _M:mergeConfigFrom(path, key)
 
     local config = app:conf(key) or {}
     local data = require(path)
@@ -36,7 +38,7 @@ function _M.__:mergeConfigFrom(path, key)
     app:setConf(key, config)
 end
 
-function _M.__:loadViewsFrom(path, namespace)
+function _M:loadViewsFrom(path, namespace)
 
     local view = app.view
     local appPath = lx.dir('res', 'view/vendor/' .. namespace)
@@ -47,12 +49,12 @@ function _M.__:loadViewsFrom(path, namespace)
     view:addNamespace(namespace, path)
 end
 
-function _M.__:loadTranslationsFrom(path, namespace)
+function _M:loadTranslationsFrom(path, namespace)
 
     app:get('translator'):addNamespace(namespace, path)
 end
 
-function _M.__:loadShiftFrom(paths)
+function _M:loadShiftFrom(paths)
 
 end
 

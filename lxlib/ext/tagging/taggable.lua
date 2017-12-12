@@ -5,11 +5,11 @@ local lx, _M = oo{
 }
 
 local app, lf, tb, str, new = lx.kit()
-
+local Tagged = lx.use('tagging.tagged')
 local static
 
 function _M._init_(this)
-    
+
     static = this.static
     static.taggingUtil = app('tagging.util')
 end
@@ -59,9 +59,10 @@ end
 
 function _M:tag(...)
 
-    local tagNames = lf.needList(...)
-    echo(tagNames)
+    local tagNames = lf.needArgs(...)
+
     tagNames = static.taggingUtil:makeTagArray(tagNames)
+
     for _, tagName in ipairs(tagNames) do
         self:addTag(tagName)
     end
@@ -72,7 +73,7 @@ end
 
 function _M:tagNames()
 
-    return self:tags():pluck('name'):all()
+    return self:tags():pluck('name')
 end
 
 -- Return table of the tag slugs related to the current model
@@ -80,7 +81,7 @@ end
 
 function _M:tagSlugs()
 
-    return self:tags():pluck('slug'):all()
+    return self:tags():pluck('slug')
 end
 
 -- Remove the tag from this model
@@ -105,7 +106,7 @@ end
 
 function _M:retag(...)
     
-    local tagNames = lf.needList(...)
+    local tagNames = lf.needArgs(...)
     tagNames = static.taggingUtil:makeTagArray(tagNames)
     local currentTagNames = self:tagNames()
     local deletions = tb.diff(currentTagNames, tagNames)
@@ -122,10 +123,10 @@ end
 function _M:scopeWithAllTags(query, ...)
 
     local ids
-    local tagNames = lf.needList(...)
+    local tagNames = lf.needArgs(...)
     tagNames = static.taggingUtil:makeTagArray(tagNames)
     local model = static.taggingUtil:tagModelString()
-    local tagids = model.byTagNames(tagNames):pluck('id'):all()
+    local tagids = model.byTagNames(tagNames):pluck('id')
     local className = query:getModel():getMorphClass()
     local primaryKey = self:getKeyName()
     local tagid_count = #tagids
@@ -146,11 +147,11 @@ end
 
 function _M:scopeWithAnyTag(query, ...)
 
-    local tagNames = lf.needList(...)
+    local tagNames = lf.needArgs(...)
 
     tagNames = static.taggingUtil:makeTagArray(tagNames)
     local model = static.taggingUtil:tagModelString()
-    local tagids = model.byTagNames(tagNames):pluck('id'):all()
+    local tagids = new(model):byTagNames(tagNames):pluck('id')
     local className = query:getModel():getMorphClass()
     local primaryKey = self:getKeyName()
     local tags = Tagged.whereIn('tag_id', tagids)
@@ -167,29 +168,31 @@ function _M.__:addTag(tagName)
 
     local count
     local model = static.taggingUtil:tagModelString()
-    local tag = model.byTagName(tagName):first()
+
+    local tag = new(model):byTagName(tagName):first()
     if tag then
         -- If tag is exists, do not create
         count = self:tagged():where('tag_id', '=', tag.id):take(1):count()
         if count >= 1 then
-            
             return
-        else 
+        else
             self:tags():attach(tag.id)
+            tag:increment('count', tag:getAttr('count') + 1)
         end
-    else 
+    else
         -- If tag is not exists, create tag and attach to object
-        tag = self:__new()
+        tag = new(model)
         tag.name = tagName
+        tag:setAttr('count', 1)
         tag:save()
         self:tags():attach(tag.id)
     end
-    static.taggingUtil:incrementCount(tag, 1)
     if app:conf('taggable.is_tagged_label_enable') and self.is_tagged ~= 'yes' then
         self.is_tagged = 'yes'
         self:save()
     end
     self.relations.tagged = nil
+
     app:fire('tagAdded', self)
 end
 
@@ -217,11 +220,20 @@ end
 -- Return an table of all of the tags that are in use by this model
 -- @return col
 
-function _M.s__.existingTags()
+function _M.t__.existingTags(this)
 
     local tags_table_name = app:conf('taggable.tags_table_name')
     
-    return Tagged.distinct():join(tags_table_name, 'tag_id', '=', tags_table_name .. '.id'):where('taggable_type', '=', (new('static')):getMorphClass()):orderBy('tag_id', 'ASC'):get({tags_table_name .. '.slug as slug', tags_table_name .. '.name as name', tags_table_name .. '.count as count'})
+    local q = Tagged.distinct()
+    q:join(tags_table_name):on('tag_id', '=', tags_table_name .. '.id')
+    q:where('taggable_type', '=', new(this):getMorphClass())
+    :orderBy('tag_id', 'ASC')
+
+    return q:get(
+        {tags_table_name .. '.slug','slug'},
+        {tags_table_name .. '.name','name'},
+        {tags_table_name .. '.count','count'}
+    )
 end
 
 -- Should untag on delete
@@ -274,7 +286,7 @@ function _M:tagWithTagIds(tag_ids)
         return
     end
     local model = static.taggingUtil:tagModelString()
-    local tag_names = model.byTagIds(tag_ids):pluck('name'):all()
+    local tag_names = model.byTagIds(tag_ids):pluck('name')
     self:retag(tag_names)
 end
 

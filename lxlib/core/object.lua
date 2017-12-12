@@ -709,10 +709,9 @@ function _M:mergeMixin(bag, mixins, mixinCtors)
 
         local bindInfo = app:getBind(mix, true)
         if bindInfo then
-            mixBag = lf.import(bindInfo.bag)
-        else
-            mixBag = lf.import(mix)
+            mix = bindInfo.bag
         end
+        mixBag = self:getClassBaseInfo(mix).bag
 
         tapd(mixins, mixBag)
 
@@ -724,6 +723,8 @@ function _M:mergeMixin(bag, mixins, mixinCtors)
         local cloneInfo = mixBag._clone_
         local privates = mixBag.__
         local mixCtor = mixBag.ctor
+        local staticInfo = mixBag.s__
+        local stackInfo = mixBag.t__
 
         if deferInfo then
             if not bag.d__ then
@@ -766,6 +767,24 @@ function _M:mergeMixin(bag, mixins, mixinCtors)
         if cloneInfo then
             if not bag._clone_ then
                 bag._clone_ = cloneInfo
+            end
+        end
+
+        if staticInfo then
+            if not bag.s__ then
+                bag.s__ = {}
+            end
+            for k, v in pairs(staticInfo) do
+                bag.s__[k] = v
+            end
+        end
+
+        if stackInfo then
+            if not bag.t__ then
+                bag.t__ = {}
+            end
+            for k, v in pairs(stackInfo) do
+                bag.t__[k] = v
             end
         end
 
@@ -915,7 +934,7 @@ function _M:getClassBaseInfo(bagPath)
         if staticInfo then
             if not superStatic then
                 error('super class ' .. superPath .. ' must define _static_.')
-            end 
+            end
             for k, v in pairs(staticInfo) do
                 superStatic[k] = v
             end

@@ -6,6 +6,7 @@ local _M = {
 local lx = require('lxlib')
 local app, lf, tb, str, new = lx.kit()
 local throw, fs = lx.throw, lx.fs
+local ssub = string.sub
 
 function _M.kit()
 
@@ -46,6 +47,11 @@ end
 _M.csrfToken = _M.csrf_token
 
 function _M.mix(path, buildPath)
+
+    path = path or ''
+    if ssub(path, 1, 1) ~= '/' then
+        path = '/' .. path
+    end
 
     buildPath = buildPath or 'build'
     local root = app:get('request').root

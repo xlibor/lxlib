@@ -19,13 +19,14 @@ local Paginator = lx.use('paginator')
 function _M:new(dboOrList, dbType)
 
     local this = {
-        dbType            = dbType or 'mysql',
-        sql                = '',
-        hasRs            = false,
+        dbType          = dbType or 'mysql',
+        sql             = '',
+        hasRs           = false,
         testMode        = false, 
-        rowAsList        = false,
-        eventsDef        = {},
-        _useWriteLdo    = false
+        rowAsList       = false,
+        eventsDef       = {},
+        _useWriteLdo    = false,
+        _distinct       = false,
     }
 
     local dbo
@@ -615,7 +616,8 @@ function _M:get(...)
     sqlSelect.conditions = self._wheres
     sqlSelect.havings = self._havings
     sqlSelect.fromRaw = self._fromRaw
-
+    sqlSelect.distinct = self._distinct
+    
     if self._joins then
         sqlSelect.tables.tableJoins = self._joins
     end
@@ -857,6 +859,13 @@ function _M:addSelect(args)
 end
 
 _M.pick = _M.addSelect
+
+function _M:distinct()
+
+    self._distinct = true
+
+    return self
+end
 
 function _M:and_(...)
 
@@ -1276,6 +1285,7 @@ function _M:reset(returnBaseColumns)
     self._limitField = nil
     self._selects = nil
     self._selectTables = nil
+    self._ormJoin = nil
     self.res = {}
 
     self._limit = nil

@@ -135,11 +135,11 @@ function _M.__:getDependancyFromBox()
     
     local ret = {}
     local boxes = app.boxes
-    local order
+    local dependencies
     for _, box in pairs(boxes) do 
-        order = box:order()
-        if lf.isArr(order) then
-            for k, v in pairs(order) do
+        dependencies = box:dependOn()
+        if lf.isArr(dependencies) then
+            for k, v in pairs(dependencies) do
                 ret[k] = v
             end
         end
@@ -154,10 +154,10 @@ function _M.__:parseDependancy()
     local jsonStr = fs.get(self.carrierJsonPath)
     local conf = json.decode(jsonStr)
     local dependencies = conf.require
-    local boxOrders = self:getDependancyFromBox()
+    local boxDependencies = self:getDependancyFromBox()
 
-    if lf.notEmpty(boxOrders) then
-        dependencies = tb.mergeDict(dependencies, boxOrders)
+    if lf.notEmpty(boxDependencies) then
+        dependencies = tb.mergeDict(dependencies, boxDependencies)
     end
 
     local pkgList = {}

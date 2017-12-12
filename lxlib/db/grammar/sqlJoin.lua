@@ -27,21 +27,20 @@ function _M:setAllOn()
     local readySetOnFields = self.readySetOnFields
 
     if #readySetOnFields > 0 then
-        local f0,cp,f1
-        for i,field in pairs(readySetOnFields) do
-            f0,cp,f1,lo = field[1],field[2],field[3],field[4]
+        local f0, cp, f1
+        for i, field in pairs(readySetOnFields) do
+            f0, cp, f1, lo = field[1], field[2], field[3], field[4]
             if i > 1 then
                 if lo == 'or' then
-                    self:or_(f0,cp,f1)
+                    self:or_(f0, cp, f1)
                 else
-                    self:and_(f0,cp,f1)
+                    self:and_(f0, cp, f1)
                 end
             else
-                self:runOn(f0,cp,f1)
+                self:runOn(f0, cp, f1)
             end
         end
     end
-
 end
 
 function _M:setUsing(cdtField)

@@ -42,20 +42,20 @@ local function _strip(s, left, right, chrs)
 
     local i1,i2
     if not chrs then
-        chrs = '%s'
+        chrs = '[%s]'
     else
         chrs = '['..escape(chrs)..']'
     end
     if left then
         i1,i2 = sfind(s,'^'..chrs..'*')
         if i2 >= i1 then
-            s = ssub(s,i2+1)
+            s = ssub(s, i2 + 1)
         end
     end
     if right then
-        i1,i2 = sfind(s,chrs..'*$')
+        i1,i2 = sfind(s, chrs..'*$')
         if i2 >= i1 then
-            s = ssub(s,1,i1-1)
+            s = ssub(s, 1, i1-1)
         end
     end
 
@@ -601,10 +601,8 @@ function _M.slug(title, separator)
     
     local flip = separator == '-' and '_' or '-'
     title = _M.rereplace(title, '[' .. _M.pregQuote(flip) .. ']+', separator)
-
-    -- todo: Remove all characters that are not the separator, letters, numbers, or whitespace.
-
-    title = _M.rereplace(title, '[' .. _M.pregQuote(separator) .. '\\s]+', separator)
+    title = _M.rereplace(slower(title), '[^' .. _M.pregQuote(separator) .. '\\pL\\pN\\s]+', '', 'jou')
+    title = _M.rereplace(title, '[' .. _M.pregQuote(separator) .. '\\s]+', separator, 'jou')
     
     return _M.trim(title, separator)
 end
@@ -735,6 +733,8 @@ function _M.lregQuote(s)
 
     return s
 end
+
+_M.quote = _M.lregQuote
 
 function _M.pregQuote(s, delimiter)
 
@@ -1174,6 +1174,72 @@ function _M.str(s, needle, beforeNeedle)
     end
 
     return ret
+end
+
+
+function _M.findTagEnd(s, tagBegin, tagEnd, lastPos)
+
+    local tagOpenedNum, tagClosedNum = 0, 0
+    local loopLimit, loopCount = 1000, 0
+    local strLength = slen(s)
+    local i, j, ib, jb, ie, je
+
+    if not tagEnd then
+        tagEnd = "</" ..tagBegin .. ">"
+        tagBegin = "<" .. tagBegin
+    end
+
+    if lastPos then
+        tagOpenedNum = 1
+    else
+        lastPos = 1
+    end
+
+    while true do
+        if (loopCount == loopLimit) or (lastPos >= strLength) then
+            return 
+        end
+
+        ib, jb = sfind(s, tagBegin, lastPos)
+        ie, je = sfind(s, tagEnd, lastPos)
+
+        if ib then
+            if ie then
+                if ib < ie then
+                    lastPos = jb + 1
+                    tagOpenedNum = tagOpenedNum + 1
+                    i, j = sfind(s, tagBegin, lastPos)
+                    if i and j < ie then
+                        lastPos = j + 1
+                        tagOpenedNum = tagOpenedNum + 1
+                    end
+                else
+                    lastPos = je + 1
+                    tagClosedNum = tagClosedNum + 1
+                    if tagOpenedNum == tagClosedNum then
+                        return je
+                    end
+                end
+            else
+                lastPos = jb + 1
+                tagOpenedNum = tagOpenedNum + 1
+            end
+        else
+            if ie then
+                lastPos = je + 1
+                tagClosedNum = tagClosedNum + 1
+                if tagOpenedNum == tagClosedNum then
+                    return je
+                end
+            else
+                return
+            end
+        end
+ 
+        loopCount = loopCount + 1
+    end
+
+    return lastPos
 end
 
 return _M

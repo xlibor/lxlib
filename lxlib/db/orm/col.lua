@@ -46,6 +46,16 @@ function _M:contains(key, value)
     end)
 end
 
+function _M:find(key)
+
+    for i, model in ipairs(self:all()) do
+        local modelKey = model:getKey()
+        if lf.eq(modelKey, key) then
+            return model
+        end
+    end 
+end
+
 function _M:pack(packer)
 
     local models = {}

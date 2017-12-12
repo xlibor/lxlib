@@ -6,7 +6,7 @@ local mt = { __index = _M }
 
 local lx = require('lxlib')
 local util = require('lxlib.view.engine.base.util')
-
+local lf = lx.f
 local sub, gsub = string.sub, string.gsub
 
 function _M:new()
@@ -157,6 +157,11 @@ function _M._abs(target)
     end
 
     return num
+end
+
+function _M._valid(target)
+
+    return not lf.isEmpty(target)
 end
 
 function _M._operator_in(target, tbl)

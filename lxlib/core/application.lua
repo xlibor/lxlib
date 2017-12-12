@@ -186,6 +186,7 @@ function _M:reg(nick, box)
     local boxed = self.boxes[nick]
     if boxed then return boxed end
     box = self:resolveBox(nick, box)
+    box:wrap()
     box:reg()
     
     self:markAsReged(nick, box)
@@ -502,6 +503,12 @@ function _M:bindNamespace(namespace, parentDir, options)
 end
 
 _M.bindNs = _M.bindNamespace
+
+function _M:wrap(src, dst)
+
+    local global = require('lxlib.base.global')
+    global.setWrapper(src, dst)
+end
 
 function _M:runningInConsole()
 
