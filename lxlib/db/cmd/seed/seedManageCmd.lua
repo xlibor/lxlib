@@ -23,8 +23,7 @@ end
 
 function _M:getSeeder(class)
 
-    class = class or self:arg('class') or 'dbSeeder'
-    class = self:getSeederPath(class)
+    class = class or self:arg('class') or '.db.seed.dbSeeder'
     app:bind(class)
     
     local obj = app:make(class, self)
@@ -40,11 +39,6 @@ function _M:getDatabase()
     end
 
     return db
-end
-
-function _M:getSeederPath(class)
-
-    return 'db.seed.'..class
 end
 
 return _M

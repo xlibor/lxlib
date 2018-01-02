@@ -5,7 +5,7 @@ local lx, _M, mt = oo{
     -- _bond_ = 'providerInterface'
 }
 
-local app, lf, tb, str = lx.kit()
+local app, lf, tb, str, new = lx.kit()
 
 function _M:ctor()
 
@@ -107,7 +107,7 @@ end
 
 function _M.__:getUserByToken(token)
 
-    local scopes = str.split(token:getAttribute('scope', ''), ',')
+    local scopes = str.split(token:getAttr('scope', ''), ',')
     if tb.inList(scopes, 'snsapi_base') then
         
         return token:toArr()

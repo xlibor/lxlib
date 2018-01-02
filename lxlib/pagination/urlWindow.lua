@@ -28,7 +28,7 @@ function _M:get(onEachSide)
 
     onEachSide = onEachSide or 3
     if self.paginator:lastPage() < onEachSide * 2 + 6 then
-        
+
         return self:getSmallSlider()
     end
     

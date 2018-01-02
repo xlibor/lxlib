@@ -787,7 +787,7 @@ end
 
 function _M:toTimeString()
 
-    return self:format('H:i:s')
+    return self:format('%H:%M:%S')
 end
 
 -- Format the instance as date and time
@@ -795,7 +795,7 @@ end
 
 function _M:toDateTimeString()
 
-    return self:format('Y-m-d H:i:s')
+    return self:format('%Y-%m-%d %H:%M:%S')
 end
 
 -- Format the instance with day, date and time

@@ -252,7 +252,7 @@ function _M:mediumText(column)
     return self:add(column, 'mediumText')
 end
 
-_M.mediumtext = mediumText
+_M.mediumtext = _M.mediumText
 
 function _M:longText(column)
 

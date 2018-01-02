@@ -76,18 +76,17 @@ function _M:render(view)
     local window = UrlWindow.make(self)
     local first, last, slider = window.first, window.last, window.slider
     local elements = {
-        first,
-        lf.isTbl(slider) and '...',
-        slider,
-        lf.isTbl(last) and '...',
-        last
+        first or true,
+        lf.isTbl(slider) and '...' or true,
+        slider or true,
+        lf.isTbl(last) and '...' or true,
+        last or true
     }
-    elements = tb.filter(elements)
 
     viewFactory:fill(
         view or static.defaultView, {
         paginator = self,
-        elements = tb.filter(elements)
+        elements = elements
     })
 
 end

@@ -53,12 +53,12 @@ function _M.mix(path, buildPath)
         path = '/' .. path
     end
 
-    buildPath = buildPath or 'build'
+    buildPath = buildPath or ''
     local root = app:get('request').root
     local appName = app.name
     local pubPath = app.scaffold.pub
     local buildDir = app:getDir('pub', buildPath)
-    local manifestFile = buildDir .. '/mix.json'
+    local manifestFile = buildDir .. '/mix-manifest.json'
 
     if fs.exists(manifestFile) then
         local manifest = lf.jsde(fs.get(manifestFile))

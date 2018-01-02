@@ -45,7 +45,7 @@ function _M:getUrlRange(start, last)
 
     local urls = {}
     for page = start, last do
-        urls[page] = self:url(page)
+        tapd(urls, {page = page, url = self:url(page)})
     end
     
     return urls

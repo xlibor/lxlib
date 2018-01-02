@@ -94,6 +94,7 @@ function _M:add(uri, command)
             cmd, action = str.div(command, '@')
         else
             cmd = command
+            action = 'run'
         end
     elseif vt == 'function' then
         cmd = command

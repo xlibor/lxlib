@@ -21,8 +21,9 @@ function _M:md2html(mdStr, options)
     local html
     local doc, err
 
+    mdStr = str.rereplace(mdStr, '>```', '>\n```')
     mdStr = str.rereplace(mdStr, '([^\n]+\n)```', '$1\n```')
-    
+
     if options then
         doc, err = Md.compile(mdStr, unpack(options))
     else

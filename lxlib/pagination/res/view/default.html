@@ -15,11 +15,11 @@
 
         <!-- Array Of Links -->
         @if(lf.isTbl(element))
-            @foreach(element as page, url)
-                @if(page == paginator:currentPage())
-                    <li class="active"><span>{{ page }}</span></li>
+            @foreach(element as item)
+                @if(item.page == paginator:currentPage())
+                    <li class="active"><span>{{ item.page }}</span></li>
                 @else
-                    <li><a href="{{ url }}">{{ page }}</a></li>
+                    <li><a href="{{ item.url }}">{{ item.page }}</a></li>
                 @endif
             @endforeach
         @endif
