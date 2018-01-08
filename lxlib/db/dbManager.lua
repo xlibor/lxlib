@@ -108,12 +108,18 @@ end
 function _M:strictMode(strict)
 
     strict = lf.needTrue(strict)
-
     app:setConf('db.connections.mysql.strict', strict)
 
     return self
 end
 
+function _M:stringSize(size)
+
+    size = size or 255
+    app:setConf('db.connections.mysql.stringSize', size)
+
+    return self
+end
 
 return _M
 

@@ -44,16 +44,19 @@ function _M:autoload()
 
     local router = app.router
 
-    local routes = fs.files(lx.dir('map', 'load'), 'n', function(file)
-        local name, ext = file:sub(1, -5), file:sub(-3)
+    local loadDir = lx.dir('map', 'load')
+    if fs.exists(loadDir) then
+        local routes = fs.files(lx.dir('map', 'load'), 'n', function(file)
+            local name, ext = file:sub(1, -5), file:sub(-3)
 
-        if ext == 'lua' then
-            return name
-        end
-    end)
-    if #routes > 0 then
-        for _, route in ipairs(routes) do
-            require('.map.load.' .. route)(router)
+            if ext == 'lua' then
+                return name
+            end
+        end)
+        if #routes > 0 then
+            for _, route in ipairs(routes) do
+                require('.map.load.' .. route)(router)
+            end
         end
     end
 end

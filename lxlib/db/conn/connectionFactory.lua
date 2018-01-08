@@ -38,8 +38,8 @@ function _M:createConnector(config)
     if not driver then 
         throw('invalidArgumentException', 'a driver must be specified.')
     end
- 
-    local key = 'lxlib.db.connector.' .. driver .. 'connector'
+
+    local key = 'lxlib.db.connector.' .. driver .. 'Connector'
 
     return app:make(key)
 end

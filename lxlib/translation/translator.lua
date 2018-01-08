@@ -1,8 +1,8 @@
 
 local lx, _M, mt = oo{
-    _cls_ = '',
-    _ext_ = 'nameParser',
-    _bond_ = 'translatorBond',
+    _cls_   = '',
+    _ext_   = 'nameParser',
+    _bond_  = 'translatorBond',
 }
 
 local app, lf, tb, str = lx.kit()

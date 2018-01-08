@@ -33,7 +33,7 @@ function _M:new(name, dataType, alterMode)
     local this = {
         alterMode = alterMode,
         attrs = attrs,
-     }
+    }
 
     setmetatable(this, mt)
 

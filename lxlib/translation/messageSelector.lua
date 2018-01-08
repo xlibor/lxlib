@@ -4,6 +4,7 @@ local lx, _M, mt = oo{
 }
 
 local app, lf, tb, str = lx.kit()
+
 function _M:choose(line, number, locale)
 
     local segments = str.split(line, '|')

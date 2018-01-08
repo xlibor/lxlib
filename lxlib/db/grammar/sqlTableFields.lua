@@ -10,6 +10,7 @@ local pub = require('lxlib.db.pub')
 local dbInit = lx.db
 
 local tconcat = table.concat
+local defaultStringSize
 
 function _M:new(table)
 
@@ -19,6 +20,8 @@ function _M:new(table)
         keyItems = lx.col(),
         table = table
     }
+
+    defaultStringSize = app:conf('db.connections.mysql.stringSize') or 255
 
     setmetatable(this, mt)
 
@@ -226,25 +229,19 @@ end
 
 function _M:char(column, size)
 
-    size = size or 255
+    size = size or defaultStringSize
     return self:add(column, 'char', size)
 end
 
 function _M:string(column, size)
 
-    size = size or 255
+    size = size or defaultStringSize
     return self:add(column, 'string', size)
 end
 
 function _M:text(column)
 
     return self:add(column, 'text')
-end
-
-function _M:char(column, size)
-
-    size = size or 255
-    return self:add(column, 'char', size)
 end
 
 function _M:mediumText(column)
