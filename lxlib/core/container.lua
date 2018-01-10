@@ -308,11 +308,19 @@ function _M:getBind(nick, tryBind)
     local t = self.binds[nick]
     if not t then
         if tryBind then
-            local bag = lf.prequire(nick)
-            if not bag or not bag._cls_ then
-                -- error('invalid bag:' .. nick)
-                return
+            local bag, err = lf.prequire(nick)
+            if not bag then
+                if err then
+                    error('invalid bag:' .. nick .. ';' .. err)
+                else
+                    error('invalid bag:' .. nick)
+                end
+            else
+                if not bag._cls_ then
+                    error('invalid oop bag:' .. nick)
+                end
             end
+
             self:bind(nick, nick, nil, nil, nil, true)
             t = self:getBind(nick)
         end
