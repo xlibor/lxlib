@@ -23,6 +23,7 @@ function _M:new()
         _actionName     = false,
         _ctlerName      = false,
         _route          = false,
+        _allFiles       = false,
     }
 
     return oo(this, mt)
@@ -197,17 +198,17 @@ end
 
 function _M.d__:isSecure()
 
-    return false
+    return self.scheme == 'https' and true or false
 end
 
 function _M.d__:isGet()
 
-    return self.method == 'get'
+    return self.method == 'get' and true or false
 end
 
 function _M.d__:isPost()
 
-    return self.method == 'post'
+    return self.method == 'post' and true or false
 end
 
 function _M.d__:isMultiform()
@@ -248,7 +249,7 @@ end
 
 function _M.d__:scheme()
 
-    local scheme = self.isSecure and 'https' or 'http'
+    local scheme = ngx.var.scheme
  
     return scheme
 end
@@ -469,8 +470,13 @@ end
 
 function _M.d__:allFiles()
 
-    local files = self:convertUploadedFiles() or {}
+    if self._allFiles then
+        return self._allFiles
+    end
 
+    local files = self:convertUploadedFiles() or {}
+    self._allFiles = files
+    
     return files
 end
 
