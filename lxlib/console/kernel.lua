@@ -30,37 +30,51 @@ function _M:load()
     
     if not app.loaded then
         self:loadApp()
+        self.commander = app:make('commander')
+        self:loadCommands(self.commander)
+        if _G.isLxTaskMode then
+            self.schedule = app:make('schedule')
+            self:loadSchedule(self.schedule)
+        end
     end
 end
 
 function _M:handle(input, output)
 
-    lx.try(function()
+    try(function()
         self:load()
-        self.commander = app:make('commander')
-        self:loadCommands(self.commander)
         self:sendToCommander(input, output)
-         
     end)
     :catch(function(e)
-        echo(e.msg, e.file, e.line)
-        echo(e.trace)
+        warn(e.msg, e.file, e.line)
+        warn(e.trace)
     end)
     :run()
 
+end
+
+function _M:runSchedule()
+
+    self.schedule:run()
 end
 
 function _M:loadCommands(cmder)
 
 end
 
-function _M:sendToCommander(input, output)
+function _M:loadSchedule(schedule)
 
+end
+
+function _M:sendToCommander(input, output)
+    
     local cmder = self.commander
     local cmd = cmder:match(input, output)
+
     if cmd then
         local isLibCmd, viaApp = cmd.isLibCmd, cmd.viaApp
         local appName = lx.env('appName')
+
         if (not isLibCmd) and appName == 'lxlib' then
             warn('this command should run in the application')
             return
@@ -70,6 +84,7 @@ function _M:sendToCommander(input, output)
             warn('this command should run in some app path')
             return
         end
+
         cmder:handle(cmd, input, output)
     else
         warn('not match any cmd')

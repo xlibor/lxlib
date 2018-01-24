@@ -16,13 +16,10 @@ function _M.run(args, rootPath)
 
     rootPath = lf.rtrim(rootPath, '[/\\]')
     
-    local appEnv
-    local appName = 'lxlib'
-    local appPath = rootPath
-    local envPath
-    local currApp
-
+    local appEnv, envPath, currApp
+    local appName, appPath = 'lxlib', rootPath
     local currPath = fs.currDir()
+
     if fs.exists(currPath .. '/main.lua') then
         appName = fs.baseName(currPath)
         envPath = currPath .. '/env.json'
@@ -74,7 +71,7 @@ function _M.run(args, rootPath)
 
         json.useCjson()
     end
-        
+
     args = args:sub(4)
     libMain.handle(args)
 end

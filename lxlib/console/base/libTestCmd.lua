@@ -28,6 +28,7 @@ function _M:run()
     self:print('abc')
     self:print('efg')
     self:line('over')
+
 end
 
 return _M

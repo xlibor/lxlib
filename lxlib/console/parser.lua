@@ -7,8 +7,6 @@ local lx = require('lxlib')
 local lf, tb, str = lx.f, lx.tb, lx.str
 local sfind, smatch = string.find, string.match
 
-
-
 function _M.parse(args, cmd)
 
     if cmd then
@@ -81,7 +79,7 @@ function _M.parse(args, cmd)
 
     return {
         mainCmd = mainCmd,
-        subCmd    = subCmd,
+        subCmd = subCmd,
         uri = uri,
         cmdArgs = cmdArgs,
         rawArgs = rawArgs
@@ -109,7 +107,7 @@ function _M.parseWithCmd(args, cmd)
 
     return {
         mainCmd = mainCmd,
-        subCmd    = subCmd,
+        subCmd = subCmd,
         uri = uri,
         cmdArgs = args,
         rawArgs = args

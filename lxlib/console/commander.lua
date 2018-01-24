@@ -40,6 +40,7 @@ function _M:group(groupInfo, cb)
     self.prefix = groupInfo.prefix or groupInfo.pre
     self.isLibCmd = groupInfo.isLibCmd or groupInfo.lib 
     self.viaApp = groupInfo.viaApp or groupInfo.app
+    
     cb()
 
     self.prefix = ''

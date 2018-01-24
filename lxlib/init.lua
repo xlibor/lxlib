@@ -198,7 +198,12 @@ end
 
 function _M.init()
 
-    require('lxlib.base.global').init()
+    local process = require('ngx.process')
+    if process.type() == 'privileged agent' then
+        require('lxlib.base.global').init(true)
+    else
+        require('lxlib.base.global').init()
+    end
 end
 
 function _M.load(cls, isLxCall)

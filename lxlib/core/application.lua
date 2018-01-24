@@ -53,7 +53,7 @@ function _M:initConsole()
         end
 
         local global = require('lxlib.base.global')
-        global.initConsoleGlobal()
+        global.initConsoleGlobal(_G.isLxTaskMode)
 
         self.consoleInited = true
     end
@@ -549,6 +549,10 @@ function _M:setLocale(locale)
     -- self['config']:set('app.locale', locale)
     -- self['translator']:setLocale(locale)
     -- self['events']:dispatch(new('events\LocaleUpdated' ,locale))
+end
+function _M:isDownForMaintenance()
+
+    return env('downForMaintenance') and true or false
 end
 
 function _M:restore(nick, data, ...)

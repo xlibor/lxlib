@@ -1201,7 +1201,11 @@ function _M.each(var)
             error('can not loop ' .. cls)
         end
     else
-        return pairs(var)
+        if #var > 0 then
+            return ipairs(var)
+        else
+            return pairs(var)
+        end
     end
 end
 

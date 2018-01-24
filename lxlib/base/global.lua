@@ -102,6 +102,14 @@ _G.Env = function(key, default)
     return env(key, default)
 end
 
+_G.Each = function(tbl)
+    if #tbl > 0 then
+        return ipairs(tbl)
+    else
+        return pairs(tbl)
+    end
+end
+
 _G.Fun = function(key, callback)
     if not callback then
         callback = key
@@ -294,7 +302,7 @@ function _M.ensureEnvFile(rootPath)
     return envPath
 end
 
-function _M.initConsole(rootPath)
+function _M.initConsole(rootPath, isTaskMode)
 
     local fs, json = lx.fs, lx.json
  
@@ -310,42 +318,52 @@ function _M.initConsole(rootPath)
     _M.pubEnv = env
     _M.lxInited = true
     
-    _M.loadGlobalFunc()
-    _M.initConsoleGlobal()
+    _M.loadGlobalFunc(isTaskMode)
+    _M.initConsoleGlobal(isTaskMode)
     _G.require = loadMod
 
 end
 
-function _M.initConsoleGlobal()
+function _M.initConsoleGlobal(isTaskMode)
 
     _G.exec = function(s)
         return os.execute(s)
     end
+
     _G.warn = function(s)
-        exec(fmt([[echo -e "\033[31m%s \033[0m"]], s))
+        if isTaskMode then
+            ngx.log(ngx.ERR, s)
+        else
+            exec(fmt([[echo -e "\033[31m%s \033[0m"]], s))
+        end
     end
+
     _G.cheer = function(s)
-        exec(fmt([[echo -e "\033[32m%s \033[0m"]], s))
+        if isTaskMode then
+            ngx.log(ngx.ERR, s)
+        else
+            exec(fmt([[echo -e "\033[32m%s \033[0m"]], s))
+        end
     end
 
 end
 
-function _M.init(appName)
+function _M.init(initTimer)
 
     _M.inited = true
     local fs, json = lx.fs, lx.json
 
     local env
     local rootPath
-    local curPath = lx.getPath()
-    if sfind(curPath, '/lxlib/lxlib/') then
-        curPath = sgsub(curPath, '/lxlib/lxlib/', '/lxlib/')
+    local currPath = lx.getPath()
+    if sfind(currPath, '/lxlib/lxlib/') then
+        currPath = sgsub(currPath, '/lxlib/lxlib/', '/lxlib/')
     end
 
     if lx.f.isWin() then
-        rootPath = sgsub(curPath, '\\lxlib\\base\\global.lua', '')
+        rootPath = sgsub(currPath, '\\lxlib\\base\\global.lua', '')
     else
-        rootPath = sgsub(curPath, '/lxlib/base/global.lua', '')
+        rootPath = sgsub(currPath, '/lxlib/base/global.lua', '')
     end
 
     local envPath = _M.ensureEnvFile(rootPath)
@@ -374,6 +392,9 @@ function _M.init(appName)
 
                 package.cpath = package.cpath .. ';'
                     .. appPath .. '/vendor/?.so;;'
+                if initTimer and v.enableTask then
+                    _M.initTaskTimer(k, rootPath)
+                end
                 reged = reged + 1
             end
         end
@@ -417,7 +438,25 @@ function _M.init(appName)
 
 end
 
-function _M.loadGlobalFunc()
+function _M.initTaskTimer(appName, rootPath)
+
+    _G.isLxCmdMode = true
+    ngx.ctx.lxAppName = appName
+    local f = function(sign)
+        local taskLoader = require('lxlib.app.taskLoader')
+        taskLoader.run(appName, rootPath)
+    end
+
+    ngx.timer.at(0, f)
+end
+
+function _M.loadGlobalFunc(isTaskMode)
+
+    if isTaskMode then
+        ngx.say = function(...)
+            ngx.log(ngx.ERR, ...)
+        end
+    end
 
     _G.print = ngx.say
     _G.echo = function(p1, ...)

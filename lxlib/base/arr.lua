@@ -17,6 +17,7 @@ local tremove, tinsert, tconcat, tsort = table.remove, table.insert, table.conca
 local tmaxn = table.maxn
 local cstr, cint = tostring, tonumber
 local sfind, ssub = string.find, string.sub
+local each = lf.each
 
 function _M.count(tbl, deep)
     
@@ -1807,7 +1808,7 @@ function _M.filter(tbl, cb, flag)
     
     local isList = lf.isList(tbl)
 
-    for k, v in pairs(tbl) do
+    for k, v in each(tbl) do
         if flag == 0 then
             t = cb(v, k)
         elseif flag == 1 then
@@ -1815,7 +1816,7 @@ function _M.filter(tbl, cb, flag)
         end
         if t then
             if isList then
-                ret[k] = v
+                tapd(ret, v)
             else
                 ret[k] = v
             end

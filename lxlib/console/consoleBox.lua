@@ -29,6 +29,12 @@ function _M:reg()
     app:single('commander',     'lxlib.console.commander')
     app:bind('baseCmd',         'lxlib.console.base.command')
     app:bind('generatorCmd',    'lxlib.console.base.generatorCmd')
+
+    app:bindFrom('lxlib.console.schedule', {
+        'event', 'callbackEvent'
+    }, {prefix = 'schedule.'})
+    
+    app:single('schedule', 'lxlib.console.schedule.schedule')
 end
 
 function _M:boot()

@@ -250,13 +250,7 @@ end
 
 function _M.__:getHttpClient()
 
-    do return new('net.http.client', self.httpInfo) end
-
-    if not self.httpClient then
-        self.httpClient = new('net.http.client', self.httpInfo)
-    end
-    
-    return self.httpClient
+    return new('net.http.client', self.httpInfo) end
 end
 
 -- Set the http client instance.
