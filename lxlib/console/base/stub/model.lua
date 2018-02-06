@@ -4,7 +4,7 @@ local lx, _M = oo{
     _ext_ = 'model'
 }
 
-local app, lf, tb, str = lx.kit()
+local app, lf, tb, str, new = lx.kit()
 
 function _M:ctor()
 

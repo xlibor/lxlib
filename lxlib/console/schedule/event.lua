@@ -5,12 +5,16 @@ local lx, _M, mt = oo{
 
 local app, lf, tb, str, new = lx.kit()
 
-function _M:new()
+local slen = string.len
+
+function _M:new(command, parameters)
 
     local this = {
-        command = nil,
+        command = command,
+        parameters = parameters,
         interval = 60,
         lastRan = nil,
+        timeRange = {},
         expression = '* * * * * *',
         timezone = nil,
         user = nil,
@@ -30,9 +34,8 @@ function _M:new()
     return oo(this, mt)
 end
 
-function _M:ctor(command)
+function _M:ctor()
 
-    self.command = command
 end
 
 function _M:run()
@@ -60,7 +63,7 @@ function _M.__:runCommand()
 
     local command = self:buildCommand()
     self.lastRan = Dt.now()
-    app:run(command)
+    app:run(command, self.parameters)
 end
 
 function _M.__:updateLastRan()
@@ -117,6 +120,12 @@ end
 
 function _M.__:isExpressionDue(expression, now)
 
+    local ret = false
+
+    if not self:checkTimeRange(now) then
+        return false
+    end
+
     local lastRan = self.lastRan
     if not lastRan then
         return true
@@ -127,6 +136,34 @@ function _M.__:isExpressionDue(expression, now)
     end
 
     return false
+end
+
+function _M.__:checkTimeRange(now)
+
+    if #self.timeRange == 0 then
+        return true
+    end
+
+    local nowTime = now:toTimeString()
+
+    local inRange = false
+    for _, range in ipairs(self.timeRange) do
+        local beginTime, endTime = range[1], range[2]
+
+        if beginTime < endTime then
+            if (nowTime >= beginTime and nowTime < endTime) then
+                inRange = true
+                break
+            end
+        else
+            if (nowTime < endTime or nowTime >= beginTime) then
+                inRange = true
+                break
+            end
+        end
+    end
+
+    return inRange
 end
 
 function _M:filtersPass()
@@ -167,6 +204,49 @@ end
 function _M:every(interval)
 
     self.interval = interval
+
+    return self
+end
+
+function _M:between(...)
+    
+    local args = lf.getArgs(...)
+    local p1, p2 = args[1], args[2]
+
+    if lf.isTbl(p1) then
+        for _, range in ipairs(args) do
+            self:inTimeRange(range[1], range[2])
+        end
+
+        return self
+    else
+        return self:inTimeRange(p1, p2, false)
+    end
+end
+
+function _M:unlessBetween(startTime, endTime)
+    
+    return self:inTimeRange(startTime, endTime, true)
+end
+
+function _M:inTimeRange(startTime, endTime, ifSkip)
+    
+    if slen(startTime) == 5 then
+        startTime = startTime .. ':00'
+    end
+
+    if slen(endTime) == 5 then
+        endTime = endTime .. ':00'
+    end
+
+    if not ifSkip then
+        tapd(self.timeRange, {startTime, endTime})
+    else
+        tapd(self.timeRange, {'00:00:00', startTime})
+        tapd(self.timeRange, {endTime, '23:59:59'})
+    end
+
+    return self
 end
 
 function _M:hourly()

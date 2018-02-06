@@ -22,7 +22,9 @@ function _M:run()
     for _, event in ipairs(events) do
         if event:filtersPass() then
             echo('Running scheduled command:' .. event:getSummaryForDisplay())
-            event:run()
+            ngx.thread.spawn(function()
+                event:run()
+            end)
             eventsRan = eventsRan + 1
         end
     end
@@ -31,6 +33,16 @@ function _M:run()
         -- echo('No scheduled commands are ready to run.')
     end
 
+    do return end
+    
+    if not self.tagged then
+        for k, v in ipairs(self.events) do
+            echo(v.command)
+            echo(v.timeRange)
+            echo(v.parameters)
+        end
+        self.tagged = true
+    end
 end
 
 function _M:call(callback, parameters)
@@ -46,13 +58,13 @@ function _M:command(command, parameters)
 
     parameters = parameters or {}
     if #parameters > 0 then
-        local params = self:compileParameters(parameters)
-        params = str.trim(params)
-        if str.len(params) > 0 then
-            command = command .. ' ' .. params
-        end
+        -- local params = self:compileParameters(parameters)
+        -- params = str.trim(params)
+        -- if str.len(params) > 0 then
+        --     command = command .. ' ' .. params
+        -- end
     end
-    local event = new('schedule.event', command)
+    local event = new('schedule.event', command, parameters)
     tapd(self.events, event)
     
     return event
@@ -72,6 +84,11 @@ function _M:dueEvents()
         
         return event:isDue()
     end)
+end
+
+function _M:reset()
+
+    self.events = {}
 end
 
 return _M

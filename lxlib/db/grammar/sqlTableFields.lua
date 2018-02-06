@@ -280,6 +280,8 @@ function _M:increments(column)
         :unsigned(true)
 end
 
+_M.incr = _M.increments
+
 function _M:bigIncrements(column)
 
     return self:add(column, 'bigInteger')
@@ -296,6 +298,8 @@ function _M:integer(column, autoIncrement, unsigned)
         :autoIncrement(autoIncrement)
         :unsigned(unsigned)
 end
+
+_M.int = _M.integer
 
 function _M:unsignedInteger(column, autoIncrement)
 
@@ -399,6 +403,8 @@ function _M:dateTime(column)
 
     return self:add(column, 'dateTime')
 end
+
+_M.datetime = _M.dateTime
 
 function _M:dateTimeTz(column)
 

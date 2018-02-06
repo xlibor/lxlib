@@ -1,7 +1,7 @@
 
 local _M = { 
     _cls_ = '',
-    _ext_ = 'baseCmd'
+    _ext_ = 'lxlib.console.base.command'
 }
 
 local mt = { __index = _M }

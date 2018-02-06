@@ -89,6 +89,11 @@ function _M.route(name, parameters, absolute)
     return app.url:route(name, parameters, absolute)
 end
 
+function _M.routeIs(name)
+
+    return Req.routeIs(name)
+end
+
 function _M.url(path, parameters, secure)
 
     if not path then

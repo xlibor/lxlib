@@ -800,6 +800,26 @@ function _M.last(tbl, cb, default)
     return default
 end
 
+function _M.max(tbl, needIndex)
+
+    local values
+    if #tbl > 0 then
+        values = tbl
+    else next(tbl)
+        values = _M.values(tbl)
+    end
+    local maxValue = math.max(unpack(values))
+    if needIndex then
+        for k, v in pairs(tbl) do
+            if v == maxValue then
+                return maxValue, k
+            end
+        end
+    else
+        return maxValue
+    end
+end
+
 function _M.search(tbl, value, strict)
 
     if not tbl or not value then

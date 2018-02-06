@@ -27,7 +27,7 @@ function _M:reg()
     })
 
     app:single('commander',     'lxlib.console.commander')
-    app:bind('baseCmd',         'lxlib.console.base.command')
+    app:bind('lxlib.console.base.command')
     app:bind('generatorCmd',    'lxlib.console.base.generatorCmd')
 
     app:bindFrom('lxlib.console.schedule', {
@@ -89,7 +89,7 @@ function _M:boot()
 
             cmder:add('make/{controller}|make/ctler', '$1MakeCmd@make')
             cmder:add('make/{model}', '$1MakeCmd@make')
-
+            cmder:add('make/{command}', '$1MakeCmd@make')
             cmder:add('ngxconf/{update}', 'ngxConfManageCmd@$1')
             cmder:add('ngxconf/{clear}', 'ngxConfManageCmd@$1')
 

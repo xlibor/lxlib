@@ -91,56 +91,8 @@ function _M.run(appName, rootPath)
         kernel:runSchedule()
     end
 
-    ngx.log(ngx.ERR, 'init------')
+    ngx.log(ngx.ERR, 'taskLoad--')
     ngx.timer.every(1, f)
-
-end
-
-function _M:test()
-
-    local lx = require('lxlib')
-    local app, lf, tb, str = lx.kit()
-
-    local hc = app('net.http.client')
-    local resp = hc:get(
-        'http://140.143.49.31/api/ans2?key=xigua&_=' .. lf.time(1), {
-            headers = {
-                ['User-Agent'] = 'Sogousearch',
-                Referer = 'http://wd.sa.sogou.com/',
-                Cookie = 'dt_ssuid=1148759995',
-            },
-        }
-    )
- 
-    local body = resp:getBody()
-    body = str.match(body, 'undefined%((.+)%)')
-    local info = lf.jsde(body)
-    local results = info.result
-    local result
-    local recommendIndex
-
-    for _, info in ipairs(results) do
-        recommendIndex = 0
-        info = lf.jsde(info)
-        local title = info.title
-        warn(title)
-        local recommend = info.recommend
-        warn(recommend)
-        local answers = info.answers
-        for i, v in ipairs(answers) do
-            if v == recommend then
-                recommendIndex = i
-            end
-        end
- 
-        if recommendIndex > 0 then
-            warn('answer:', recommendIndex)
-        end
-        local search_infos = info.search_infos
-        local search_info = search_infos[1] 
-        local searchSummary, searchTitle, searchUrl = search_info.summary, search_info.title, search_info.url
-        warn(searchSummary, ';', searchTitle, ';', searchUrl)
-    end
 
 end
 

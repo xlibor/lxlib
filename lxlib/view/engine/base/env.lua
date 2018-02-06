@@ -30,7 +30,8 @@ function _M._init_()
         Str         = lx.str,
         Tb          = lx.tb,
         Lf          = lx.f,
-        App         = lx.app()
+        App         = lx.app(),
+        Lh          = lx.h
     }
 
 end

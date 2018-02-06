@@ -35,4 +35,9 @@ function _M:getHeader(key)
     return self.headers[key]
 end
 
+function _M:getStatus()
+
+    return self.statusCode
+end
+
 return _M

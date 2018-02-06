@@ -11,7 +11,8 @@ local restyHttp = require('resty.http')
 function _M:new(config)
 
     local this = {
-        config = config
+        config = config,
+        baseClient = nil
     }
 
     return oo(this, mt)
@@ -64,17 +65,26 @@ function _M.__:requestAsync(method, uri, options)
     return self:transfer(request, options)
 end
 
+function _M:getBase()
+
+    local httpc = self.baseClient
+    if not httpc then
+        httpc = restyHttp.new()
+        self.baseClient = httpc
+    end
+
+    return httpc
+end
+
 function _M.__:transfer(request, options)
 
-    local httpc = restyHttp.new()
+    local httpc = self:getBase()
 
     local res, err = httpc:request_uri(request.uri, {
         method = request.method,
         body = request.body,
         query = request.query,
-        headers = request.headers or {
-            ["Content-Type"] = "application/x-www-form-urlencoded",
-        },
+        headers = request.headers,
         ssl_verify = false,
     })
 
@@ -90,10 +100,14 @@ end
 
 function _M.__:applyOptions(options)
 
+    options.headers = options.headers or {}
     local body = options.body
     if type(body) == 'table' then
         body = lf.httpBuildQuery(body)
         options.body = body
+        if not options.headers["Content-Type"] then
+            options.headers["Content-Type"] = "application/x-www-form-urlencoded"
+        end
     end
 
     local query = options.query
@@ -117,6 +131,15 @@ function _M.__:prepareDefaults(options)
     local result = tb.mergeDict(options, defaults)
 
     return result
+end
+
+function _M:keepalive(second, poolsize)
+
+    second = second or 60
+    local ms = second * 1000
+    poolsize = poolsize or 10
+
+    self:getBase():set_keepalive(ms, poolsize)
 end
 
 return _M

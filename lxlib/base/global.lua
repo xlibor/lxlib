@@ -392,6 +392,7 @@ function _M.init(initTimer)
 
                 package.cpath = package.cpath .. ';'
                     .. appPath .. '/vendor/?.so;;'
+
                 if initTimer and v.enableTask then
                     _M.initTaskTimer(k, rootPath)
                 end

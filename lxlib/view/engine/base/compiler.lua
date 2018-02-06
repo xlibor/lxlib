@@ -416,8 +416,9 @@ _M.compileForeach = _M.compileFor
 _M.compileForelse = _M.compileFor
 
 function _M:compileExtendedTpl()
-
-    local tplExp = self.tpl.extendsFrom
+    
+    local tpl = self.tpl
+    local tplExp = tpl.extendsFrom
 
     tplExp = lf.trim(tplExp, ' "\'')
 
@@ -453,9 +454,10 @@ function _M:compileInclude(node)
     end
 
     local subTpl
-    local tpl = self.tpl 
+    local tpl = self.tpl
+
     if not tplList then
-        self:apd(self:newTpl(tplName))
+        self:apd(self:newTpl(tplName ))
     else
         self:apd(' local currTpl = lf.clsBaseName(' .. currTplCode .. ');\n')
         local ifName = 'if'

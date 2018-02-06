@@ -139,7 +139,6 @@ function _M:parse_cmd_section(cmd, bstack, currParent, arglist, text)
         end
     end
 
-
     return currParent
 end
 

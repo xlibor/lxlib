@@ -99,7 +99,11 @@ function _M:initApp()
         return self:warn('app [' .. appPath .. '] has inited')
     end
 
-    self:envSet('apps.'..appName, {appPath = appName})
+    self:envSet('apps.'..appName, {
+        appPath = appName,
+        enableTask = false
+    })
+    
     if not self:envGet('defaultApp') then
         self:envSet('defaultApp', appName)
     end
