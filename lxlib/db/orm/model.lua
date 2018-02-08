@@ -698,7 +698,7 @@ function _M:updateTimestamps()
 
     local ts = self:freshTimestamp()
 
-    if not self:isDirty(static.createdAt) then
+    if not self:isDirty(static.updatedAt) then
         self:setUpdatedAt(ts)
     end
 
@@ -776,7 +776,7 @@ function _M:isDirty(...)
     local attrs = lf.needArgs(...)
     local dirty = self:getDirty()
     if #attrs == 0 then
-        return (lf.count(dirty) > 1)
+        return next(dirty) and true or false
     end
 
     for k, v in ipairs(attrs) do

@@ -33,7 +33,7 @@ function _M:run()
         -- echo('No scheduled commands are ready to run.')
     end
 
-    do return end
+    -- do return end
     
     if not self.tagged then
         for k, v in ipairs(self.events) do

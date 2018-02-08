@@ -316,6 +316,7 @@ function _M:tinyInteger(column, autoIncrement, unsigned)
 end
 
 _M.tinyinteger = _M.tinyInteger
+_M.tinyint = _M.tinyInteger
 
 function _M:smallInteger(column, autoIncrement, unsigned)
 
