@@ -206,23 +206,5 @@ function _M:removeLib()
 
 end
 
-function _M:generateKey()
-
-    local key = lf.guid()
-    local show = self:arg('show')
- 
-    local col = self:getEnvCol()
-    col:set('appKey', key)
-
-    local jsonStr = col:toJson(_, true)
-    fs.put(self.envPath, jsonStr)
-
-    if show then
-        self:comment(key)
-    end
-
-    self:line(fmt('application key [%s] set successfully.', key))
-end
-
 return _M
 

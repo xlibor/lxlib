@@ -7,7 +7,9 @@ local lx, _M, mt = oo{
 local app, lf, tb, str, new = lx.kit()
 
 local fmt, smatch = string.format, string.match
-local redirect = lx.h.redirect
+local lh = lx.h
+
+local redirect, response = lh.redirect, lh.response
 
 function _M:new(log)
 
@@ -56,7 +58,7 @@ function _M.__:convertValidationException(e, ctx)
     local request = ctx.req
     if request.expectsJson then
         
-        return response():json(errors, 422)
+        return ctx:json(errors, 422)
     end
     
     return redirect():back():withInput(request:input()):withErrors(errors)

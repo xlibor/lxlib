@@ -62,7 +62,7 @@ function _M:handle()
         self:sendResponse(ctx.resp)
     end)
     :catch(function(e)
-        -- echo('error:' .. e.msg)
+        -- echo('error:' .. e.trace)
     end)
     :final(function(e, caught)
         if caught then

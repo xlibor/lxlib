@@ -78,7 +78,7 @@ function _M.run(appName, rootPath)
 
     local kernel = app:make('console.kernel')
     kernel:load()
-     
+
     local f = function(sign)
         if sign then
             return

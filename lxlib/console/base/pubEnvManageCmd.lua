@@ -74,5 +74,23 @@ function _M:set()
     end
 end
 
+function _M:generateKey()
+
+    local key = lf.guid()
+    local show = self:arg('show')
+ 
+    local col = self:getEnvCol()
+    col:set('appKey', key)
+
+    local jsonStr = col:toJson(_, true)
+    fs.put(self.envPath, jsonStr)
+
+    if show then
+        self:comment(key)
+    end
+
+    self:line(fmt('pub key [%s] set successfully.', key))
+end
+
 return _M
 

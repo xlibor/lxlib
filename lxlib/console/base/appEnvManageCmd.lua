@@ -165,5 +165,25 @@ function _M:remove()
 
 end
 
+function _M:generateKey()
+
+    if not self:isValid() then return end
+    
+    local key = lf.guid()
+    local show = self:arg('show')
+ 
+    local col = self:getEnvCol()
+    col:set('appKey', key)
+
+    local jsonStr = col:toJson(_, true)
+    fs.put(self.appEnvPath, jsonStr)
+
+    if show then
+        self:comment(key)
+    end
+
+    self:line(fmt('application key [%s] set successfully.', key))
+end
+
 return _M
 

@@ -62,14 +62,15 @@ function _M:boot()
             cmder:add('pub/env/show|pubenv', 'pubEnvManageCmd@showAll')
             cmder:add('pub/env/get', 'pubEnvManageCmd@get')
             cmder:add('pub/env/set', 'pubEnvManageCmd@set')
-
+            cmder:add('pub/key',     'pubEnvManageCmd@generateKey')
+            
             cmder:add('box/publish|publish', 'boxPublishCmd@run')
         end)
 
         cmder:group({ns = 'lxlib.console.base', lib = false, app = true}, function()
             cmder:add('app/{makeLib}|$1', 'appManageCmd@$1')
             cmder:add('app/{removeLib}|$1', 'appManageCmd@$1')
-            cmder:add('app/{key}|$1', 'appManageCmd@generateKey')
+            cmder:add('app/{key}|$1', 'appEnvManageCmd@generateKey')
 
             cmder:add('app/env/show|appenv', 'appEnvManageCmd@showAll')
             cmder:add('app/env/get', 'appEnvManageCmd@get')

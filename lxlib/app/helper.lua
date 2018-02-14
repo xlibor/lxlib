@@ -171,7 +171,7 @@ function _M.request(key, default)
     return req:input(key, default)
 end
 
-function _M:response(content, status, headers)
+function _M.response(content, status, headers)
 
     local ctx = app:ctx()
     local resp = ctx.resp
