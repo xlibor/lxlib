@@ -558,7 +558,7 @@ function _M.dtAdd(unitType, num, dv, pattern)
     return dt:fmt(pat)
 end
 
-function _M.timestamp(needMilliseconds, refresh, timezone)
+function _M.timestamp(needMilliseconds, refresh, withDot)
     
     if refresh then
         ngx.update_time()
@@ -566,8 +566,11 @@ function _M.timestamp(needMilliseconds, refresh, timezone)
 
     if needMilliseconds then
         local tstr = ngx.now()
-
-        return tstr * 1000
+        if withDot then
+            return tstr
+        else
+            return tstr * 1000
+        end
     else
         return ngx.time()
     end

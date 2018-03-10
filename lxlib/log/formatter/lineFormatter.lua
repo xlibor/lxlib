@@ -3,7 +3,7 @@ local lx, _M, mt = oo{
     _cls_ = '',
     _ext_ = 'logNormalizerFormatter',
     _static_ = {
-        simpleFormat = "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n"
+        simpleFormat = "[#datetime#] #channel#.#level_name#: #message# #context# #extra#\n"
     }
 }
 
@@ -70,36 +70,39 @@ function _M:format(record)
     local output = self._format
 
     for var, val in pairs(vars.extra) do
-        if sfind(output, '%extra.' .. var .. '%', nil, true) then
-            output = str.replace(output, '%extra.' .. var .. '%', self:stringify(val), true)
+        if sfind(output, '#extra.' .. var .. '#', nil, true) then
+            output = str.replace(output, '#extra.' .. var .. '#', self:stringify(val), true)
             vars.extra[var] = nil
         end
     end
-    for var, val in pairs(vars['context']) do
-        if sfind(output, '%context.' .. var .. '%', nil, true) then
-            output = str.replace(output, '%context.' .. var .. '%', self:stringify(val), true)
+    for var, val in pairs(vars.context) do
+        if sfind(output, '#context.' .. var .. '#', nil, true) then
+            output = str.replace(output, '#context.' .. var .. '#', self:stringify(val), true)
             vars.context[var] = nil
         end
     end
     if self.ignoreEmptyContextAndExtra then
         if lf.isEmpty(vars.context) then
             vars.context = nil
-            output = str.replace(output, '%context%', '', true)
+            output = str.replace(output, '#context#', '', true)
         end
         if lf.isEmpty(vars.extra) then
             vars.extra = nil
-            output = str.replace(output, '%extra%', '', true)
+            output = str.replace(output, '#extra#', '', true)
         end
     end
     for var, val in pairs(vars) do
-        if sfind(output, '%' .. var .. '%', nil, true) then
-            output = str.replace(output, '%' .. var .. '%', self:stringify(val), true)
+        if sfind(output, '#' .. var .. '#', nil, true) then
+            if var == 'message' then
+                val = str.lregQuote(val)
+            end
+            output = str.replace(output, '#' .. var .. '#', self:stringify(val), true)
         end
     end
 
-    -- remove leftover %extra.xxx% and %context.xxx% if any
-    -- if str.strpos(output, '%') then
-    --     output = str.rereplace(output, '/%(?:extra|context)\\..+?%/', '')
+    -- remove leftover #extra.xxx# and #context.xxx# if any
+    -- if str.strpos(output, '#') then
+    --     output = str.rereplace(output, '/#(?:extra|context)\\..+?#/', '')
     -- end
     
     return output

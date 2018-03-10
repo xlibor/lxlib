@@ -21,7 +21,7 @@ function _M:run()
 
     for _, event in ipairs(events) do
         if event:filtersPass() then
-            echo('Running scheduled command:' .. event:getSummaryForDisplay())
+            -- echo('Running scheduled command:' .. event:getSummaryForDisplay())
             ngx.thread.spawn(function()
                 event:run()
             end)

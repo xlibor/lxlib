@@ -105,11 +105,14 @@ function _M.__:applyOptions(options)
     if type(body) == 'table' then
         body = lf.httpBuildQuery(body)
         options.body = body
+    end
+
+    if body then
         if not options.headers["Content-Type"] then
             options.headers["Content-Type"] = "application/x-www-form-urlencoded"
         end
     end
-
+    
     local query = options.query
     if type(query) == 'table' then
         query = lf.httpBuildQuery(query)
