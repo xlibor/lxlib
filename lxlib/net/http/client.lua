@@ -12,7 +12,9 @@ function _M:new(config)
 
     local this = {
         config = config,
-        baseClient = nil
+        baseClient = nil,
+        whenFail = nil,
+        maxFailCount = 1
     }
 
     return oo(this, mt)
@@ -80,17 +82,38 @@ function _M.__:transfer(request, options)
 
     local httpc = self:getBase()
 
-    local res, err = httpc:request_uri(request.uri, {
-        method = request.method,
-        body = request.body,
-        query = request.query,
-        headers = request.headers,
-        ssl_verify = false,
-    })
+    local res, err
+    local failCount = 0
+
+    while true do
+        res, err = httpc:request_uri(request.uri, {
+            method = request.method,
+            body = request.body,
+            query = request.query,
+            headers = request.headers,
+            ssl_verify = false,
+        })
+
+        if not res then
+            err = tostring(err) or 'unknown err'
+            failCount = failCount + 1
+            if failCount >= self.maxFailCount then
+                break
+            end
+            if self.whenFail then
+                if self.whenFail(err, request) then
+                    break
+                end
+            else
+                return nil, err
+            end
+        else
+            break
+        end
+    end
 
     if not res then
-        error("failed to request: " .. tostring(err))
-        return
+        return nil, err
     end
 
     local response = new('net.http.response', res.status, res.headers, res.body, res.version, res.reason)
@@ -143,6 +166,11 @@ function _M:keepalive(second, poolsize)
     poolsize = poolsize or 10
 
     self:getBase():set_keepalive(ms, poolsize)
+end
+
+function _M:close()
+
+    self:getBase():close()
 end
 
 return _M
