@@ -359,7 +359,7 @@ function _M.divide(s, delim, notplain)
 
         return left, right
     else
-
+        return s
     end
 end
 
