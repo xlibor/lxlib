@@ -14,7 +14,11 @@ function _M:new(config)
         config = config,
         baseClient = nil,
         whenFail = nil,
-        maxFailCount = 1
+        maxFailCount = 1,
+        timeout = nil,
+        timeouts = nil,
+        keepalive = nil,
+        poolSize = nil,
     }
 
     return oo(this, mt)
@@ -104,8 +108,6 @@ function _M.__:transfer(request, options)
                 if self.whenFail(err, request) then
                     break
                 end
-            else
-                return nil, err
             end
         else
             break
@@ -117,6 +119,10 @@ function _M.__:transfer(request, options)
     end
 
     local response = new('net.http.response', res.status, res.headers, res.body, res.version, res.reason)
+
+    if self.keepalive then
+        self:setKeepalive(self.keepalive, self.poolSize)
+    end
 
     return response
 end
@@ -159,18 +165,22 @@ function _M.__:prepareDefaults(options)
     return result
 end
 
-function _M:keepalive(second, poolsize)
+function _M:setKeepalive(second, poolSize)
 
     second = second or 60
     local ms = second * 1000
-    poolsize = poolsize or 10
+    poolSize = poolSize or 10
 
-    self:getBase():set_keepalive(ms, poolsize)
+    return self:getBase():set_keepalive(ms, poolSize)
 end
 
 function _M:close()
 
     self:getBase():close()
+end
+
+function _M:setTimeout(second)
+
 end
 
 return _M
