@@ -230,6 +230,15 @@ end
 
 function _M:diff(dt2)
 
+    local vt = type(dt2)
+    if vt == 'string' then
+        dt2 = self:new(dt2)
+    end
+
+    local diffDto = dtBase.diff(self.dto, dt2.dto)
+    -- local di = new('lxlib.dt.dateInterval', )
+
+    return diffDto
 end
 
 -- @param string     s

@@ -7,6 +7,7 @@ local mt = { __index = _M }
 
 local utils = require('lxlib.base.utils')
 local deformation = require('lxlib.base.common.deformation')
+local utf8Utils = require('lxlib.base.common.utf8')
 
 local sfind, ssub, supper, slower, smatch, sgmatch, sgsub =
     string.find, string.sub, string.upper, string.lower, string.match, string.gmatch, string.gsub
@@ -29,6 +30,8 @@ do
         _M[k] = v
     end
 end
+
+_M.utf8 = utf8Utils
 
 local function tapd(t, v)
     t[#t+1] = v

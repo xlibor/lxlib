@@ -1,11 +1,9 @@
 
-local _M = {
+local lx, _M, mt = oo{
     _cls_ = ''
 }
 
-local mt = { __index = _M }
-
-local lx = require('lxlib')
+local app, lf, tb, str = lx.kit()
 
 function _M:new(storeKey, updateThreshold)
 
@@ -13,11 +11,11 @@ function _M:new(storeKey, updateThreshold)
         storeKey = storeKey or '',
         updateThreshold = updateThreshold or 0,
         name = '__metadata',
-        meta = { c = 0, u = 0, l = 0},
+        meta = {c = 0, u = 0, l = 0},
         lastUsed = 0
     }
 
-    setmetatable(this, mt)
+    oo(this, mt)
     return this
 end
 
@@ -26,7 +24,7 @@ function _M:init(tbl)
     self.meta = tbl
     if tbl.c then
         self.lastUsed = tbl.u
-        local timestamp = lx.f.timestamp()
+        local timestamp = lf.time()
         if timestamp - tbl.u >= self.updateThreshold then
             self.meta.u = timestamp
         end
@@ -62,7 +60,7 @@ end
 
 function _M:stampCreated(lifetime)
     
-    local timestamp = lx.f.timestamp()
+    local timestamp = lf.time()
     self.meta.c = timestamp
     self.meta.u = timestamp
     self.lastUsed = timestamp

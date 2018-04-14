@@ -26,8 +26,16 @@ function _M:ctor(...)
         self:initWithString(p1)
     elseif vt == 'number' then
         self:initWithArgs(unpack(args))
+    elseif vt == 'table' then
+        self:initWithDto(p1)
     end
 
+end
+
+function _M:initWithDto(dto)
+
+    -- local y, m, d, h, i, s = 0, 0, 0, 0, 0, 0
+    
 end
 
 function _M:initWithString(s)
