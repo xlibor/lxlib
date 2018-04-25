@@ -39,6 +39,8 @@ local app, lf, tb, str, new = lx.kit()
 
 local dtBase = require('lxlib.dt.base.date')
 local ssub, sgsub = string.sub, string.gsub
+local floor = math.floor
+
 local appTimezone
 
 local phpFmts = {
@@ -236,9 +238,9 @@ function _M:diff(dt2)
     end
 
     local diffDto = dtBase.diff(self.dto, dt2.dto)
-    -- local di = new('lxlib.dt.dateInterval', )
+    local di = new('lxlib.dt.dateInterval', diffDto)
 
-    return diffDto
+    return di
 end
 
 -- @param string     s
@@ -1560,7 +1562,7 @@ function _M:diffInYears(dt, abs)
     abs = lf.needTrue(abs)
     dt = dt or static.now(self.tz)
     
-    return tonumber(self:diff(dt, abs):format('%r%y'))
+    return self:diff(dt, abs):getYears()
 end
 
 _M.age = _M.diffInYears
@@ -1575,7 +1577,7 @@ function _M:diffInMonths(dt, abs)
     abs = lf.needTrue(abs)
     dt = dt or static.now(self.tz)
     
-    return self:diffInYears(dt, abs) * static.monthsPerYear + tonumber(self:diff(dt, abs):format('%r%m'))
+    return self:diff(dt, abs):getMonths()
 end
 
 -- Get the difference in weeks
@@ -1587,7 +1589,7 @@ function _M:diffInWeeks(dt, abs)
 
     abs = lf.needTrue(abs)
     
-    return tonumber((self:diffInDays(dt, abs) / static.daysPerWeek))
+    return self:diff(dt, abs):getWeeks()
 end
 
 -- Get the difference in days
@@ -1600,7 +1602,7 @@ function _M:diffInDays(dt, abs)
     abs = lf.needTrue(abs)
     dt = dt or static.now(self.tz)
     
-    return tonumber(self:diff(dt, abs):format('%r%a'))
+    return self:diff(dt, abs):getDays()
 end
 
 -- Get the difference in days using a filter closure

@@ -5,12 +5,15 @@ local lx, _M, mt = oo{
 
 local app, lf, tb, str = lx.kit()
 local sfind, ssub, slen = string.find, string.sub, string.len
+local floor = math.floor
 
 function _M:new(...)
 
     local this = {
         y = 0, m = 0, d = 0, h = 0, i = 0, s = 0,
-        invert = 0
+        invert = 0,
+        days = false,
+        f = 0,
     }
 
     return oo(this, mt)
@@ -35,7 +38,28 @@ end
 function _M:initWithDto(dto)
 
     -- local y, m, d, h, i, s = 0, 0, 0, 0, 0, 0
-    
+    self.f = dto.dayfrc
+    self.days = dto.daynum
+end
+
+function _M:getDays()
+
+    return self.days
+end
+
+function _M:getYears()
+
+    return floor(self.days / 365)
+end
+
+function _M:getMonths()
+
+    return floor(self.days / 30)
+end
+
+function _M:getWeeks()
+
+    return floor(self.days / 7)
 end
 
 function _M:initWithString(s)

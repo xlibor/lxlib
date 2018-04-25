@@ -423,9 +423,10 @@ function _M.unique(vs, byref, callback)
     end
 
     local ret = {}
-    local needRemove
+
+    local needRemoves
     if byref then
-        needRemove = {} 
+        needRemoves = {} 
     end
 
     if #vs > 0 then
@@ -440,7 +441,7 @@ function _M.unique(vs, byref, callback)
             end
             if hashs[t] then
                 if byref then
-                    tapd(needRemove, i)
+                    tapd(needRemoves, i)
                 end
             else
                 hashs[t] = 1
@@ -449,12 +450,10 @@ function _M.unique(vs, byref, callback)
         end
 
         if byref then
-            for i = #needRemove, 1, -1 do
-                tremove(vs, needRemove[i])
+            for i = #needRemoves, 1, -1 do
+                tremove(vs, needRemoves[i])
             end
         end
-
-        return ret
     else
         if not next(vs) then return {} end
 
@@ -476,9 +475,9 @@ function _M.unique(vs, byref, callback)
                 ret[k] = v
             end
         end
-
-        return ret
     end
+
+    return ret
 end
 
 local function mergeTbls(...)

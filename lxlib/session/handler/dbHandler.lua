@@ -101,7 +101,14 @@ function _M.__:getDefaultPayload(data)
     if req then
         payload.ip_address = req.ip
     end
-
+    local auth = app:get('auth')
+    if auth then
+        local userId = auth:guard():getId()
+        if userId then
+            payload.user_id = userId
+        end
+    end
+    
     return payload
 end
 
