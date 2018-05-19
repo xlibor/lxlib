@@ -21,9 +21,11 @@ local tinsert, tconcat, tremove = table.insert, table.concat, table.remove
 local rematch, resub, regsub, refind, resplit, regmatch =
     ngx.re.match, ngx.re.sub, ngx.re.gsub, ngx.re.find, ngx.re.split, ngx.re.gmatch
 
-local studlyCache   = {}
-local snakeCache    = {}
-local camelCache    = {}
+local studlyCache       = {}
+local snakeCache        = {}
+local camelCache        = {}
+local pregQuoteCache    = {}
+local lregQuoteCache    = {}
 
 do
     for k, v in pairs(string) do
@@ -703,18 +705,22 @@ function _M.hasPunct(s)
 end
 
 function _M.hasCtl(s)
+
     return sfind(s, '%c') and true or false
 end
 
 function _M.hasSpace(s)
+
     return sfind(s, '%s') and true or false
 end
 
 function _M.hasLower(s)
+
     return sfind(s, '%l') and true or false
 end
 
 function _M.hasUpper(s)
+
     return sfind(s, '%u') and true or false
 end
 
@@ -732,20 +738,40 @@ end
 
 function _M.lregQuote(s)
 
-    s = escape(s)
+    local t = lregQuoteCache[s]
+    if t then
+        return t
+    end
 
-    return s
+    local ret = escape(s)
+    lregQuoteCache[s] = ret
+
+    return ret
 end
 
 _M.quote = _M.lregQuote
 
 function _M.pregQuote(s, delimiter)
 
+    local noDelim = true
+    if not delimiter then
+        local t = pregQuoteCache[s]
+        if t then
+            return t
+        end
+    else
+        noDelim = false
+    end
+
     delimiter = delimiter or '\\'
     local pat = [=[[{}=!<>|:%-%.%+%[%]%(%)%$%^%?%*]]=]
     local replace = delimiter .. '%1'
     local ret, times = sgsub(s, pat, replace)
     
+    if noDelim then
+        pregQuoteCache[s] = ret
+    end
+
     return ret
 end
 
@@ -830,7 +856,35 @@ function _M.refind(subject, regex, options, ctx, nth)
         options = 'jo'
     end
 
+    if not ctx then
+        return refind(subject, regex, options)
+    end
+
+    if not nth then
+        return refind(subject, regex, options, ctx)
+    end
+
     return refind(subject, regex, options, ctx, nth)
+end
+
+function _M.refindp(subject, regex, options)
+
+    regex = _M.pregQuote(regex)
+
+    return _M.refind(subject, regex, options)
+end
+
+function _M.refindpi(subject, regex, options)
+
+    regex = _M.pregQuote(regex)
+    
+    if options then
+        options = 'i' .. options
+    else
+        options = 'ijo'
+    end
+
+    return _M.refind(subject, regex, options)
 end
 
 function _M.resub(subject, regex, replace, options)
@@ -851,7 +905,23 @@ function _M.regsub(subject, regex, replace, options)
     return regsub(subject, regex, replace, options)
 end
 
-_M.rereplace = _M.regsub
+function _M.regsubp(subject, regex, replace)
+
+    regex = _M.pregQuote(regex)
+
+    local options = 'jo'
+
+    return regsub(subject, regex, replace, options)
+end
+
+function _M.regsubpi(subject, regex, replace)
+
+    regex = _M.pregQuote(regex)
+
+    local options = 'ijo'
+
+    return regsub(subject, regex, replace, options)
+end
 
 function _M.rereplace(subject, regex, replace, options)
 
