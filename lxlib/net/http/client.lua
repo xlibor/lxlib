@@ -179,9 +179,9 @@ function _M:close()
     self:getBase():close()
 end
 
-function _M:setTimeout(second)
-
+function _M:setTimeouts(connectTimeout, sendTimeout, readTimeout)
     
+    self:getBase():set_timeouts(connectTimeout, sendTimeout, readTimeout)
 end
 
 return _M
