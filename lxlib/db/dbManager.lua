@@ -29,6 +29,7 @@ function _M:connection(name)
     if not name then 
         name = self:getDefaultConnection()
     end
+
     if not self.connections[name] then
         local connection = self:makeConnection(name)
         self.connections[name] = self:prepare(connection)

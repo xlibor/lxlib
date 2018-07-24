@@ -64,7 +64,10 @@ end
 local function mysql_keepalive(db, config)
 
     local ok, err = db:set_keepalive(max_idle_timeout, config.pool)
-    if not ok then error("failed to set mysql keepalive: ", err) end
+    if not ok then
+        err = tostring(err) or 'unknown'
+        error("failed to set mysql keepalive: " .. err)
+    end
 end
 
 function _M:ctor(config)

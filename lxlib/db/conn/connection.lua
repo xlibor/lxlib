@@ -347,6 +347,7 @@ function _M:listen(callback)
 end
 
 function _M:getLdo()
+    
     local ldo = self.ldo
 
     if type(ldo) == 'function' then

@@ -64,7 +64,7 @@ end
 function _M.__:prefixedResource(name, controller, options)
 
     local name, prefix = self:getResourcePrefix(name)
-    
+
     local callback = function(router)
         router:resource(name, controller, options)
     end
@@ -76,7 +76,7 @@ function _M.__:getResourcePrefix(name)
 
     local segments = str.split(name, '/')
     
-    local prefix = str.join(tb.slice(segments, 1, -2), '/')
+    local prefix = str.join(tb.slice(segments, 1, -1), '/')
     
     return tb.last(segments), prefix
 end
@@ -222,7 +222,7 @@ function _M.__:addResourceDestroy(name, base, controller, options)
     local uri = self:getResourceUri(name) .. '/{' .. base .. '}/delete'
     local action = self:getResourceAction(name, controller, 'destroy', options)
     
-    return self:getRouter():post(uri, action)
+    return self:getRouter():add(uri, action)
 end
 
 function _M.s__.setSingularParameters(singular)

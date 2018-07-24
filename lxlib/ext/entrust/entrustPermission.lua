@@ -5,7 +5,7 @@ local lx, _M, mt = oo{
     _bond_  = 'entrustPermissionBond'
 }
 
-local app, lf, tb, str = lx.kit()
+local app, lf, tb, str, new = lx.kit()
 
 -- The database table used by the model.
 -- @var string

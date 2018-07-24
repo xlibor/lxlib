@@ -3,7 +3,7 @@ local lx, _M = oo{
     _cls_ = ''
 }
 
-local app, lf, tb, str = lx.kit()
+local app, lf, tb, str, new = lx.kit()
 local cache = app.cache
 
 --Big block of caching functionality.
@@ -212,10 +212,17 @@ function _M:attachRole(role)
 
     if lf.isObj(role) then
         role = role:getKey()
-    end
-    if lf.isTbl(role) then
+    elseif lf.isTbl(role) then
         role = role.id
+    elseif lf.isStr(role) then
+        local r = new(app:conf('entrust.role')):where('name', role):first()
+        if r then
+            role = r:getKey()
+        else
+            error('invalid role')
+        end
     end
+    
     self:roles():attach(role)
 end
 
@@ -226,10 +233,17 @@ function _M:detachRole(role)
 
     if lf.isObj(role) then
         role = role:getKey()
-    end
-    if lf.isTbl(role) then
+    elseif lf.isTbl(role) then
         role = role.id
+    elseif lf.isStr(role) then
+        local r = new(app:conf('entrust.role')):where('name', role):first()
+        if r then
+            role = r:getKey()
+        else
+            error('invalid role')
+        end
     end
+
     self:roles():detach(role)
 end
 

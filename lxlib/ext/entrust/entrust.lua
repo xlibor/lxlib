@@ -3,7 +3,7 @@ local lx, _M, mt = oo{
     _cls_ = ''
 }
 
-local app, lf, tb, str = lx.kit()
+local app, lf, tb, str, new = lx.kit()
 
 local abort = lx.h.abort
 local router

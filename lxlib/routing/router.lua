@@ -58,6 +58,18 @@ function _M:current()
     return self.currentRoute
 end
 
+function _M:has(...)
+
+    local names = lf.needArgs(...)
+    for i, v in ipairs(names) do
+        if not self.routes:hasNamedRoute(v) then
+            return false
+        end
+    end
+
+    return true
+end
+
 function _M:currentRouteNamed(name)
 
     local currentRoute = self.currentRoute

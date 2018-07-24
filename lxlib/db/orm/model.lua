@@ -18,7 +18,7 @@ local lx, _M, mt = oo{
         queryMethods        = {
             'select', 'sel', 'pick', 'where', 'orWhere', 'or_', 'whereIn',
             'whereBetween', 'between', 'get', 'set', 'first', 'find', 'create',
-            'orderBy', 'group', 'groupBy', 'take', 'insert', 'inserts',
+            'orderBy', 'group', 'groupBy', 'take', 'skip', 'insert', 'inserts',
             'limit', 'from', 'count', 'withCount', 'withGlobalScope',
             'withoutGlobalScope', 'withoutGlobalScopes', 'pure',
             'findOrFail', 'firstOrFail', 'firstOrNew', 'firstOrCreate',

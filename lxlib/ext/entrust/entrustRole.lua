@@ -5,7 +5,7 @@ local lx, _M, mt = oo{
     _bond_  = 'entrustRoleBond'
 }
 
-local app, lf, tb, str = lx.kit()
+local app, lf, tb, str, new = lx.kit()
 
 local cache = app.cache
 
@@ -101,6 +101,11 @@ end
 
 function _M:perms()
 
+    local permission = app:conf('entrust.permission')
+    if lf.empty(permission) then
+        error('invalid permission table name')
+    end
+
     return self:belongsToMany(
         app:conf('entrust.permission'),
         app:conf('entrust.permission_role_table'),
@@ -162,10 +167,17 @@ function _M:attachPermission(permission)
 
     if lf.isObj(permission) then
         permission = permission:getKey()
-    end
-    if lf.isTbl(permission) then
+    elseif lf.isTbl(permission) then
         permission = permission.id
+    elseif lf.isStr(permission) then
+        local perm = new(app:conf('entrust.permission')):where('name', permission):first()
+        if perm then
+            permission = perm:getKey()
+        else
+            error('invalid permission')
+        end
     end
+
     self:perms():attach(permission)
 end
 
@@ -176,10 +188,17 @@ function _M:detachPermission(permission)
 
     if lf.isObj(permission) then
         permission = permission:getKey()
-    end
-    if lf.isTbl(permission) then
+    elseif lf.isTbl(permission) then
         permission = permission.id
+    elseif lf.isStr(permission) then
+        local perm = new(app:conf('entrust.permission')):where('name', permission):first()
+        if perm then
+            permission = perm:getKey()
+        else
+            error('invalid permission')
+        end
     end
+
     self:perms():detach(permission)
 end
 

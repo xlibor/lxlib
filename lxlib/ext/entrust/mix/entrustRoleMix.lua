@@ -3,11 +3,9 @@ local lx, _M = oo{
     _cls_ = ''
 }
 
-local app, lf, tb, str = lx.kit()
+local app, lf, tb, str, new = lx.kit()
 
 local cache = app.cache
-
---Big block of caching functionality.
 
 function _M:cachedPermissions()
 
@@ -155,10 +153,17 @@ function _M:attachPermission(permission)
 
     if lf.isObj(permission) then
         permission = permission:getKey()
-    end
-    if lf.isTbl(permission) then
+    elseif lf.isTbl(permission) then
         permission = permission.id
+    elseif lf.isStr(permission) then
+        local perm = new(app:conf('entrust.permission')):where('name', permission):first()
+        if perm then
+            permission = perm:getKey()
+        else
+            error('invalid permission')
+        end
     end
+
     self:perms():attach(permission)
 end
 
@@ -169,10 +174,17 @@ function _M:detachPermission(permission)
 
     if lf.isObj(permission) then
         permission = permission:getKey()
-    end
-    if lf.isTbl(permission) then
+    elseif lf.isTbl(permission) then
         permission = permission.id
+    elseif lf.isStr(permission) then
+        local perm = new(app:conf('entrust.permission')):where('name', permission):first()
+        if perm then
+            permission = perm:getKey()
+        else
+            error('invalid permission')
+        end
     end
+    
     self:perms():detach(permission)
 end
 
