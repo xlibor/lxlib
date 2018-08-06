@@ -3,7 +3,8 @@ local lx, _M, mt = oo{
     _cls_           = '',
     a__             = {},
     publishes       = {},
-    publishGroups   = {}
+    publishGroups   = {},
+    _static_        = {},
 }
 
 local app, lf, tb, str = lx.kit()
@@ -88,7 +89,7 @@ function _M:publish(paths, group)
     end
 end
 
-function _M.pathsToPublish(box, group)
+function _M.s__.pathsToPublish(box, group)
 
     if box and group then
         if lf.isEmpty(_M.publishes[box]) or lf.isEmpty(_M.publishGroups[group]) then

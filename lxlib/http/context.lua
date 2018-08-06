@@ -6,7 +6,9 @@ local lx, _M = oo{
     }
 }
 
-local app, lf, tb, str = lx.kit()
+local app, lf, tb, str, new = lx.kit()
+local fs = lx.fs
+local throw = lx.throw
 
 function _M:ctor()
 
@@ -90,8 +92,20 @@ function _M:xml()
 
 end
 
-function _M:file()
+function _M:file(filePath, fileName)
 
+    if not fs.exists(filePath) then
+        throw('notFoundHttpException', filePath)
+    else
+        local fileData = fs.get(filePath)
+        local fileSize = str.len(fileData)
+        local resp = self.resp
+        resp:header('Content-Type', 'application/octet-stream')
+        resp:header('Content-Disposition', 'attachment;filename=' .. fileName)
+        resp:header('Accept-ranges', 'bytes')
+        resp:header('Accept-length', fileSize)
+        resp:setContent(fileData)
+    end
 end
 
 function _M:form(reqName)

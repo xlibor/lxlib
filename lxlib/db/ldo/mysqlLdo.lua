@@ -11,6 +11,7 @@ local mysql = require('lxlib.resty.mysql')
 local timeout_subsequent_ops = 5000 -- 5 sec
 local max_idle_timeout = 10000 -- 10 sec
 local max_packet_size = 1024 * 1024 -- 1MB
+local default_pool_size = 10
 local STATE_CONNECTED, STATE_COMMAND_SENT = 1, 2
 
 function _M:new(config)
@@ -63,7 +64,7 @@ end
 
 local function mysql_keepalive(db, config)
 
-    local ok, err = db:set_keepalive(max_idle_timeout, config.pool)
+    local ok, err = db:set_keepalive(max_idle_timeout, config.poolSize or default_pool_size)
     if not ok then
         err = tostring(err) or 'unknown'
         error("failed to set mysql keepalive: " .. err)

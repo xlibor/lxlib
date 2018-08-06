@@ -13,11 +13,11 @@ function _M:boot()
     local confPath = fs.exists(currPath .. '/conf')
 
     self:publish({
-            [currPath .. 'conf/*'] = lx.dir('conf')
+            [currPath .. '/conf/*'] = lx.dir('conf')
         }, 'tagging')
 
     self:publish({
-            [currPath .. 'shift/*'] = lx.dir('db', '/shift')
+            [currPath .. '/shift/*'] = lx.dir('db', '/shift')
         }, 'tagging')
 
 end
