@@ -89,9 +89,18 @@ function _M.route(name, parameters, absolute)
     return app.url:route(name, parameters, absolute)
 end
 
-function _M.routeIs(name)
+function _M.routeIs(...)
 
-    return Req.routeIs(name)
+    local req = app:get('request')
+    local nameList = lf.needArgs(...)
+
+    for i, routeName in ipairs(nameList) do
+        if req:routeIs(routeName) then
+            return true
+        end
+    end
+
+    return false
 end
 
 function _M.url(path, parameters, secure)

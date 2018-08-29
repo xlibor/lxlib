@@ -517,6 +517,8 @@ function _M:routeIs(name)
     if route then
         return route:named(name)
     end
+
+    return false
 end
 
 function _M:route(key)

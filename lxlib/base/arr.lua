@@ -1951,6 +1951,8 @@ function _M.remove(tbl, offset, length)
             tremove(tbl, i)
         end
     end
+
+    return tbl
 end
 
 function _M.replace(...)

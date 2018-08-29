@@ -1646,11 +1646,15 @@ function _M._load_(cls)
                 if field then
                     field = str.lcfirst(field)
                     baseMt.attrGetters[field] = k
+                    field = str.snake(field)
+                    baseMt.attrGetters[field] = k
                 end
 
                 field = smatch(k, 'set(%w+)Attr')
                 if field then
                     field = str.lcfirst(field)
+                    baseMt.attrSetters[field] = k
+                    field = str.snake(field)
                     baseMt.attrSetters[field] = k
                 end
             end
