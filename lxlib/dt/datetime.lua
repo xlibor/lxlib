@@ -14,13 +14,13 @@ local lx, _M, mt = oo{
         weekEndsAt      = 6,
         weekendDays     = {6, 0},
         days            = {
-            [0] = 'Sunday',
-            [1] = 'Monday',
-            [2] = 'Tuesday',
-            [3] = 'Wednesday',
-            [4] = 'Thursday',
-            [5] = 'Friday',
-            [6] = 'Saturday'
+            [1] = 'Sunday',
+            [2] = 'Monday',
+            [3] = 'Tuesday',
+            [4] = 'Wednesday',
+            [5] = 'Thursday',
+            [6] = 'Friday',
+            [7] = 'Saturday'
         },
         defaultFormat       = '%Y-%m-%d',
         monthsPerYear       = 12,
@@ -228,6 +228,11 @@ function _M.__:getIntervals(dateInterval, reinvert)
     end
 
     return y, m, d, h, i, s
+end
+
+function _M:dayOfWeek()
+
+    return self.dto:getweekday()
 end
 
 function _M:diff(dt2)

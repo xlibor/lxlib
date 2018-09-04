@@ -1943,8 +1943,8 @@ function _M.remove(tbl, offset, length)
     if not tbl then return end
     local len = #tbl
     if len == 0 then return end
-     
-    first, last = utils.getRange(len, offset, length)
+
+    local first, last = utils.getRange(len, offset, length)
 
     if first <= len then
         for i = last, first, -1 do
